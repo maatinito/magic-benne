@@ -113,7 +113,6 @@ GEM
     factory_bot_rails (6.1.0)
       factory_bot (~> 6.1.0)
       railties (>= 5.0.0)
-    fastercsv (1.5.5)
     ffi (1.14.2)
     fugit (1.4.1)
       et-orbi (~> 1.1, >= 1.1.8)
@@ -392,7 +391,6 @@ DEPENDENCIES
   delayed_job_web
   dotenv-rails
   factory_bot_rails
-  fastercsv
   fugit
   graphql-client (~> 0.16.0)
   haml-lint

@@ -14,6 +14,7 @@ RUN apk add --update --virtual build-dependencies \
         yarn \
         python3 \
         sqlite-dev \
+        sqlite-libs \
         sqlite
 ENV INSTALL_PATH /app
 RUN mkdir -p ${INSTALL_PATH}
@@ -32,7 +33,7 @@ RUN bundle config --global frozen 1 &&\
 FROM base
 ENV APP_PATH /sefi
 #----- minimum set of packages including PostgreSQL client, yarn
-RUN apk add --no-cache --update tzdata libcurl postgresql-libs yarn
+RUN apk add --no-cache --update tzdata libcurl postgresql-libs yarn sqlite-libs sqlite
 
 WORKDIR ${APP_PATH}
 RUN adduser -Dh ${APP_PATH} userapp

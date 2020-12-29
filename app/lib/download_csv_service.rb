@@ -26,12 +26,16 @@ class DownloadCsvService
 
   TITLE_LABELS = [
     'Nom de famille', 'Nom marital', 'Prénom', 'Date de naissance', 'DN', 'Heures avant convention',
-    'Brut mensuel moyen', 'Heures à réaliser', 'Taux RTT*', 'DMO', 'Jours non rémunérés',
-    "Jours d'indemnités journalières", 'Aide', 'Cotisations', '% temps présent', '% réalisé convention',
+    'Brut mensuel moyen', 'Heures à réaliser', 'DMO', 'Jours non rémunérés',
+    "Jours d'indemnités journalières", 'Taux RTT*', 'Aide', 'Cotisations', '% temps présent', '% réalisé convention',
     '% perte salaire', '% aide', 'plafond'
   ].freeze
 
-  COLUMNS = TITLE_LABELS.map { |name| [name.parameterize.underscore.to_sym, Regexp.new(name)] }.to_h
+  def self.symbolize(name)
+    name.tr('%','P').parameterize.underscore.to_sym
+  end
+
+  COLUMNS = TITLE_LABELS.map { |name| [symbolize(name), Regexp.new(name)] }.to_h
 
   def field(dossier, field)
     objects = [*dossier]
@@ -140,7 +144,7 @@ class DownloadCsvService
       (1..12).each { csv << [] }
       employees.each do |line|
         csv << TITLE_LABELS.map do |column|
-          value = line[column.parameterize.underscore.to_sym]
+          value = line[DownloadCsvService.symbolize(column)]
           case value
           when Date
             value.strftime('%d/%m/%Y')
@@ -161,6 +165,7 @@ class DownloadCsvService
         line[:date_de_naissance] =
           Date.new(1899, 12, 30) + line[:date_de_naissance].days
       end
+      pp line
       line[:aide] = line[:aide].round if line[:aide].is_a?(Float)
       line
     end

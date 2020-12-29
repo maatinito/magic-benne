@@ -12,7 +12,9 @@ RUN apk add --update --virtual build-dependencies \
         curl-dev \
         postgresql-dev \
         yarn \
-        python3
+        python3 \
+        sqlite-dev \
+        sqlite
 ENV INSTALL_PATH /app
 RUN mkdir -p ${INSTALL_PATH}
 COPY Gemfile Gemfile.lock package.json yarn.lock  ${INSTALL_PATH}/

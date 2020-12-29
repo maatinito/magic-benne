@@ -1,0 +1,68 @@
+version: '3.3'
+
+#------------------------------------------------------------
+# This docker compose describes how to run sefi export. It requires
+#    - environment variables defined via .env file
+#
+# This configuration file defines 2 machines
+#   - app: Main rails application (frontend)
+#   - worker: responsible of running jobs like sending mails, virus analysis
+# Variables
+# IMAGE : name of the docker image to run (sipf/mes-demarches)
+# TAG : Tag of the image to run (eg master or devpf or b38)
+#
+# APP_HOST: host:port pointing to the application to allows creation of absolute links
+#
+# DB_DATABASE: database configuration
+# DB_HOST
+# DB_USERNAME
+# DB_PASSWORD
+#
+# NETWORK_SLOT: Optional, default to 0, Number between 0 and 255 allowing to run multiple env (dev, staging)
+#
+# SENTRY variables to logs exception on the SEntry platform
+#-------------------------------------------------------------
+services:
+  app:
+    image: ${IMAGE}:${TAG:-latest}
+    container_name: app-${ENV:-dev}
+    restart: always
+    ports:
+      - ${PORT}:3000
+    environment:
+      - DB_DATABASE
+      - DB_HOST
+      - DB_PASSWORD
+      - DB_POOL
+      - DB_USERNAME
+      - GRAPHQL_BEARER
+      - GRAPHQL_HOST
+      - RAILS_ENV=${ENV:-production}
+    volumes:
+      - imd-data-files:/imd/storage
+
+  worker:
+    image: ${IMAGE}:${TAG:-latest}
+    entrypoint: ["bundle", "exec"]
+    command: rails jobs:work
+    restart: always
+    environment:
+      - DB_DATABASE
+      - DB_HOST
+      - DB_PASSWORD
+      - DB_POOL
+      - DB_USERNAME
+      - GRAPHQL_BEARER
+      - GRAPHQL_HOST
+      - RAILS_ENV=${ENV:-production}
+    volumes:
+      - imd-data-files:/imd/storage
+
+volumes:
+  imd-data-files:
+    driver: local
+    driver_opts:
+      type: none
+      device: $ROOT/storage
+      o: bind
+

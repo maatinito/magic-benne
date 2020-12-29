@@ -6,7 +6,8 @@ Rails.application.routes.draw do
   root 'demarches#main'
 
   get 'demarches/main'
-  get 'demarches/download'
+  get 'demarches/export'
+  get 'demarches/export_all'
 
   # view jobs
   match '/delayed_job' => DelayedJobWeb, :anchor => false, :via => %i[get post]

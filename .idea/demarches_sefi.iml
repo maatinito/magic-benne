@@ -69,7 +69,6 @@
     <orderEntry type="library" scope="PROVIDED" name="execjs (v2.7.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="factory_bot (v6.1.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="factory_bot_rails (v6.1.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="fastercsv (v1.5.5, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ffi (v1.14.2, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="fugit (v1.4.1, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="globalid (v0.4.2, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />

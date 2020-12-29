@@ -14,15 +14,27 @@ class DownloadCsvService
 
   REPORT_FIELDS = 'Etat nominatif actualisé'
 
-  def initialize(age)
-    since = Time.zone.now - age
+  def initialize(reset: false)
+    @reset = reset
+  end
+
+  def export
     DownloadCsvService.config.filter { |_k, d| d.key? 'demarche' }.each do |_procedure_name, procedure|
-      demarche = procedure['demarche']
-      DossierActions.on_dossiers(demarche, since) do |dossier|
+      demarche_number = procedure['demarche']
+      demarche = Demarche.find_or_create_by({ id: demarche_number }) do |d|
+        d.queried_at = EPOCH
+      end
+      start_time = Time.zone.now
+      since = @reset ? EPOCH : demarche.queried_at
+      DossierActions.on_dossiers(demarche_number, since) do |dossier|
         process_dossier(procedure, dossier)
       end
+      demarche.queried_at = start_time
+      demarche.save
     end
   end
+
+  EPOCH = Time.zone.parse('2000-01-01 00:00')
 
   TITLE_LABELS = [
     'Nom de famille', 'Nom marital', 'Prénom', 'Date de naissance', 'DN', 'Heures avant convention',
@@ -32,7 +44,7 @@ class DownloadCsvService
   ].freeze
 
   def self.symbolize(name)
-    name.tr('%','P').parameterize.underscore.to_sym
+    name.tr('%', 'P').parameterize.underscore.to_sym
   end
 
   COLUMNS = TITLE_LABELS.map { |name| [symbolize(name), Regexp.new(name)] }.to_h
@@ -141,7 +153,7 @@ class DownloadCsvService
              headers: TITLE_LABELS,
              write_headers: true,
              col_sep: ';') do |csv|
-      (1..12).each { csv << [] }
+      12.times { csv << [] }
       employees.each do |line|
         csv << TITLE_LABELS.map do |column|
           value = line[DownloadCsvService.symbolize(column)]

@@ -52,11 +52,11 @@ ENV \
     API_CPS_PASSWORD=""\
     API_CPS_USERNAME=""\
     CAPYBARA_DRIVER="wsl"\
-    DB_DATABASE="rosso_development"\
-    DB_HOST="db"\
-    DB_PASSWORD="rosso"\
+    DB_DATABASE="demarches_sefi"\
+    DB_HOST=""\
+    DB_PASSWORD="sefi"\
     DB_POOL=""\
-    DB_USERNAME="rosso"\
+    DB_USERNAME="sefi"\
     GRAPHQL_BEARER=""\
     GRAPHQL_HOST=https://www.mes-demarches.gov.pf\
     PORT=3000\

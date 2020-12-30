@@ -39,7 +39,7 @@ services:
       - GRAPHQL_HOST
       - RAILS_ENV=${ENV:-production}
     volumes:
-      - imd-data-files:/imd/storage
+      - imd-data-files:/sefi/storage
 
   worker:
     image: ${IMAGE}:${TAG:-latest}
@@ -56,7 +56,7 @@ services:
       - GRAPHQL_HOST
       - RAILS_ENV=${ENV:-production}
     volumes:
-      - imd-data-files:/imd/storage
+      - imd-data-files:/sefi/storage
 
 volumes:
   imd-data-files:

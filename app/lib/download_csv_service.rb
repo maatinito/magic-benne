@@ -5,6 +5,7 @@
 require 'tempfile'
 require 'open-uri'
 require 'roo'
+require 'fileutils'
 
 class DownloadCsvService
   @config = nil
@@ -40,12 +41,14 @@ class DownloadCsvService
     'Nom de famille', 'Nom marital', 'Prénom', 'Date de naissance', 'DN', 'Heures avant convention',
     'Brut mensuel moyen', 'Heures à réaliser', 'DMO', 'Jours non rémunérés',
     "Jours d'indemnités journalières", 'Taux RTT*', 'Aide', 'Cotisations', '% temps présent', '% réalisé convention',
-    '% perte salaire', '% aide', 'plafond'
+    '% perte salaire', '% aide', 'plafond', 'aide maximale'
   ].freeze
 
   def self.symbolize(name)
     name.tr('%', 'P').parameterize.underscore.to_sym
   end
+
+  TITLE_STRINGS = TITLE_LABELS[0..2].map { |s| symbolize(s) }
 
   COLUMNS = TITLE_LABELS.map { |name| [symbolize(name), Regexp.new(name)] }.to_h
 
@@ -62,24 +65,23 @@ class DownloadCsvService
   DIESE_FIELD = 'Numéro dossier DiESE'
 
   def process_dossier(config, dossier)
-    if dossier.state == 'en_instruction'
-      etat = get_field(dossier, config, 'champ_etat', REPORT_FIELDS)
-      return if etat.nil?
+    return unless dossier.state == 'en_instruction'
 
-      month_field = get_field(dossier, config, 'champ_mois', MONTH_FIELD)
-      return if month_field.nil?
+    etat = get_field(dossier, config, 'champ_etat', REPORT_FIELDS)
+    return if etat.nil?
 
-      year = month_field.primary_value
-      month = month_field.secondary_value
+    month_field = get_field(dossier, config, 'champ_mois', MONTH_FIELD)
+    return if month_field.nil?
 
-      diese_field = get_field(dossier, config, 'champ_dossier', DIESE_FIELD)
-      return if diese_field.nil?
+    year = month_field.primary_value
+    month = month_field.secondary_value
 
-      diese_number = diese_field.string_value
-      # dossier_diese = diese_field.dossier
+    diese_field = get_field(dossier, config, 'champ_dossier', DIESE_FIELD)
+    return if diese_field.nil?
 
-      download_report(config, dossier, etat, diese_number, month, year)
-    end
+    diese_number = diese_field.string_value
+
+    download_report(config, dossier, etat, diese_number, month, year)
   end
 
   def self.config
@@ -107,9 +109,12 @@ class DownloadCsvService
         Rails.logger.warn("Mauvaise extension de fichier #{extension} pour le dossier #{dossier.number}")
         return
       end
+      # no_tahiti = dossier.demandeur.siret || ''
       output_dir = config['output_dir'] || 'storage'
+      FileUtils.mkpath output_dir unless Dir.exist?(output_dir)
+
       basename = config['champ'] || 'Etat'
-      output_path = "#{output_dir}/#{basename}-#{diese_number}-#{month}-#{year}.csv"
+      output_path = "#{output_dir}/#{basename}-#{diese_number}-#{year}-#{month}.csv"
       check_file(output_path, extension, url)
     else
       Rails.logger.warn("Pas d'état nominatif attaché au dossier #{dossier.number}")
@@ -120,7 +125,7 @@ class DownloadCsvService
     dossier_field_name = config[field_name] || default
     field = field(dossier, dossier_field_name)
     if field.blank?
-      Rails.logger.warn("Champ #{dossier_field_name} n'existe pas sur le dossier #{dossier.number}." \
+      Rails.logger.warn("Le champ #{dossier_field_name} n'existe pas sur le dossier #{dossier.number}." \
                           " Vous pouvez le configurer via la variable '#{field_name}'")
       return nil
     end
@@ -149,12 +154,14 @@ class DownloadCsvService
   end
 
   def export_employee(employees, output_path)
+    Rails.logger.info("COUCOU #{employees.size}")
     CSV.open(output_path, 'wb',
              headers: TITLE_LABELS,
              write_headers: true,
              col_sep: ';') do |csv|
       12.times { csv << [] }
       employees.each do |line|
+        Rails.logger.info(line)
         csv << TITLE_LABELS.map do |column|
           value = line[DownloadCsvService.symbolize(column)]
           case value
@@ -178,6 +185,7 @@ class DownloadCsvService
           Date.new(1899, 12, 30) + line[:date_de_naissance].days
       end
       pp line
+      TITLE_STRINGS.each { |key| line[key].strip! }
       line[:aide] = line[:aide].round if line[:aide].is_a?(Float)
       line
     end

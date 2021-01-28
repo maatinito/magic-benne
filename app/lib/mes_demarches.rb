@@ -94,23 +94,6 @@ module MesDemarches
           dateDeNaissance
           numeroDn
       }
-      ... on RepetitionChamp {
-          champs {
-              label
-              ... on TextChamp {
-                  value
-              }
-              ... on IntegerNumberChamp {
-                  value
-              }
-              ... on DecimalNumberChamp  {
-                  value
-              }
-              ... on DateChamp  {
-                  value
-              }
-          }
-      }
     }
 
     fragment DossierInfo on Dossier {
@@ -166,6 +149,11 @@ module MesDemarches
             }
             champs {
               ...ChampInfo
+              ... on RepetitionChamp {
+                  champs {
+                      ...ChampInfo
+                  }
+              }
               ... on DossierLinkChamp {
                 stringValue
                 dossier {
@@ -175,6 +163,11 @@ module MesDemarches
                   }
                   champs {
                       ...ChampInfo
+                      ... on RepetitionChamp {
+                          champs {
+                              ...ChampInfo
+                          }
+                      }
                   }
                 }
               }

@@ -56,7 +56,7 @@ group :development, :test do
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'vcr', '~> 6.0.0'
+  gem 'vcr', '~> 5.1.0'
   gem 'webmock', '~> 3.8.0'
   gem 'xray-rails'
 end
@@ -73,6 +73,7 @@ group :development do
   gem 'rspec-rails', '~> 4.0.1'
   gem 'rubocop', require: false
   gem 'rubocop-rails_config'
+  gem 'rubocop-rspec'
   gem 'rubocop-rspec-focused', require: false
   gem 'scss_lint', require: false
 end

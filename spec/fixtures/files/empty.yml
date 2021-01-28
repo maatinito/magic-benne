@@ -1,0 +1,10 @@
+par_defaut: &par_defaut
+  output_dir: 'storage'
+  etat:
+    - accepte
+
+vide:
+  <<: *par_defaut
+  demarche: 828
+  taches:
+

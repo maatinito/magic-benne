@@ -39,7 +39,8 @@ services:
       - GRAPHQL_HOST
       - RAILS_ENV=${ENV:-production}
     volumes:
-      - imd-data-files:/sefi/storage
+      - storage:/sefi/storage
+      - export:/sefi/export
 
   worker:
     image: ${IMAGE}:${TAG:-latest}
@@ -56,13 +57,20 @@ services:
       - GRAPHQL_HOST
       - RAILS_ENV=${ENV:-production}
     volumes:
-      - imd-data-files:/sefi/storage
+      - storage:/sefi/storage
+      - export:/sefi/export
 
 volumes:
-  imd-data-files:
+  storage:
     driver: local
     driver_opts:
       type: none
       device: $ROOT/storage
+      o: bind
+  export:
+    driver: local
+    driver_opts:
+      type: none
+      device: $ROOT/export
       o: bind
 

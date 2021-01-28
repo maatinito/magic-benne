@@ -4,12 +4,13 @@
 #
 class DemarchesController < ApplicationController
   def export
-    @service = DownloadCsvService.new.export
+    @service = DemarcheService.new(reset: false, config_file: 'storage/demarches.yml').process
     redirect_to demarches_main_path
   end
 
   def export_all
-    @service = DownloadCsvService.new(reset: true).export
+    @service = DemarcheService.new(reset: true, config_file: 'storage/demarches.yml').process
+    # @service = DemarcheService.new(reset: true, config_file: 'spec/fixtures/files/raise_exception.yml').process
     redirect_to demarches_main_path
   end
 

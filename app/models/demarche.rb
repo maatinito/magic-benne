@@ -11,4 +11,5 @@
 #  updated_at :datetime         not null
 #
 class Demarche < ApplicationRecord
+  has_many :job_tasks, dependent: :destroy
 end

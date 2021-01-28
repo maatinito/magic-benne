@@ -1,0 +1,82 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://www.mes-demarches.gov.pf/api/v2/graphql
+    body:
+      encoding: UTF-8
+      string: '{"query":"query MesDemarches__Queries__DossiersModifies($demarche:
+        Int!, $since: ISO8601DateTime!, $cursor: String) {\n  demarche(number: $demarche)
+        {\n    dossiers(updatedSince: $since, after: $cursor) {\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n      nodes
+        {\n        id\n        number\n        state\n        datePassageEnConstruction\n        datePassageEnInstruction\n        dateTraitement\n        dateDerniereModification\n        usager
+        {\n          email\n        }\n        demandeur {\n          __typename\n          ...
+        on PersonnePhysique {\n            civilite\n            dateDeNaissance\n            nom\n            prenom\n          }\n          ...
+        on PersonneMorale {\n            adresse\n            libelleNaf\n            localite\n            naf\n            siret\n            association
+        {\n              titre\n            }\n            entreprise {\n              formeJuridique\n              nomCommercial\n              raisonSociale\n              siretSiegeSocial\n              prenom\n              nom\n            }\n          }\n        }\n        annotations
+        {\n          __typename\n          label\n          ... on TextChamp {\n            value\n          }\n        }\n        champs
+        {\n          __typename\n          label\n          ... on TextChamp {\n            value\n          }\n          ...
+        on CheckboxChamp {\n            value\n          }\n          ... on IntegerNumberChamp
+        {\n            value\n          }\n          ... on DecimalNumberChamp {\n            value\n          }\n          ...
+        on DateChamp {\n            value\n          }\n          ... on DossierLinkChamp
+        {\n            stringValue\n          }\n          ... on PieceJustificativeChamp
+        {\n            file {\n              contentType\n              byteSize\n              filename\n              url\n            }\n            stringValue\n          }\n          ...
+        on NumeroDnChamp {\n            dateDeNaissance\n            numeroDn\n          }\n          ...
+        on RepetitionChamp {\n            champs {\n              __typename\n              label\n              ...
+        on TextChamp {\n                value\n              }\n              ...
+        on IntegerNumberChamp {\n                value\n              }\n              ...
+        on DecimalNumberChamp {\n                value\n              }\n              ...
+        on DateChamp {\n                value\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}","variables":{"demarche":828,"since":"2000-01-01T00:00:00Z","cursor":null},"operationName":"MesDemarches__Queries__DossiersModifies"}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - Ruby
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 27 Jan 2021 20:22:08 GMT
+      Server:
+      - nginx/1.10.3
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      - max-age=63072000; includeSubdomains; preload
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Cache-Control:
+      - no-cache, no-store
+      Etag:
+      - W/"7d3a906aead9f6f2792c99fc53fc56c9"
+      X-Request-Id:
+      - d7d04835-080e-4ada-adf7-d12391ad7b46
+      X-Runtime:
+      - '0.152407'
+      Content-Length:
+      - '5259'
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJkYXRhIjp7ImRlbWFyY2hlIjp7ImRvc3NpZXJzIjp7InBhZ2VJbmZvIjp7ImVuZEN1cnNvciI6Ik1RIiwiaGFzTmV4dFBhZ2UiOmZhbHNlfSwibm9kZXMiOlt7ImlkIjoiUkc5emMybGxjaTAyTmpRM01RPT0iLCJudW1iZXIiOjY2NDcxLCJzdGF0ZSI6ImVuX2NvbnN0cnVjdGlvbiIsImRhdGVQYXNzYWdlRW5Db25zdHJ1Y3Rpb24iOiIyMDIxLTAxLTI2VDE4OjMwOjI3LTEwOjAwIiwiZGF0ZVBhc3NhZ2VFbkluc3RydWN0aW9uIjpudWxsLCJkYXRlVHJhaXRlbWVudCI6bnVsbCwiZGF0ZURlcm5pZXJlTW9kaWZpY2F0aW9uIjoiMjAyMS0wMS0yNlQxODozMDoyNy0xMDowMCIsInVzYWdlciI6eyJlbWFpbCI6ImNsYXV0aWVyQGlkdC5wZiJ9LCJkZW1hbmRldXIiOnsiX190eXBlbmFtZSI6IlBlcnNvbm5lTW9yYWxlIiwiYWRyZXNzZSI6IkJQIDQxOTQxLCA5ODcxMyBQQVBFRVRFIEJQLFxucXVhcnRpZXIgRXN0YWxsLFxuU2FpbnQgQW3DqWxpZSxcblBhcGVldGUgfCBCUCA0MTk0MSwgOTg3MTMgUEFQRUVURSBCUCxcbk1vb3JlYS1NYWlhbyxcblBhb3BhbyIsImxpYmVsbGVOYWYiOiJGYWJyaWNhdGlvbiBkJ2FydGljbGVzIGRlIGpvYWlsbGVyaWUgZXQgYmlqb3V0ZXJpZSB8IEN1bHR1cmUgZGUgZnJ1aXRzIHRyb3BpY2F1eCBldCBzdWJ0cm9waWNhdXgiLCJsb2NhbGl0ZSI6IlBhcGVldGUgfCBQYW9wYW8iLCJuYWYiOiIzMjEyWiB8IDAxMjJaIiwic2lyZXQiOiJBMTczMTYiLCJhc3NvY2lhdGlvbiI6bnVsbCwiZW50cmVwcmlzZSI6bnVsbH0sImFubm90YXRpb25zIjpbeyJfX3R5cGVuYW1lIjoiVGV4dENoYW1wIiwibGFiZWwiOiJhbm5vdGF0aW9uIHRleHRlIiwidmFsdWUiOm51bGx9XSwiY2hhbXBzIjpbeyJfX3R5cGVuYW1lIjoiVGV4dENoYW1wIiwibGFiZWwiOiJ0ZXh0ZSIsInZhbHVlIjoidGV4dGUxIn0seyJfX3R5cGVuYW1lIjoiVGV4dENoYW1wIiwibGFiZWwiOiJ6b25lIGRlIHRleHRlIiwidmFsdWUiOiJibGEgZmVqemlvZiBqZWl6YW9mIGplaXphb2YgZWp6YW9mIGVpIGVqemlvZiBlemppbyJ9LHsiX190eXBlbmFtZSI6IkRhdGVDaGFtcCIsImxhYmVsIjoiZGF0ZSIsInZhbHVlIjoiMjAyMS0wMS0yNlQwMDowMDowMC0xMDowMCJ9LHsiX190eXBlbmFtZSI6IkRhdGVDaGFtcCIsImxhYmVsIjoiZGF0ZSBldCBoZXVyZSIsInZhbHVlIjoiMjAzNC0xMS0xNVQxNDo1MDowMC0xMDowMCJ9LHsiX190eXBlbmFtZSI6IkRlY2ltYWxOdW1iZXJDaGFtcCIsImxhYmVsIjoibm9tYnJlIGTDqWNpbWFsIiwidmFsdWUiOjEuMzU0Njh9LHsiX190eXBlbmFtZSI6IkludGVnZXJOdW1iZXJDaGFtcCIsImxhYmVsIjoibm9tYnJlIGVudGllciIsInZhbHVlIjoiMTIzNDU2In0seyJfX3R5cGVuYW1lIjoiQ2hlY2tib3hDaGFtcCIsImxhYmVsIjoiY2FzZSDDoCBjb2NoZXIiLCJ2YWx1ZSI6dHJ1ZX0seyJfX3R5cGVuYW1lIjoiQ2l2aWxpdGVDaGFtcCIsImxhYmVsIjoiY2l2aWxpdMOpIn0seyJfX3R5cGVuYW1lIjoiVGV4dENoYW1wIiwibGFiZWwiOiJ0w6lsw6lwaG9uZSIsInZhbHVlIjoiODc1NDY1ODcifSx7Il9fdHlwZW5hbWUiOiJDaGVja2JveENoYW1wIiwibGFiZWwiOiJvdWktbm9uIiwidmFsdWUiOnRydWV9LHsiX190eXBlbmFtZSI6IlRleHRDaGFtcCIsImxhYmVsIjoiY2hvaXggIiwidmFsdWUiOiJzZWN0aW9uIDEifSx7Il9fdHlwZW5hbWUiOiJNdWx0aXBsZURyb3BEb3duTGlzdENoYW1wIiwibGFiZWwiOiJOb3V2ZWF1IGNoYW1wIFRleHRlIn0seyJfX3R5cGVuYW1lIjoiTGlua2VkRHJvcERvd25MaXN0Q2hhbXAiLCJsYWJlbCI6Im1lbnVzIGTDqXJvdWxhbnRzIGxpw6lzIn0seyJfX3R5cGVuYW1lIjoiVGV4dENoYW1wIiwibGFiZWwiOiJwYXlzIiwidmFsdWUiOiJQT0xZTkVTSUUgRlJBTkNBSVNFIn0seyJfX3R5cGVuYW1lIjoiVGV4dENoYW1wIiwibGFiZWwiOiJuYXRpb25hbGl0w6kiLCJ2YWx1ZSI6IkZyYW7Dp2Fpc2UifSx7Il9fdHlwZW5hbWUiOiJUZXh0Q2hhbXAiLCJsYWJlbCI6ImNvbW11bmUgcG9seW7DqXNpZSIsInZhbHVlIjoiUGlyYWUgLSBUYWhpdGkgLSA5ODcxNiJ9LHsiX190eXBlbmFtZSI6Ik51bWVyb0RuQ2hhbXAiLCJsYWJlbCI6Im51bWVybyBETiIsImRhdGVEZU5haXNzYW5jZSI6IjE5OTItMDctMTUiLCJudW1lcm9EbiI6IjMwNzM3MDEifSx7Il9fdHlwZW5hbWUiOiJEb3NzaWVyTGlua0NoYW1wIiwibGFiZWwiOiJsaWVuIHZlcnMgZG9zc2llciIsInN0cmluZ1ZhbHVlIjoiMjI0NTAifSx7Il9fdHlwZW5hbWUiOiJQaWVjZUp1c3RpZmljYXRpdmVDaGFtcCIsImxhYmVsIjoicGnDqGNlIGp1c3RpZmljYXRpdmUiLCJmaWxlIjp7ImNvbnRlbnRUeXBlIjoiaW1hZ2UvcG5nIiwiYnl0ZVNpemUiOjI1NTcsImZpbGVuYW1lIjoiaW5kZXgucG5nIiwidXJsIjoiaHR0cHM6Ly93d3cubWVzLWRlbWFyY2hlcy5nb3YucGYvcmFpbHMvYWN0aXZlX3N0b3JhZ2UvZGlzay9leUpmY21GcGJITWlPbnNpYldWemMyRm5aU0k2SWtKQmFEZERSRzlKWVRKV05WTlRTV2haV0VZeVkwaGtiV1ZFV1ROalIxWjBaRlJaTkdKWVNUVmlia1pzWWtkc2JHTklTbkZoWjFrMlFtdFdWVTlvUW10aFdFNTNZak5PY0dSSGJIWmlhMnRwVUZkc2RXSkhiSFZhVkhObldtMXNjMXBYTldoaVYxVTVTVzFzZFZwSFZqUk1ia0oxV25sSk4wbEhXbkJpUjFaMVdWY3hiRXRxTVZaV1JWbDBUME5qYm1GWE5XdGFXR2QxWTBjMWJrSnFjMGRXUkc5U1dUSTVkV1JIVm5Wa1Jqa3daVmhDYkZOVFNVOWhWekZvV2pKVmRtTkhOVzVDYW5OSFZrRTlQU0lzSW1WNGNDSTZJakl3TWpFdE1ERXRNamRVTWpFNk1qSTZNRGd1TmpneldpSXNJbkIxY2lJNkltSnNiMkpmYTJWNUluMTktLWZkNzZhOGVhZTMzY2Y3NWU0NGVjMjY5YzA2ZjdhNjU3ZmM2MDU4MjMvaW5kZXgucG5nP2NvbnRlbnRfdHlwZT1pbWFnZSUyRnBuZ1x1MDAyNmRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUzRCUyMmluZGV4LnBuZyUyMiUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3aW5kZXgucG5nIn0sInN0cmluZ1ZhbHVlIjoiIn0seyJfX3R5cGVuYW1lIjoiU2lyZXRDaGFtcCIsImxhYmVsIjoibnVtw6lybyB0YWhpdGkifSx7Il9fdHlwZW5hbWUiOiJUZXh0Q2hhbXAiLCJsYWJlbCI6ImNhcnRlIGRlIHBvbHluw6lzaWUiLCJ2YWx1ZSI6IntcImJhdGltZW50c1wiOntcInR5cGVcIjpcIkZlYXR1cmVDb2xsZWN0aW9uXCIsXCJmZWF0dXJlc1wiOlt7XCJ0eXBlXCI6XCJGZWF0dXJlXCIsXCJnZW9tZXRyeVwiOntcInR5cGVcIjpcIk11bHRpUG9seWdvblwiLFwiY29vcmRpbmF0ZXNcIjpbW1tbLTE0OS41NDY3MzIsLTE3LjU0NjE5MV0sWy0xNDkuNTQ2Njg4LC0xNy41NDYyODddLFstMTQ5LjU0Njc5MSwtMTcuNTQ2MzMxXSxbLTE0OS41NDY4MzQsLTE3LjU0NjIzMl0sWy0xNDkuNTQ2NzMyLC0xNy41NDYxOTFdXV1dfSxcInByb3BlcnRpZXNcIjp7XCJvYmplY3RpZFwiOjI0MDAsXCJpZGVudGlmaWFudFwiOlwiUElSXCIsXCJkYXRlX2ludGVncmF0aW9uXCI6XCIyMDE3LTAyLTE0VDEwOjAwOjAwWlwiLFwic291cmNlX2Rvbm7DqWVzXCI6MSxcInNvdXJjZV9kb25uw6llc19yZXNvbHZlZFwiOlwiUGhvdG9ncmFtbcOpdHJpZSBQVkFcIixcIm9yZ2FuaXNtZV9wcm9kdWN0ZXVyXCI6MSxcIm9yZ2FuaXNtZV9wcm9kdWN0ZXVyX3Jlc29sdmVkXCI6XCJJbnRlcm5lIChTQVUpXCIsXCJ2YWxpZGl0w6lcIjoxLFwidmFsaWRpdMOpX3Jlc29sdmVkXCI6XCJWQUxJREVcIixcImluZm9fbWFqXCI6XCJAVmFsdWUoYXR0cmlidXQpXCIsXCJkZWJ1dFwiOlwiMjAxNy0xMC0xNVpcIixcImZpblwiOlwiMjA5OS0xMi0zMVpcIn0sXCJpZFwiOlwiQmF0aV9CYXRpSW5kaWZmZXJlbmNpZS4xMDA1NTNcIn1dfSxcInBhcmNlbGxlc1wiOntcInR5cGVcIjpcIkZlYXR1cmVDb2xsZWN0aW9uXCIsXCJmZWF0dXJlc1wiOlt7XCJ0eXBlXCI6XCJGZWF0dXJlXCIsXCJnZW9tZXRyeVwiOntcInR5cGVcIjpcIk11bHRpUG9seWdvblwiLFwiY29vcmRpbmF0ZXNcIjpbW1tbLTE0OS41NDYzNjYsLTE3LjU0NjIwN10sWy0xNDkuNTQ2ODA2LC0xNy41NDY0NjJdLFstMTQ5LjU0Njg2MywtMTcuNTQ2Mzg3XSxbLTE0OS41NDcwMTksLTE3LjU0NjIxOV0sWy0xNDkuNTQ2NTEzLC0xNy41NDU5M10sWy0xNDkuNTQ2NDg0LC0xNy41NDU5Nl0sWy0xNDkuNTQ2MzY2LC0xNy41NDYyMDddXV1dfSxcInByb3BlcnRpZXNcIjp7XCJpZF9jYVwiOjM2MCxcImlkX3NlY3Rpb25cIjpcIjM2MF9LXCIsXCJudW1fcGFyY2VsbGVcIjoyMTYsXCJzdXJmYWNlX2Fkb3BcIjoyMDU1LFwiaWRfcGFyY2VsbGVcIjozNjAyOTMwLFwidGVycmVcIjpcIkRPTUFJTkUgUEFVUkEgLSBMQU5HTE9JUyAtIFBBVEVSICAtIFBST1BSScOJVMOJIEVNSUxFIENISU4gRk9PIFwiLFwiaWRfaWxlXCI6MjksXCJzZWNfcGFyY2VsbGVcIjpcIksyMTZcIixcInNlY1wiOlwiS1wiLFwiaWxlXCI6XCJUYWhpdGlcIixcImNvbW11bmVcIjpcIlBJUkFFXCJ9LFwiaWRcIjpcIkNhZGFzdHJlX1BhcmNlbGxlLjEyNzAzNjk1OTFcIn1dfSxcInpvbmVzX21hbnVlbGxlc1wiOntcInR5cGVcIjpcIkZlYXR1cmVDb2xsZWN0aW9uXCIsXCJmZWF0dXJlc1wiOlt7XCJ0eXBlXCI6XCJGZWF0dXJlXCIsXCJnZW9tZXRyeVwiOntcInR5cGVcIjpcIlBvbHlnb25cIixcImNvb3JkaW5hdGVzXCI6W1tbLTE0OS41NDY4Mzg1NTE3NTk3MiwtMTcuNTQ2Mzk2NDM0MjkwNzI3XSxbLTE0OS41NDY2MzQ3MDM4NzQ2LC0xNy41NDYyOTk4NzQ3NjYxOV0sWy0xNDkuNTQ2NzI1ODk4OTgxMSwtMTcuNTQ2MDk2MDI2ODgxMDZdLFstMTQ5LjU0Njk4ODc1NTQ2NDU1LC0xNy41NDYyMzU1MDE3NDk4MzRdLFstMTQ5LjU0NjgzODU1MTc1OTcyLC0xNy41NDYzOTY0MzQyOTA3MjddXV19LFwicHJvcGVydGllc1wiOntcImNvbW11bmVcIjpcIlBJUkFFXCIsXCJpbGVcIjpcIlRhaGl0aVwifSxcImlkXCI6XCJab25lIDFcIn1dfX0ifSx7Il9fdHlwZW5hbWUiOiJSZXBldGl0aW9uQ2hhbXAiLCJsYWJlbCI6ImJsb2MgcsOpcMOpdGFibGUiLCJjaGFtcHMiOlt7Il9fdHlwZW5hbWUiOiJQaWVjZUp1c3RpZmljYXRpdmVDaGFtcCIsImxhYmVsIjoiZG9jdW1lbnQifSx7Il9fdHlwZW5hbWUiOiJQaWVjZUp1c3RpZmljYXRpdmVDaGFtcCIsImxhYmVsIjoiZG9jdW1lbnQifV19LHsiX190eXBlbmFtZSI6IlRleHRDaGFtcCIsImxhYmVsIjoidGl0cmUgaWRlbnRpdMOpIiwidmFsdWUiOm51bGx9LHsiX190eXBlbmFtZSI6IlRleHRDaGFtcCIsImxhYmVsIjoiaWJhbiIsInZhbHVlIjoiRlI3NjEyMjM5MDAwMTEzMDAyNDMwMTAwMDgxIn1dfV19fX19
+    http_version: null
+  recorded_at: Wed, 27 Jan 2021 20:22:08 GMT
+recorded_with: VCR 5.1.0

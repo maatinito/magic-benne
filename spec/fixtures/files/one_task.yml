@@ -1,0 +1,11 @@
+par_defaut: &par_defaut
+  output_dir: 'storage'
+  etat:
+    - accepte
+
+one_task:
+  <<: *par_defaut
+  demarche: 828
+  taches:
+    - does_nothing
+

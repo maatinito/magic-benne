@@ -10,11 +10,11 @@ class ExportDossiers < DossierTask
   end
 
   def required_fields
-    %i[champs]
+    super + %i[champs]
   end
 
   def authorized_fields
-    %i[calculs]
+    super + %i[calculs]
   end
 
   def run
@@ -37,7 +37,7 @@ class ExportDossiers < DossierTask
 
     titles = ['ID'] + params[:champs]
     output_path = "#{output_dir}/#{Time.zone.now.strftime('dossiers %Y-%m-%d-%Hh%M')}.csv"
-    CSV.open(output_path, 'wb', headers: titles, write_headers: true, col_sep: ';') do |csv|
+    CSV.open(output_path, 'wb', headers: titles + @dynamic_titles.to_a, write_headers: true, col_sep: ';') do |csv|
       @dossiers.each { |line| csv << line }
     end
   end

@@ -14,16 +14,14 @@ class ExportPiecesJointes < DossierTask
   end
 
   def required_fields
-    %i[champs]
+    super + %i[champs]
   end
 
   def authorized_fields
-    %i[format]
+    super + %i[etat_du_dossier]
   end
 
   def run
-    return unless @dossier.state == 'en_instruction'
-
     champs = params[:champs]
     if champs.blank?
       Rails.logger.warn("#{self.class.name.parameterize}: Aucun nom de pièces jointes à télécharger. Remplissez l'attribut 'champs'")

@@ -4,16 +4,16 @@ class Task
   attr_reader :errors, :params, :demarche_id, :output_dir, :job_task
 
   def initialize(job, params)
-    @job = job
-    @demarche_id = @job['demarche']
-    @output_dir = @job['output_dir'] || 'storage'
+    @job = job.symbolize_keys
+    @demarche_id = @job[:demarche]
+    @output_dir = @job[:output_dir] || 'storage'
     @errors = []
-    @params = params.symbolize_keys
+    @params = @job.merge(params.symbolize_keys)
     missing_fields = (required_fields - @params.keys)
     if missing_fields.present?
       @errors << "Les champs #{missing_fields.join(',')} devrait être définis sur #{self.class.name.underscore}"
     end
-    unknown_fields = @params.keys - authorized_fields - required_fields
+    unknown_fields = @params.keys - authorized_fields - required_fields - @job.keys
     if unknown_fields.present?
       @errors << "#{unknown_fields.join(',')} n'existe(nt) pas sur #{self.class.name.underscore}"
     end

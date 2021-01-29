@@ -14,11 +14,11 @@ class ExportEtatReel < DossierTask
   end
 
   def required_fields
-    %i[champ_etat champ_mois champ_dossier]
+    super + %i[champ_etat champ_mois champ_dossier]
   end
 
   def authorized_fields
-    %i[empty_lines]
+    super + %i[empty_lines]
   end
 
   TITLE_LABELS = [
@@ -37,8 +37,6 @@ class ExportEtatReel < DossierTask
   COLUMNS = TITLE_LABELS.map { |name| [symbolize(name), Regexp.new(name)] }.to_h
 
   def run
-    return unless @dossier.state == 'en_instruction'
-
     etat = param_value(:champ_etat)
     return if etat.nil?
 

@@ -9,9 +9,18 @@ class DossierTask < Task
   def process_dossier(dossier)
     @exception = nil
     @dossier = dossier
-    run
+    run if dossier_has_right_state
   rescue StandardError => e
     @exception = e
+  end
+
+  def authorized_fields
+    super + %i[etat_du_dossier]
+  end
+
+  def dossier_has_right_state
+    @states ||= [*@params[:etats_du_dossier]].flat_map { |s| s.split(',') }.to_set
+    @states.empty? || @states.include?(@dossier.state)
   end
 
   def run

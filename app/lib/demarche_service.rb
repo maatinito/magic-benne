@@ -40,7 +40,8 @@ class DemarcheService
     # count = 0
     DossierActions.on_dossiers(demarche.id, since) do |dossier|
       process_dossier(dossier, tasks)
-      # break if (count=count+1) > 10
+      # break if (count=count+1) > 3
+      GC.compact
     end
     tasks.each(&:after_run)
     demarche.queried_at = start_time

@@ -20,7 +20,8 @@ module MesDemarches
     Rails.cache.fetch("#{host} http client") do
       graphql_url = "#{host}/api/v2/graphql"
       GraphQL::Client::HTTP.new(graphql_url) do
-        lambda do # headers
+        lambda do
+          # headers
           { "Authorization": "Bearer #{ENV['GRAPHQL_BEARER']}" }
         end
       end
@@ -94,16 +95,28 @@ module MesDemarches
           dateDeNaissance
           numeroDn
       }
+      ... on SiretChamp {
+          stringValue
+      }
+      ... on CiviliteChamp {
+          value
+      }
+      ... on MultipleDropDownListChamp {
+          values
+      }
     }
 
     fragment DossierInfo on Dossier {
       id
       number
+      archived
+
       state
       datePassageEnConstruction
       datePassageEnInstruction
       dateTraitement
       dateDerniereModification
+      motivation
       usager {
           email
       }
@@ -132,6 +145,12 @@ module MesDemarches
                   nom
               }
           }
+      }
+      groupeInstructeur {
+        instructeurs {
+          id
+          email
+        }
       }
     }
 

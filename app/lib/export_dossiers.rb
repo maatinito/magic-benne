@@ -3,7 +3,6 @@
 require 'set'
 
 class ExportDossiers < DossierTask
-
   def initialize(job, params)
     super
     @calculs = create_tasks
@@ -48,30 +47,80 @@ class ExportDossiers < DossierTask
 
   private
 
+  MD_FIELDS =
+    {
+      'ID' => 'number',
+      'Email' => 'usager.email',
+      'Entreprise raison sociale' => 'demandeur.entreprise.raison_sociale',
+      'Archivé' => 'archived',
+      'État du dossier' => 'state',
+      'Dernière mise à jour le' => 'date_derniere_modification',
+      'Déposé le' => 'date_passage_en_construction',
+      'Passé en instruction le' => 'date_passage_en_instruction',
+      'Traité le' => 'date_traitement',
+      'Motivation de la décision' => 'motivation',
+      'Instructeurs' => 'groupe_instructeur.instructeurs.email'
+    }.freeze
+
   def get_fields(fields)
     line = [dossier.number] + fields.map do |field|
-      field_values(field).map do |champ|
-        case champ.__typename
-        when 'TextChamp', 'IntegerNumberChamp'
-          champ.value || ''
-        else
-          puts champ._typename
-        end
-      end.compact.join('|')
+      if (path = MD_FIELDS[field]).present?
+        dossier_field_values(path)
+      else
+        field_values(field).map(&method(:champ_value)).compact.join('|')
+      end
+    end
+  end
+
+  def dossier_field_values(path)
+    path.split(/\./).reduce(@dossier) do |o, f|
+      case o
+      when GraphQL::Client::List
+        o.map { |elt| elt.send(f) }
+      else
+        o.send(f) if o.present?
+      end
+    end
+  end
+
+  def champ_value(champ)
+    case champ.__typename
+    when 'TextChamp', 'IntegerNumberChamp', 'DecimalNumberChamp', 'CiviliteChamp'
+      champ.value || ''
+    when 'MultipleDropDownListChamp'
+      champ.values
+    when 'LinkedDropDownListChamp'
+      "#{champ.primary_value}/#{champ.secondary_value}"
+    when 'DateChamp'
+      Date.iso8601(champ.value).strftime('%d/%m/%Y %H:%M')
+    when 'CheckboxChamp'
+      puts champ.value
+    when 'NumeroDnChamp'
+      "#{champ.numero_dn}|#{champ.date_de_naissance}"
+    when 'DossierLinkChamp'
+      champ.string_value
+    when 'PieceJustificativeChamp'
+      champ.file.filename
+    when 'SiretChamp'
+      champ.string_value
+    else
+      puts champ.__typename
     end
   end
 
   def add_dynamic_columns(line)
-    dynamic_cells = compute_cells
-    @dynamic_titles.merge dynamic_cells.keys
-    @dynamic_titles.each { |column| line << (dynamic_cells[column] || '') }
+    if @calculs.present?
+      dynamic_cells = compute_cells
+      @dynamic_titles.merge dynamic_cells.keys if dynamic_cells.present?
+      @dynamic_titles.each { |column| line << (dynamic_cells[column] || '') }
+    end
   end
 
   def compute_cells
     @calculs.map { |task| task.process_dossier(@dossier) }.reduce(&:merge)
   end
 
-  def create_tasks()
+  def create_tasks
     taches = params[:calculs]
     return [] if taches.nil?
 

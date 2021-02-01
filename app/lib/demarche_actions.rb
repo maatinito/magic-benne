@@ -10,8 +10,12 @@ class DemarcheActions
     throw StandardError.new "La démarche #{demarche_number} n'existe pas" if result.data.demarche.nil?
 
     gql_demarche = result.data.demarche
-    gql_instructeur = gql_demarche.groupe_instructeurs.flat_map(&:instructeurs).find { |i| i.email == instructeur_email }
-    throw StandardError.new "Aucun instructeur #{@instructeur.email} sur la demarche #{demarche_number}" if gql_instructeur.nil?
+    gql_instructeur = gql_demarche.groupe_instructeurs.flat_map(&:instructeurs).find do |i|
+      i.email == instructeur_email
+    end
+    if gql_instructeur.nil?
+      throw StandardError.new "Aucun instructeur #{@instructeur.email} sur la demarche #{demarche_number}"
+    end
 
     gql_instructeur.id
   end

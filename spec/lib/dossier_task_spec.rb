@@ -4,9 +4,9 @@ require 'rails_helper'
 # require 'app/lib/inspector_task'
 
 class TestDossierTask < DossierTask
-  def run()
+  def run
     pp @dossier
-    raise "coucou" if @params[:fail]
+    raise 'coucou' if @params[:fail]
   end
 
   def required_fields

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: job_tasks
@@ -18,7 +20,7 @@
 #
 FactoryBot.define do
   factory :job_task do
-    name { "job_task" }
+    name { 'job_task' }
     demarche { create(:demarche) }
   end
 end

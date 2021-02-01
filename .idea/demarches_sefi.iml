@@ -168,7 +168,6 @@
     <orderEntry type="library" scope="PROVIDED" name="tzinfo (v1.2.9, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="uglifier (v4.2.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="unicode-display_width (v1.7.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="vcr (v6.0.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="web-console (v4.1.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="webmock (v3.8.3, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="webpacker (v5.2.1, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />

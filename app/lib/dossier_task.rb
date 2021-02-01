@@ -47,7 +47,7 @@ class DossierTask < Task
     objects = [*@dossier]
     field.split(/\./).each do |name|
       objects = objects.flat_map { |object| object.champs.select { |champ| champ.label == name } }
-      Rails.logger.warn("Sur le dossier #{@dossier.number}, le champ #{field} est vide.")  if objects.blank?
+      Rails.logger.warn("Sur le dossier #{@dossier.number}, le champ #{field} est vide.") if objects.blank?
     end
     objects
   end
@@ -73,5 +73,4 @@ class DossierTask < Task
   def get_variable(variable)
     Attribute.find_by(dossier: @dossier_nb, task: self.class.name.underscore, variable: variable)&.value
   end
-
 end

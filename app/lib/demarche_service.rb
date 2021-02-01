@@ -40,7 +40,8 @@ class DemarcheService
     # count = 0
     DossierActions.on_dossiers(demarche.id, since) do |dossier|
       process_dossier(dossier, tasks)
-      # break if (count=count+1) > 3
+      # break if (count += 1) > 3
+      #
       GC.compact
     end
     tasks.each(&:after_run)
@@ -106,5 +107,4 @@ class DemarcheService
   def config_file_name
     @config_file_name ||= Rails.root.join('storage', 'demarches.yml')
   end
-
 end

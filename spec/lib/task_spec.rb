@@ -14,9 +14,8 @@ class TestTask < Task
 end
 
 RSpec.describe Task do
-
   context 'with unknown fields' do
-    subject { TestTask.new(1,{ unknown: 'value', required: '' }) }
+    subject { TestTask.new(1, { unknown: 'value', required: '' }) }
     it 'should be invalid' do
       expect(subject.valid?).to be_falsey
       expect(subject.errors).to include("unknown n'existe(nt) pas sur test_task")
@@ -24,7 +23,7 @@ RSpec.describe Task do
   end
 
   context 'with only mandatory fields' do
-    subject { TestTask.new(1,{ required: '' }) }
+    subject { TestTask.new(1, { required: '' }) }
     it 'should be valid' do
       expect(subject.valid?).to be true
       expect(subject.errors).to be_empty

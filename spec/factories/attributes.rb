@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: attributes
@@ -23,8 +25,8 @@
 #
 FactoryBot.define do
   factory :attribute do
-    task { "MyString" }
-    variable { "MyString" }
-    value { "MyString" }
+    task { 'MyString' }
+    variable { 'MyString' }
+    value { 'MyString' }
   end
 end

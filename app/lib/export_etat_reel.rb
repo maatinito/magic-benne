@@ -8,7 +8,6 @@ require 'roo'
 require 'fileutils'
 
 class ExportEtatReel < DossierTask
-
   def version
     1
   end

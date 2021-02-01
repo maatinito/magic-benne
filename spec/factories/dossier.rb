@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :dossier, class: Hash do
-    id { 10000 }
+    id { 10_000 }
     state { 'en_construction' }
     initialize_with { attributes }
   end

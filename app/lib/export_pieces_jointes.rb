@@ -8,7 +8,6 @@ require 'roo'
 require 'fileutils'
 
 class ExportPiecesJointes < DossierTask
-
   def version
     1
   end
@@ -40,7 +39,7 @@ class ExportPiecesJointes < DossierTask
   private
 
   def self.sanitize(index, filename)
-    filename = ActiveStorage::Filename.new(filename.to_s).sanitized.tr('"%','')
+    filename = ActiveStorage::Filename.new(filename.to_s).sanitized.tr('"%', '')
     i = index[filename]
     if i.present?
       i = (index[filename] += 1)

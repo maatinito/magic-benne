@@ -62,7 +62,7 @@ class ExportEtatReel < DossierTask
       url = file.url
       extension = File.extname(filename)
       # no_tahiti = dossier.demandeur.siret || ''
-      basename = params['champ_etat'] || 'Etat'
+      basename = params[:champ_etat] || 'Etat'
       output_path = "#{output_dir}/#{basename}-#{diese_number}-#{year}-#{month}.csv"
       download_report(output_path, extension, url)
     else
@@ -127,15 +127,38 @@ class ExportEtatReel < DossierTask
   def employees(sheet)
     rows = sheet.parse(COLUMNS)
     rows.reject { |line| line[:prenom].nil? || line[:prenom] =~ /Prénom/ }.map do |line|
-      if line[:date_de_naissance].present?
-        line[:date_de_naissance] =
-          Date.new(1899, 12, 30) + line[:date_de_naissance].days
+      line.each { |_, value| value.strip! if value.is_a?(String) }
+      if (date = line[:date_de_naissance]).present?
+        normalize_date(date, line)
       end
       pp line
-      TITLE_STRINGS.each { |key| line[key].strip! }
       line[:aide] = line[:aide].round if line[:aide].is_a?(Float)
       line
     end
+  end
+
+  def normalize_date(date, line)
+    case date
+    when Integer, Float
+      date = Date.new(1899, 12, 30) + line[:date_de_naissance].days
+    when String
+      date = parse(date, line)
+    end
+    line[:date_de_naissance] = date
+  end
+
+  def parse(date, line)
+    date.gsub!(/[-:.\/]/, '-')
+    if match = date.match(/(\d+)-(\d+)-(\d+)/)
+      day, month, year = match.captures.map { |v| v.to_i }
+      year = year + 2000 if year < 100
+      year = year - 100 if year > Date.today.year
+      date = Date.new(year, month, day)
+    else
+      Rails.logger.error("dossier #{dossier.number}: impossible de lire la date #{line[:date_de_naissance]} (#{line[:nom]}")
+      date = Date.new(1900, 1, 1)
+    end
+    date
   end
 
   def download(url, extension)

@@ -31,7 +31,6 @@ class ExportPiecesJointes < DossierTask
     champs.each do |champ|
       values = field_values(champ)
       values.each do |value|
-        Rails.logger.info("Dossier #{dossier.number}: exporting field #{champ}=#{value.file}")
         export_file(champ, index, value.file)
       end
     end

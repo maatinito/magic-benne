@@ -31,6 +31,7 @@ class ExportPiecesJointes < DossierTask
     champs.each do |champ|
       values = field_values(champ)
       values.each do |value|
+        Rails.logger.info("Dossier #{dossier.number}: exporting field #{champ}=#{value.file}")
         export_file(champ, index, value.file)
       end
     end
@@ -59,6 +60,7 @@ class ExportPiecesJointes < DossierTask
       FileUtils.mkpath(dir)
       output_path = "#{dir}/" + self.class.sanitize(index, "#{champ}-#{filename}")
       download_file(output_path, url)
+      Rails.logger.info("Dossier #{dossier.number}: piece #{output_path} sauvegardée.")
     else
       Rails.logger.warn("Pas de pièce jointe dans le champ #{champ} sur le dossier #{dossier.number}")
     end

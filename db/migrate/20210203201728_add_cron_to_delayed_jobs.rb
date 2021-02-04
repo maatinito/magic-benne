@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddCronToDelayedJobs < ActiveRecord::Migration[6.0]
   def self.up
     add_column :delayed_jobs, :cron, :string

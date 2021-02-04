@@ -148,11 +148,11 @@ class ExportEtatReel < DossierTask
   end
 
   def parse(date, line)
-    date.gsub!(/[-:.\/]/, '-')
+    date.gsub!(%r{[-:./]}, '-')
     if match = date.match(/(\d+)-(\d+)-(\d+)/)
-      day, month, year = match.captures.map { |v| v.to_i }
-      year = year + 2000 if year < 100
-      year = year - 100 if year > Date.today.year
+      day, month, year = match.captures.map(&:to_i)
+      year += 2000 if year < 100
+      year -= 100 if year > Date.today.year
       date = Date.new(year, month, day)
     else
       Rails.logger.error("dossier #{dossier.number}: impossible de lire la date #{line[:date_de_naissance]} (#{line[:nom]}")

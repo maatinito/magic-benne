@@ -3,8 +3,8 @@
 class DemarcheActions
   EPOCH = Time.zone.parse('2000-01-01 00:00')
 
-  def self.get_instructeur_id(demarche_number, instructeur_email)
-    result = MesDemarches::Client.query(MesDemarches::Queries::Demarche,
+  def self.instructeur_id(demarche_number, instructeur_email)
+    result = MesDemarches::Client.query(MesDemarches::Queries::Instructeurs,
                                         variables: { demarche: demarche_number })
     throw StandardError.new result.errors.join(',') if result.errors.present?
     throw StandardError.new "La démarche #{demarche_number} n'existe pas" if result.data.demarche.nil?
@@ -18,5 +18,14 @@ class DemarcheActions
     end
 
     gql_instructeur.id
+  end
+
+  def self.title(demarche_number)
+    result = MesDemarches::Client.query(MesDemarches::Queries::Demarche,
+                                        variables: { demarche: demarche_number })
+    throw StandardError.new result.errors.join(',') if result.errors.present?
+    throw StandardError.new "La démarche #{demarche_number} n'existe pas" if result.data.demarche.nil?
+
+    result.data.demarche.title
   end
 end

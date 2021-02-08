@@ -46,6 +46,11 @@ module MesDemarches
     query Demarche($demarche: Int!) {
       demarche(number: $demarche) {
         title
+      }
+    }
+
+    query Instructeurs($demarche: Int!) {
+      demarche(number: $demarche) {
         groupeInstructeurs {
           instructeurs {
             id

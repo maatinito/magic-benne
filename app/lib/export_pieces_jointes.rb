@@ -54,10 +54,8 @@ class ExportPiecesJointes < DossierTask
     if file.present?
       filename = file.filename
       url = file.url
-      # no_tahiti = dossier.demandeur.siret || ''
-      dir = "#{output_dir}/#{dossier.number}"
-      FileUtils.mkpath(dir)
-      output_path = "#{dir}/" + self.class.sanitize(index, "#{champ}-#{filename}")
+      dir = ExportEtatReel.create_target_dir(self, dossier.number)
+      output_path = "#{dir}/" + self.class.sanitize(index, "#{champ} - #{filename}")
       download_file(output_path, url)
       Rails.logger.info("Dossier #{dossier.number}: piece #{output_path} sauvegardée.")
     else

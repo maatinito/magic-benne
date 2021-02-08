@@ -4,7 +4,6 @@ require 'set'
 
 class DossierTask < Task
   attr_reader :dossier, :exception
-  attr_writer :demarche_id
 
   def process_dossier(dossier)
     @exception = nil
@@ -33,10 +32,6 @@ class DossierTask < Task
 
   def version
     1.0
-  end
-
-  def output_dir
-    @output_dir ||= params['output_dir'] || 'storage'
   end
 
   private

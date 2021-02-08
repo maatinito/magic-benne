@@ -35,7 +35,9 @@ class ExportDossiers < DossierTask
     return if params[:champs].blank? || @dossiers.blank?
 
     titles = ['ID'] + params[:champs]
-    output_path = "#{output_dir}/#{Time.zone.now.strftime('dossiers %Y-%m-%d-%Hh%M')}.csv"
+    task_output_dir = "#{output_dir}/#{@demarche_dir}"
+    FileUtils.mkpath(task_output_dir)
+    output_path = "#{task_output_dir}/#{Time.zone.now.strftime('dossiers %Y-%m-%d-%Hh%M')}.csv"
     CSV.open(output_path, 'wb', headers: titles + @dynamic_titles.to_a, write_headers: true, col_sep: ';') do |csv|
       @dossiers.each { |line| csv << line }
     end

@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 class Task
-  attr_reader :errors, :params, :demarche_id, :output_dir, :job_task
+  attr_reader :params, :demarche_id, :demarche_dir, :output_dir, :job_task
+  attr_writer :errors, :demarche_id
 
   def initialize(job, params)
     @job = job.symbolize_keys
-    @demarche_id = @job[:demarche]
-    @output_dir = @job[:output_dir] || 'storage'
-    @errors = []
     @params = @job.merge(params.symbolize_keys)
+    @demarche_id = @params[:demarche]
+    @output_dir = @params[:rep_sortie] || 'storage'
+
+    @errors = []
     missing_fields = (required_fields - @params.keys)
     if missing_fields.present?
       @errors << "Les champs #{missing_fields.join(',')} devrait être définis sur #{self.class.name.underscore}"
@@ -19,6 +21,8 @@ class Task
     end
     @accessed_fields = Set[]
     @demarche = Demarche.find_or_create_by(id: demarche_id)
+    @demarche_title = DemarcheActions.title(demarche_id)
+    @demarche_dir = ActiveStorage::Filename.new(@job[:nom_demarche] || @demarche_title).sanitized
     @job_task = JobTask.find_or_create_by(demarche: @demarche, name: self.class.name.underscore)
   end
 
@@ -31,6 +35,6 @@ class Task
   end
 
   def authorized_fields
-    []
+    [:output_dir]
   end
 end

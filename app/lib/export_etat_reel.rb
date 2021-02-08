@@ -61,13 +61,23 @@ class ExportEtatReel < DossierTask
       filename = file.filename
       url = file.url
       extension = File.extname(filename)
-      # no_tahiti = dossier.demandeur.siret || ''
+      dossier_nb = dossier.number
+      dir = self.class.create_target_dir(self, diese_number)
       basename = params[:champ_etat] || 'Etat'
-      output_path = "#{output_dir}/#{basename}-#{diese_number}-#{year}-#{month}.csv"
+      output_path = "#{dir}/#{basename}-#{dossier_nb}-#{year}-#{month}.csv"
       download_report(output_path, extension, url)
     else
       Rails.logger.warn("Pas d'état nominatif attaché au dossier #{dossier.number}")
     end
+  end
+
+  def self.create_target_dir(task, diese_number)
+    no_tahiti = task.dossier.demandeur.siret || ''
+    raison_sociale = task.dossier.demandeur.entreprise.raison_sociale || task.dossier.demandeur.entreprise.nom_commerciale || ''
+    dir = "#{task.output_dir}/#{raison_sociale}#{raison_sociale ? ' - ' : ''}#{no_tahiti}/#{task.demarche_dir} - #{diese_number}"
+
+    FileUtils.mkpath(dir)
+    dir
   end
 
   def download_report(output_path, extension, url)
@@ -101,7 +111,6 @@ class ExportEtatReel < DossierTask
     Rails.logger.info("Saving #{employees.size} lines")
     CSV.open(output_path, 'wb',
              headers: TITLE_LABELS,
-             write_headers: true,
              write_headers: true,
              col_sep: ';') do |csv|
       empty_lines = params['empty_lines']

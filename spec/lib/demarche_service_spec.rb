@@ -4,7 +4,7 @@ require 'rails_helper'
 
 VCR.use_cassette('ds') do
   DEMARCHE = 828
-  DemarcheActions.get_instructeur_id(DEMARCHE, 'clautier@idt.pf')
+  DemarcheActions.instructeur_id(DEMARCHE, 'clautier@idt.pf')
 
   describe 'DemarcheService' do
     subject { DemarcheService.new(reset: true, config_file: file_fixture(config)) }

@@ -133,21 +133,37 @@ module MesDemarches
               prenom
           }
           ... on PersonneMorale {
-              adresse
-              libelleNaf
-              localite
-              naf
               siret
-              association {
-                  titre
-              }
+              naf
+              libelleNaf
+              adresse
+              numeroVoie
+              typeVoie
+              nomVoie
+              complementAdresse
+              codePostal
+              localite
               entreprise {
-                  formeJuridique
-                  nomCommercial
-                  raisonSociale
-                  siretSiegeSocial
-                  prenom
-                  nom
+                siren
+                capitalSocial
+                numeroTvaIntracommunautaire
+                formeJuridique
+                formeJuridiqueCode
+                nomCommercial
+                raisonSociale
+                siretSiegeSocial
+                codeEffectifEntreprise
+                dateCreation
+                nom
+                prenom
+              }
+              association {
+                rna
+                titre
+                objet
+                dateCreation
+                dateDeclaration
+                dateDeclaration
               }
           }
       }

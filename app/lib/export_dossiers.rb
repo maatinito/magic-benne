@@ -53,7 +53,6 @@ class ExportDossiers < DossierTask
     {
       'ID' => 'number',
       'Email' => 'usager.email',
-      'Entreprise raison sociale' => 'demandeur.entreprise.raison_sociale',
       'Archivé' => 'archived',
       'État du dossier' => 'state',
       'Dernière mise à jour le' => 'date_derniere_modification',
@@ -61,7 +60,37 @@ class ExportDossiers < DossierTask
       'Passé en instruction le' => 'date_passage_en_instruction',
       'Traité le' => 'date_traitement',
       'Motivation de la décision' => 'motivation',
-      'Instructeurs' => 'groupe_instructeur.instructeurs.email'
+      'Instructeurs' => 'groupe_instructeur.instructeurs.email',
+      'Établissement Numéro TAHITI' => 'demandeur.siret',
+      'Établissement siège social' => '', # not implemented in Mes-Démarches
+      'Établissement NAF' => 'demandeur.naf',
+      'Établissement libellé NAF' => 'demandeur.libelle_naf',
+      'Établissement Adresse' => 'demandeur.adresse',
+      'Établissement numero voie' => 'demandeur.numero_voie',
+      'Établissement type voie' => 'demandeur.type_voie',
+      'Établissement nom voie' => 'demandeur.nom_voie',
+      'Établissement complément adresse' => 'demandeur.complement_adresse',
+      'Établissement code postal' => 'demandeur.code_postal',
+      'Établissement localité' => 'demandeur.localite',
+      'Établissement code INSEE localité' => '', # not implemented in Mes-Démarches
+      'Entreprise SIREN' => 'demandeur.entreprise.siren',
+      'Entreprise capital social' => 'demandeur.entreprise.capital_social',
+      'Entreprise numero TVA intracommunautaire' => 'demandeur.entreprise.numero_tva_intracommunautaire',
+      'Entreprise forme juridique' => 'demandeur.entreprise.forme_juridique',
+      'Entreprise forme juridique code' => 'demandeur.entreprise.forme_juridique_code',
+      'Entreprise nom commercial' => 'demandeur.entreprise.nom_commercial',
+      'Entreprise raison sociale' => 'demandeur.entreprise.raison_sociale',
+      'Entreprise Numéro TAHITI siège social' => 'demandeur.entreprise.siret_siege_social',
+      'Entreprise code effectif entreprise' => 'demandeur.entreprise.code_effectif_entreprise',
+      'Entreprise date de création' => 'demandeur.entreprise.date_creation',
+      'Entreprise nom' => 'demandeur.entreprise.nom',
+      'Entreprise prénom' => 'demandeur.entreprise.prenom',
+      'Association RNA' => 'demandeur.association.rna',
+      'Association titre' => 'demandeur.association.titre',
+      'Association objet' => 'demandeur.association.objet',
+      'Association date de création' => 'demandeur.association.date_creation',
+      'Association date de déclaration' => 'demandeur.association.date_declaration',
+      'Association date de publication' => 'demandeur.association.date_declaration'
     }.freeze
 
   def get_fields(fields)

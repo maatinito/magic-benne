@@ -113,7 +113,7 @@ class ExportEtatReel < DossierTask
              headers: TITLE_LABELS,
              write_headers: true,
              col_sep: ';') do |csv|
-      empty_lines = params['empty_lines']
+      empty_lines = params[:empty_lines]
       empty_lines.to_i.times { csv << [] } if empty_lines.present?
       employees.each do |line|
         output_line = TITLE_LABELS.map do |column|

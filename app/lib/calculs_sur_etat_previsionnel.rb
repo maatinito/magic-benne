@@ -48,7 +48,7 @@ class CalculsSurEtatPrevisionnel < ExportDossierCalculations
   end
 
   def computed_columns_from_file(file)
-    Rails.logger.info("Reading report #{file}")
+    Rails.logger.info("Reading report #{file.path}")
     xlsx = Roo::Spreadsheet.open(file)
     cells = {}
     xlsx.sheets.filter { |name| name =~ /Mois/ }.each do |name|
@@ -59,6 +59,7 @@ class CalculsSurEtatPrevisionnel < ExportDossierCalculations
 
   def computed_columns_from_sheet(sheet, name)
     CELLS.map do |key, cell|
+      puts "#{name}/#{key}/#{cell}"
       [
         "#{key} #{name}",
         normalize(sheet.cell(cell[1].to_i, cell[0]))

@@ -1,181 +1,73 @@
-# frozen_string_literal: true
+class ExportEtatReel < ExportEtatNominatif
 
-# service to download dossier report and save them in common format
-
-require 'tempfile'
-require 'open-uri'
-require 'roo'
-require 'fileutils'
-
-class ExportEtatReel < DossierTask
   def version
-    1
+    super + 1
   end
 
   def required_fields
-    super + %i[champ_etat champ_mois champ_dossier]
+    super + %i[champ_mois champ_dossier]
   end
-
-  def authorized_fields
-    super + %i[empty_lines]
-  end
-
-  TITLE_LABELS = [
-    'Nom de famille', 'Nom marital', 'Prénom', 'Date de naissance', 'DN', 'Heures avant convention',
-    'Brut mensuel moyen', 'Heures à réaliser', 'DMO', 'Jours non rémunérés',
-    "Jours d'indemnités journalières", 'Taux RTT*', 'Aide', 'Cotisations', '% temps présent', '% réalisé convention',
-    '% perte salaire', '% aide', 'plafond', 'aide maximale'
-  ].freeze
-
-  def self.symbolize(name)
-    name.tr('%', 'P').parameterize.underscore.to_sym
-  end
-
-  TITLE_STRINGS = TITLE_LABELS[0..2].map { |s| symbolize(s) }
-
-  COLUMNS = TITLE_LABELS.map { |name| [symbolize(name), Regexp.new(name)] }.to_h
 
   def run
-    etat = param_value(:champ_etat)
-    return if etat.nil?
-
     month_field = param_value(:champ_mois)
     return if month_field.nil?
 
-    year = month_field.primary_value
-    month = month_field.secondary_value
+    @year = month_field.primary_value
+    @month = month_field.secondary_value
 
-    diese_field = param_value(:champ_dossier)
-    return if diese_field.nil?
-
-    diese_number = diese_field.string_value
-
-    export_report(etat, diese_number, month, year)
+    super
   end
 
   private
 
-  def export_report(etat, diese_number, month, year)
-    file = etat.file
-    if file.present?
-      filename = file.filename
-      url = file.url
-      extension = File.extname(filename)
-      dossier_nb = dossier.number
-      dir = self.class.create_target_dir(self, diese_number)
-      basename = params[:champ_etat] || 'Etat'
-      output_path = "#{dir}/#{basename}-#{dossier_nb}-#{year}-#{month}.csv"
-      download_report(output_path, extension, url)
-    else
-      Rails.logger.warn("Pas d'état nominatif attaché au dossier #{dossier.number}")
+  def initial_dossier
+    if @initial_dossier.nil?
+      initial_dossier_field = param_value(:champ_dossier)
+      throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}" if initial_dossier_field.nil?
+
+      @initial_dossier = initial_dossier_field.dossier
     end
+    @initial_dossier
   end
 
-  def self.create_target_dir(task, diese_number)
-    no_tahiti = task.dossier.demandeur.siret || ''
-    raison_sociale = task.dossier.demandeur.entreprise.raison_sociale || task.dossier.demandeur.entreprise.nom_commerciale || ''
-    dir = "#{task.output_dir}/#{raison_sociale}#{raison_sociale ? ' - ' : ''}#{no_tahiti}/#{task.demarche_dir} - #{diese_number}"
-
-    FileUtils.mkpath(dir)
-    dir
+  def sheet_regexp
+    /Etat|default/
   end
 
-  def download_report(output_path, extension, url)
-    download(url, extension) do |file|
-      case extension
-      when '.xls', '.xlsx', '.csv'
-        save_report(output_path, file)
-      else
-        Rails.logger.warn("Mauvaise extension de fichier #{extension} pour l'état du dossier #{dossier.number}")
+  def output_path(_sheet_name)
+    dossier_nb = dossier.number
+    dir = self.class.create_target_dir(self, initial_dossier)
+    basename = params[:prefixe_fichier] || params[:champ_etat] || 'Etat'
+    "#{dir}/#{basename} - Mois #{report_index(@initial_dossier, @month)} - #{dossier_nb} - #{@year}-#{@month}.csv"
+  end
+
+  MONTHS = %w[zero janvier février mars avril mai juin juillet août septembre octobre novembre décembre].freeze
+
+  def report_index(dossier, month)
+    # DIESE initial
+    start_month = self.class.dossier_field_value(dossier, 'Mois 1')&.value&.downcase
+    start_month = self.class.dossier_field_value(dossier, 'Mois M')&.value&.downcase if start_month.nil?
+    if start_month.nil?
+      # CSE initial
+      start_month = self.class.dossier_field_value(dossier, "Date de démarrage de la mesure (Mois 1)")&.value
+      start_month = Date.parse(start_month).month if start_month.present?
+    end
+    if start_month.nil?
+      # Avenant
+      mois_2 = self.class.dossier_field_value(dossier, "Nombre de salariés DiESE au mois 2")
+      if mois_2.present?
+        start_month = mois_2.value.blank? ? 11 : 12
       end
     end
-  end
+    throw "Le dossier initial #{dossier.number} n'a pas de champ permettant de connaitre le mois de démarrage de la mesure. (champ mois_1?)" if start_month.nil?
 
-  def save_report(output_path, file)
-    Rails.logger.info("Saving report to #{output_path}")
-    xlsx = Roo::Spreadsheet.open(file)
-    xlsx.sheets.filter { |name| name =~ /Etat|default/ }.each do |name|
-      save_sheet(output_path, xlsx.sheet(name))
-    end
-  end
+    start_month = MONTHS.index(start_month) if start_month.is_a?(String)
+    current_month = MONTHS.index(month.downcase)
+    throw "Impossible de reconnaitre les mois de démarrage (#{start_month})" if start_month.nil?
 
-  def save_sheet(output_path, sheet)
-    employees = employees(sheet)
-    save_employees(output_path, employees)
-  rescue Roo::HeaderRowNotFoundError => e
-    columns = e.message.gsub(%r{[/\[\]]}, '')
-    Rails.logger.error("Colonnes manquantes dans #{output_path} : #{columns}")
-  end
+    throw "Impossible de reconnaitre les mois de l'etat en cours (#{month})" if current_month.nil?
 
-  def save_employees(output_path, employees)
-    Rails.logger.info("Saving #{employees.size} lines")
-    CSV.open(output_path, 'wb',
-             headers: TITLE_LABELS,
-             write_headers: true,
-             col_sep: ';') do |csv|
-      empty_lines = params[:empty_lines]
-      empty_lines.to_i.times { csv << [] } if empty_lines.present?
-      employees.each do |line|
-        output_line = TITLE_LABELS.map do |column|
-          value = line[self.class.symbolize(column)]
-          case value
-          when Date
-            value.strftime('%d/%m/%Y')
-          when Float
-            value.to_s.tr('.', ',')
-          else
-            value
-          end
-        end
-        Rails.logger.info(output_line)
-        csv << output_line
-      end
-    end
-  end
-
-  def employees(sheet)
-    rows = sheet.parse(COLUMNS)
-    rows.reject { |line| line[:prenom].nil? || line[:prenom] =~ /Prénom/ }.map do |line|
-      line.each { |_, value| value.strip! if value.is_a?(String) }
-      if (date = line[:date_de_naissance]).present?
-        normalize_date(date, line)
-      end
-      pp line
-      line[:aide] = line[:aide].round if line[:aide].is_a?(Float)
-      line
-    end
-  end
-
-  def normalize_date(date, line)
-    case date
-    when Integer, Float
-      date = Date.new(1899, 12, 30) + line[:date_de_naissance].days
-    when String
-      date = parse(date, line)
-    end
-    line[:date_de_naissance] = date
-  end
-
-  def parse(date, line)
-    date.gsub!(%r{[-:./]}, '-')
-    if match = date.match(/(\d+)-(\d+)-(\d+)/)
-      day, month, year = match.captures.map(&:to_i)
-      year += 2000 if year < 100
-      year -= 100 if year > Date.today.year
-      date = Date.new(year, month, day)
-    else
-      Rails.logger.error("dossier #{dossier.number}: impossible de lire la date #{line[:date_de_naissance]} (#{line[:nom]}")
-      date = Date.new(1900, 1, 1)
-    end
-    date
-  end
-
-  def download(url, extension)
-    Tempfile.create(['res', extension]) do |f|
-      f.binmode
-      f.write URI.open(url).read
-      f.rewind
-      yield f
-    end
+    current_month += 12 if current_month < start_month
+    current_month - start_month + 1
   end
 end

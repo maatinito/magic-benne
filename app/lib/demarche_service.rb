@@ -39,9 +39,10 @@ class DemarcheService
     tasks.each(&:before_run)
     # count = 0
     DossierActions.on_dossiers(demarche.id, since) do |dossier|
+      Rails.logger.info("Processing dossier #{dossier.number} #{dossier.state}")
       process_dossier(dossier, tasks)
       # break if (count += 1) > 3
-      #
+
       GC.compact
     end
     tasks.each(&:after_run)

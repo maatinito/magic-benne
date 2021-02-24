@@ -15,6 +15,8 @@ class ExportEtatReel < ExportEtatNominatif
     @year = month_field.primary_value
     @month = month_field.secondary_value
 
+    @initial_dossier = nil
+
     super
   end
 

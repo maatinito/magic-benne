@@ -114,7 +114,7 @@ class ExportEtatNominatif < DossierTask
   end
 
   def sheet_regexp
-    throw "Must be defined by subclass"
+    throw 'Must be defined by subclass'
   end
 
   def save_employees(sheet_name, employees)
@@ -152,7 +152,7 @@ class ExportEtatNominatif < DossierTask
       end
       # pp line
       line[:aide] = line[:aide].round if line[:aide].is_a?(Float)
-      line[:aide_maximale] = 0;
+      line[:aide_maximale] = 0
       line
     end
   end

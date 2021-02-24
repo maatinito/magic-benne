@@ -1,5 +1,6 @@
-class ExportEtatReel < ExportEtatNominatif
+# frozen_string_literal: true
 
+class ExportEtatReel < ExportEtatNominatif
   def version
     super + 1
   end
@@ -25,7 +26,9 @@ class ExportEtatReel < ExportEtatNominatif
   def initial_dossier
     if @initial_dossier.nil?
       initial_dossier_field = param_value(:champ_dossier)
-      throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}" if initial_dossier_field.nil?
+      if initial_dossier_field.nil?
+        throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}"
+      end
 
       @initial_dossier = initial_dossier_field.dossier
     end
@@ -51,17 +54,19 @@ class ExportEtatReel < ExportEtatNominatif
     start_month = self.class.dossier_field_value(dossier, 'Mois M')&.value&.downcase if start_month.nil?
     if start_month.nil?
       # CSE initial
-      start_month = self.class.dossier_field_value(dossier, "Date de démarrage de la mesure (Mois 1)")&.value
+      start_month = self.class.dossier_field_value(dossier, 'Date de démarrage de la mesure (Mois 1)')&.value
       start_month = Date.parse(start_month).month if start_month.present?
     end
     if start_month.nil?
       # Avenant
-      mois_2 = self.class.dossier_field_value(dossier, "Nombre de salariés DiESE au mois 2")
+      mois_2 = self.class.dossier_field_value(dossier, 'Nombre de salariés DiESE au mois 2')
       if mois_2.present?
         start_month = mois_2.value.blank? ? 11 : 12
       end
     end
-    throw "Le dossier initial #{dossier.number} n'a pas de champ permettant de connaitre le mois de démarrage de la mesure. (champ mois_1?)" if start_month.nil?
+    if start_month.nil?
+      throw "Le dossier initial #{dossier.number} n'a pas de champ permettant de connaitre le mois de démarrage de la mesure. (champ mois_1?)"
+    end
 
     start_month = MONTHS.index(start_month) if start_month.is_a?(String)
     current_month = MONTHS.index(month.downcase)

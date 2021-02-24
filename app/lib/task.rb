@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class Task
-  attr_reader :params, :demarche_id, :demarche_dir, :output_dir, :job_task
-  attr_writer :errors, :demarche_id
+  attr_accessor :demarche_id
+  attr_reader :params, :demarche_dir, :output_dir, :job_task
+  attr_writer :errors
 
   def initialize(job, params)
     @job = job.symbolize_keys

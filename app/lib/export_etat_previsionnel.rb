@@ -1,5 +1,6 @@
-class ExportEtatPrevisionnel < ExportEtatNominatif
+# frozen_string_literal: true
 
+class ExportEtatPrevisionnel < ExportEtatNominatif
   def version
     super + 1
   end

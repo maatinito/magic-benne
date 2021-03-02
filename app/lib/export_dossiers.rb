@@ -34,10 +34,12 @@ class ExportDossiers < DossierTask
     # pp @dossiers
     return if params[:champs].blank? || @dossiers.blank?
 
+    normalize_cells
+
     titles = ['ID'] + params[:champs]
     task_output_dir = "#{output_dir}/#{@demarche_dir}"
     FileUtils.mkpath(task_output_dir)
-    output_path = "#{task_output_dir}/#{Time.zone.now.strftime('dossiers %Y-%m-%d-%Hh%M')}.csv"
+    output_path = "#{task_output_dir}/demarche #{demarche_id} #{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
     CSV.open(output_path, 'wb', headers: titles + @dynamic_titles.to_a, write_headers: true, col_sep: ';') do |csv|
       @dossiers.each { |line| csv << line }
     end
@@ -48,6 +50,14 @@ class ExportDossiers < DossierTask
   end
 
   private
+
+  def normalize_cells
+    @dossiers.map! do |line|
+      line.map do |cell|
+        cell.is_a?(String) ? cell.tr(';', '/') : cell
+      end
+    end
+  end
 
   MD_FIELDS =
     {

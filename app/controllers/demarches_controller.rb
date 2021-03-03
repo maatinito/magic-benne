@@ -4,15 +4,17 @@
 #
 class DemarchesController < ApplicationController
   def export
-    @service = DemarcheService.new(reset: false, config_file: 'storage/demarches.yml').process
+    ExportJob.run(false, 'storage/demarches.yml')
     redirect_to demarches_main_path
   end
 
   def export_all
-    @service = DemarcheService.new(reset: true, config_file: 'storage/demarches.yml').process
-    # @service = DemarcheService.new(reset: true, config_file: 'spec/fixtures/files/raise_exception.yml').process
+    ExportJob.run(true, 'storage/demarches.yml')
     redirect_to demarches_main_path
   end
 
-  def main; end
+  def main
+    @running = ExportJob.running?
+    pp @running
+  end
 end

@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_210_203_201_728) do
+ActiveRecord::Schema.define(version: 20_210_303_004_413) do
   create_table 'attributes', force: :cascade do |t|
     t.string 'task'
     t.string 'variable'
@@ -55,6 +55,12 @@ ActiveRecord::Schema.define(version: 20_210_203_201_728) do
     t.datetime 'created_at', precision: 6, null: false
     t.datetime 'updated_at', precision: 6, null: false
     t.index ['demarche_id'], name: 'index_job_tasks_on_demarche_id'
+  end
+
+  create_table 'syncs', force: :cascade do |t|
+    t.string 'job'
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
   end
 
   create_table 'task_executions', force: :cascade do |t|

@@ -44,7 +44,7 @@ Rails.application.configure do
     port: 3003
   }
 
-  config.action_mailer.asset_host = "http://localhost:3003"
+  config.action_mailer.asset_host = 'http://localhost:3003'
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

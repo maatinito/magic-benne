@@ -13,7 +13,5 @@ Rails.application.routes.draw do
   match '/delayed_job' => DelayedJobWeb, :anchor => false, :via => %i[get post]
 
   # letter opener
-  if Rails.env.development?
-    mount LetterOpenerWeb::Engine, at: "/letter_opener"
-  end
+  mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 end

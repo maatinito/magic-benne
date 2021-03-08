@@ -23,7 +23,7 @@ class DemarcheService
       @job = job.symbolize_keys
       process_demarche(demarche_number, job)
     end
-  rescue => e
+  rescue StandardError => e
     pp e
     pp e.backtrace
   end

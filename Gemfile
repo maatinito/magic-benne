@@ -42,10 +42,10 @@ gem 'delayed_cron_job' # Cron jobs
 gem 'delayed_job_active_record'
 gem 'delayed_job_web'
 gem 'fugit'
-gem 'mailjet'
-gem 'premailer-rails'
 gem 'haml-rails'
 gem 'jquery-rails'
+gem 'mailjet'
+gem 'premailer-rails'
 gem 'rails-bootstrap-tabs', '~> 0.2.3'
 gem 'roo-xls'
 gem 'typhoeus'
@@ -54,8 +54,8 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'
-  gem 'letter_opener_web'
   gem 'factory_bot_rails'
+  gem 'letter_opener_web'
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'spring-watcher-listen', '~> 2.0.0'

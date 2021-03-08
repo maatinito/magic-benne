@@ -2,7 +2,7 @@
 
 class Task
   attr_accessor :demarche_id
-  attr_reader :params, :demarche_dir, :output_dir, :job_task
+  attr_reader :params, :demarche_dir, :output_dir, :job_task, :messages
   attr_writer :errors
 
   def initialize(job, params)
@@ -21,8 +21,10 @@ class Task
       @errors << "#{unknown_fields.join(',')} n'existe(nt) pas sur #{self.class.name.underscore}"
     end
     @accessed_fields = Set[]
-    @demarche = Demarche.find_or_create_by(id: demarche_id)
-    @demarche_title = DemarcheActions.title(demarche_id)
+    @demarche = Demarche.find_or_create_by(id: demarche_id) do |d|
+      d.name = @job[:name]
+    end
+    # @demarche_title = DemarcheActions.title(demarche_id)
     @demarche_dir = ActiveStorage::Filename.new(@job[:nom_demarche] || @demarche_title).sanitized
     @job_task = JobTask.find_or_create_by(demarche: @demarche, name: self.class.name.underscore)
   end

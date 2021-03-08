@@ -59,7 +59,7 @@ class ExportPiecesJointes < DossierTask
       download_file(output_path, url)
       Rails.logger.info("Dossier #{dossier.number}: piece #{output_path} sauvegardée.")
     else
-      Rails.logger.warn("Pas de pièce jointe dans le champ #{champ} sur le dossier #{dossier.number}")
+      add_message(Message::WARN, "Pas de pièce jointe dans le champ #{champ}")
     end
   end
 

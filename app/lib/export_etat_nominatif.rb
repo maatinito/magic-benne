@@ -89,7 +89,8 @@ class ExportEtatNominatif < DossierTask
       when '.xls', '.xlsx', '.csv'
         save_report(file)
       else
-        Rails.logger.warn("Mauvaise extension de fichier #{extension} pour l'état du dossier #{dossier.number}")
+        add_message(Message::ERROR,
+                    "Mauvaise extension de fichier #{extension} pour l'état du dossier #{dossier.number}")
       end
     end
   end
@@ -106,7 +107,7 @@ class ExportEtatNominatif < DossierTask
     save_employees(sheet_name, employees(sheet))
   rescue Roo::HeaderRowNotFoundError => e
     columns = e.message.gsub(%r{[/\[\]]}, '')
-    Rails.logger.error("Colonnes manquantes dans le dossier #{dossier.number} : #{columns}")
+    add_message(Message::ERROR, "Les colonnes suivantes manquent dans le fichier Excel: #{columns}")
   end
 
   def output_path(_sheet_name)
@@ -175,7 +176,7 @@ class ExportEtatNominatif < DossierTask
       year -= 100 if year > Date.today.year
       date = Date.new(year, month, day)
     else
-      Rails.logger.error("dossier #{dossier.number}: impossible de lire la date #{line[:date_de_naissance]} (#{line[:nom]}")
+      add_message(Message::ERROR, "Impossible de lire la date #{line[:date_de_naissance]} (#{line[:nom]} #{line[:dn]})")
       date = Date.new(1900, 1, 1)
     end
     date

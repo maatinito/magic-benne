@@ -6,11 +6,11 @@ class DossierTask < Task
   attr_reader :dossier, :exception
 
   def process_dossier(dossier)
-    @exception = nil
     @dossier = dossier
+    @messages = []
     run if dossier_has_right_state
   rescue StandardError => e
-    @exception = e
+    add_message(Message::ERROR, e.message)
   end
 
   def authorized_fields
@@ -32,6 +32,12 @@ class DossierTask < Task
 
   def version
     1.0
+  end
+
+  def add_message(level, message)
+    @messages << Message.new(level: level, message: message)
+    Rails.logger.info("Dossier: #{@dossier_nb}: #{message}")
+    failed = true if level == Message::ERROR
   end
 
   private

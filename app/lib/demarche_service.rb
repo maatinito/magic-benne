@@ -19,10 +19,13 @@ class DemarcheService
   def process
     config.filter { |_k, d| d.key? 'taches' }.each do |job_name, job|
       demarche_number = job['demarche']
-      job['name'] = job_name
-      @job = job
+      job[:name] = job_name
+      @job = job.symbolize_keys
       process_demarche(demarche_number, job)
     end
+  rescue => e
+    pp e
+    pp e.backtrace
   end
 
   EPOCH = Time.zone.parse('2000-01-01 00:00')
@@ -33,6 +36,8 @@ class DemarcheService
     demarche = Demarche.find_or_create_by({ id: demarche_number }) do |d|
       d.queried_at = EPOCH
     end
+    demarche.name = @job[:name]
+    demarche.save
     start_time = Time.zone.now
     tasks = create_tasks(job)
     since = reset?(tasks) ? EPOCH : demarche.queried_at
@@ -48,6 +53,7 @@ class DemarcheService
     tasks.each(&:after_run)
     demarche.queried_at = start_time
     demarche.save
+    NotificationMailer.with(job: @job).job_report.deliver_now
   end
 
   def reset?(tasks)
@@ -75,11 +81,18 @@ class DemarcheService
     task_execution.version = task.version
     if task.valid?
       task.process_dossier(dossier)
-      if task_execution.failed = task.exception.present?
-        Rails.logger.error(task.exception)
-        Rails.logger.debug(task.exception.backtrace)
-      end
+      update_check_messages(task_execution, task)
+      task_execution.save
     end
+  end
+
+  def update_check_messages(task_execution, task)
+    old_messages = Set[task_execution.messages.map(&:hashkey)]
+    new_messages = Set[task.messages.map(&:hashkey)]
+    return if old_messages == new_messages
+
+    task_execution.messages.destroy(task_execution.messages.reject { |m| new_messages.include?(m.hashkey) })
+    task_execution.messages << task.messages.reject { |m| old_messages.include?(m.hashkey) }
   end
 
   def create_tasks(job)

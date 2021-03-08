@@ -39,16 +39,16 @@ class CalculsSurEtatPrevisionnel < ExportDossierCalculations
         when '.xls', '.xlsx', '.csv'
           computed_columns_from_file(file)
         else
-          Rails.logger.warn("Mauvaise extension de fichier #{extension} pour l'état du dossier #{dossier.number}")
+          add_message(Message::ERROR,
+                      "Mauvaise extension de fichier #{extension} pour l'état du dossier #{dossier.number}")
         end
       end
     else
-      Rails.logger.warn("Pas d'état nominatif attaché au dossier #{dossier.number}")
+      add_message(Message::WARN, "Pas d'état nominatif attaché au dossier #{dossier.number}")
     end
   end
 
   def computed_columns_from_file(file)
-    Rails.logger.info("Reading report #{file.path}")
     xlsx = Roo::Spreadsheet.open(file)
     cells = {}
     xlsx.sheets.filter { |name| name =~ /Mois/ }.each do |name|
@@ -66,8 +66,8 @@ class CalculsSurEtatPrevisionnel < ExportDossierCalculations
       ]
     end.to_h
   rescue Roo::HeaderRowNotFoundError => e
-    Rails.logger.error("Erreur dans la lecture du fichier Excel #{e.message}")
-    raise
+    columns = e.message.gsub(%r{[/\[\]]}, '')
+    add_message(Message::ERROR, "Les colonnes suivantes manquent dans le fichier Excel: #{columns}")
   end
 
   def normalize(value)

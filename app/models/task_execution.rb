@@ -24,4 +24,5 @@
 #
 class TaskExecution < ApplicationRecord
   belongs_to :job_task
+  has_many :messages, dependent: :destroy
 end

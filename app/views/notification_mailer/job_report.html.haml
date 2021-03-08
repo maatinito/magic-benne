@@ -1,0 +1,19 @@
+%h1
+  = @job[:name]
+- @executions.each do |demarche, dossiers|
+  - demarche_number = demarche.id
+  %table.table.table-striped
+    - dossiers.each do |dossier_number, executions|
+      %tr.d-flex
+        %td.col-2
+          = link_to "Dossier #{dossier_number}", ENV['GRAPHQL_HOST'] + "/procedures/#{demarche_number}/dossiers/#{dossier_number}", target: "_blank"
+          %br
+          Exporté le
+          = executions.first.updated_at.strftime("%d/%m/%Y à %H:%M")
+        %td.col-10
+          - messages = executions.flat_map { |c| c.messages }.sort_by { |m| m.level }
+          %table.table
+            - messages.each do |message|
+              %tr.d-flex
+                %td.col-1=message.level
+                %td.col-9=message.message

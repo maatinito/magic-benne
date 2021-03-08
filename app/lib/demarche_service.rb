@@ -33,27 +33,29 @@ class DemarcheService
   private
 
   def process_demarche(demarche_number, job)
-    demarche = Demarche.find_or_create_by({ id: demarche_number }) do |d|
-      d.queried_at = EPOCH
-    end
-    demarche.name = @job[:name]
-    demarche.save
-    start_time = Time.zone.now
-    tasks = create_tasks(job)
-    since = reset?(tasks) ? EPOCH : demarche.queried_at
-    tasks.each(&:before_run)
-    # count = 0
-    DossierActions.on_dossiers(demarche.id, since) do |dossier|
-      Rails.logger.info("Processing dossier #{dossier.number} #{dossier.state}")
-      process_dossier(dossier, tasks)
-      # break if (count += 1) > 3
+    Rails.logger.tagged(@job[:name]) do
+      demarche = Demarche.find_or_create_by({ id: demarche_number }) do |d|
+        d.queried_at = EPOCH
+        demarche.name = @job[:name]
+      end
+      start_time = Time.zone.now
+      tasks = create_tasks(job)
+      since = reset?(tasks) ? EPOCH : demarche.queried_at
+      tasks.each(&:before_run)
+      count = 0
+      DossierActions.on_dossiers(demarche.id, since) do |dossier|
+        Rails.logger.tagged(dossier.number) do
+          process_dossier(dossier, tasks)
+          break if (count += 1) > 3
 
-      GC.compact
+          GC.compact
+        end
+      end
+      tasks.each(&:after_run)
+      demarche.queried_at = start_time
+      demarche.save
+      NotificationMailer.with(job: @job).job_report.deliver_now
     end
-    tasks.each(&:after_run)
-    demarche.queried_at = start_time
-    demarche.save
-    NotificationMailer.with(job: @job).job_report.deliver_now
   end
 
   def reset?(tasks)
@@ -71,9 +73,11 @@ class DemarcheService
 
   def process_dossier(dossier, tasks)
     tasks.each do |task|
-      task_execution = TaskExecution.find_or_create_by(dossier: dossier.number, job_task: task.job_task)
-      apply_task(task, dossier, task_execution)
-      task_execution.save
+      Rails.logger.tagged(task.class.name) do
+        task_execution = TaskExecution.find_or_create_by(dossier: dossier.number, job_task: task.job_task)
+        apply_task(task, dossier, task_execution)
+        task_execution.save
+      end
     end
   end
 

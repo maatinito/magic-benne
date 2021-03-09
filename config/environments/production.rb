@@ -63,7 +63,13 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "demarches_sefi_production"
 
   config.action_mailer.perform_caching = false
-  config.action_mailer.delivery_method = :mailjet_api
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: ENV['SMTP_HOST'],
+    # user_name: ENV['SMTP_LOGIN'],
+    # password: ENV['SMTP_PASSWORD'],
+    # authentication: :plain
+  }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

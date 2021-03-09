@@ -6,7 +6,8 @@
     :css
       /* Email styles need to be inline */
   %body
-    %img{ :src => image_url("sefidem.png"), alt: 'sefidem', width: '20%', style: 'display: block; margin-left: auto;  margin-right: auto;' }
-    %h3{ style: 'text-align: center'}
-      = SITE_NAME
+    %p{ style: "text-align: center" }
+      %img{ :src => image_url("sefidem.png"), alt: 'sefidem', width: '200' }
     = yield
+    %p{ style: "text-align: center" }
+      %img{ :src => image_url("sefidem.png"), alt: 'sefidem', width: '400' }

@@ -18,12 +18,12 @@ class NotificationMailer < ApplicationMailer
         end
       end
     end
-    mail(to: email, subject: "SefiDem #{@job[:name]}")
+    mail(to: email, from: 'SefiDem <clautier@idt.pf>', subject: "SefiDem #{@job[:name]}") if @executions.present?
   end
 
   private
 
   def email
-    @job[:email] || 'clautier@idt.pf'
+    @job[:email] || 'clautier@idt.pf, christian.lautier@informatique.gov.pf'
   end
 end

@@ -36,7 +36,7 @@ class DemarcheService
     Rails.logger.tagged(@job[:name]) do
       demarche = Demarche.find_or_create_by({ id: demarche_number }) do |d|
         d.queried_at = EPOCH
-        demarche.name = @job[:name]
+        d.name = @job[:name]
       end
       start_time = Time.zone.now
       tasks = create_tasks(job)

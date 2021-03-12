@@ -57,10 +57,7 @@ class ExportEtatNominatif < DossierTask
   end
 
   def self.create_target_dir(task, dossier)
-    no_tahiti = no_tahiti_iti(dossier) || task.dossier.demandeur.siret || ''
-    raison_sociale = dossier.demandeur.entreprise.raison_sociale || dossier.demandeur.entreprise.nom_commerciale || ''
-    dir = "#{task.output_dir}/#{raison_sociale}#{raison_sociale ? ' - ' : ''}#{no_tahiti}/#{task.demarche_dir}/#{dossier.number}"
-
+    dir = "#{task.output_dir}/#{dossier.number}"
     FileUtils.mkpath(dir)
     dir
   end
@@ -70,17 +67,6 @@ class ExportEtatNominatif < DossierTask
     return nil if field.nil?
 
     field.strip.upcase.gsub(/[^0-9A-Z]/, '')
-  end
-
-  def self.dossier_field_value(dossier, field)
-    return nil if dossier.nil? || field.blank?
-
-    objects = [*dossier]
-    field.split(/\./).each do |name|
-      objects = objects.flat_map { |object| object.champs.select { |champ| champ.label == name } }
-      Rails.logger.warn("Sur le dossier #{dossier.number}, le champ #{field} est vide.") if objects.blank?
-    end
-    objects&.first
   end
 
   def download_report(extension, url)

@@ -18,6 +18,6 @@ class ExportEtatPrevisionnel < ExportEtatNominatif
     dossier_nb = dossier.number
     dir = self.class.create_target_dir(self, dossier)
     basename = params[:prefixe_fichier] || params[:champ_etat] || 'Etat'
-    "#{dir}/#{basename} - Mois #{report_index} - #{dossier_nb}.csv"
+    "#{dir}/#{basename} Mois #{report_index} - #{dossier_nb}.csv"
   end
 end

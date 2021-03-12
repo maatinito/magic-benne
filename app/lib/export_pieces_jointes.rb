@@ -9,7 +9,7 @@ require 'fileutils'
 
 class ExportPiecesJointes < DossierTask
   def version
-    1
+    2
   end
 
   def required_fields
@@ -27,11 +27,11 @@ class ExportPiecesJointes < DossierTask
       return
     end
 
-    index = {}
+    @index = {}
     champs.each do |champ|
       values = field_values(champ)
       values.each do |value|
-        export_file(champ, index, value.file)
+        export_file(champ, value.file)
       end
     end
   end
@@ -50,17 +50,21 @@ class ExportPiecesJointes < DossierTask
     end
   end
 
-  def export_file(champ, index, file)
+  def export_file(champ, file)
     if file.present?
       filename = file.filename
       url = file.url
-      dir = ExportEtatNominatif.create_target_dir(self, dossier)
-      output_path = "#{dir}/" + self.class.sanitize(index, "#{champ} - #{filename}")
-      download_file(output_path, url)
-      Rails.logger.info("Dossier #{dossier.number}: piece #{output_path} sauvegardée.")
+      output = output_path(champ, filename)
+      download_file(output, url)
+      Rails.logger.info("Piece #{output} sauvegardée.")
     else
       add_message(Message::WARN, "Pas de pièce jointe dans le champ #{champ}")
     end
+  end
+
+  def output_path(champ, filename)
+    ExportEtatNominatif.create_target_dir(self, dossier)
+    self.class.sanitize(@index, "#{champ} - #{filename}")
   end
 
   def download_file(output_path, url)

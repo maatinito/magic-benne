@@ -24,8 +24,7 @@ class Task
     @demarche = Demarche.find_or_create_by(id: demarche_id) do |d|
       d.name = @job[:name]
     end
-    # @demarche_title = DemarcheActions.title(demarche_id)
-    @demarche_dir = ActiveStorage::Filename.new(@job[:nom_demarche] || @demarche_title).sanitized
+    @demarche_dir = ActiveStorage::Filename.new(@job[:nom_demarche] || @job[:name]).sanitized
     @job_task = JobTask.find_or_create_by(demarche: @demarche, name: self.class.name.underscore)
   end
 

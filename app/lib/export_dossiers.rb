@@ -37,9 +37,8 @@ class ExportDossiers < DossierTask
     normalize_cells
 
     titles = ['ID'] + params[:champs]
-    task_output_dir = "#{output_dir}/#{@demarche_dir}"
-    FileUtils.mkpath(task_output_dir)
-    output_path = "#{task_output_dir}/demarche #{demarche_id} #{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
+    FileUtils.mkpath(output_dir)
+    output_path = "#{output_dir}/#{@demarche_dir} #{demarche_id} #{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
     CSV.open(output_path, 'wb', headers: titles + @dynamic_titles.to_a, write_headers: true, col_sep: ';') do |csv|
       @dossiers.each { |line| csv << line }
     end

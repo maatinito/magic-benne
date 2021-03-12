@@ -45,8 +45,9 @@ class DemarcheService
       count = 0
       DossierActions.on_dossiers(demarche.id, since) do |dossier|
         Rails.logger.tagged(dossier.number) do
+          return if (count += 1) > 3_000_000
+
           process_dossier(dossier, tasks)
-          break if (count += 1) > 3
 
           GC.compact
         end

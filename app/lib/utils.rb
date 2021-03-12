@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Utils
   def dossier_field_value(dossier, field)
     return nil if dossier.nil? || field.blank?

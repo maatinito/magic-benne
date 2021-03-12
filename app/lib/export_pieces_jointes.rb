@@ -63,8 +63,9 @@ class ExportPiecesJointes < DossierTask
   end
 
   def output_path(champ, filename)
-    ExportEtatNominatif.create_target_dir(self, dossier)
-    self.class.sanitize(@index, "#{champ} - #{filename}")
+    dir = ExportEtatNominatif.create_target_dir(self, dossier)
+    file = self.class.sanitize(@index, "#{champ} - #{filename}")
+    "#{dir}/#{file}"
   end
 
   def download_file(output_path, url)

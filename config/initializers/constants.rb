@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-SITE_NAME = 'SefiDem'
+SITE_NAME = 'Truck'

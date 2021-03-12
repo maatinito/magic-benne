@@ -18,7 +18,7 @@ class NotificationMailer < ApplicationMailer
         end
       end
     end
-    mail(to: email, from: 'SefiDem <clautier@idt.pf>', subject: "SefiDem #{@job[:name]}") if @executions.present?
+    mail(to: email, from: '#{SITE_NAME} <clautier@idt.pf>', subject: "#{SITE_NAME} #{@job[:name]}") if @executions.present?
   end
 
   private

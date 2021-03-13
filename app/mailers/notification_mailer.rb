@@ -18,10 +18,10 @@ class NotificationMailer < ApplicationMailer
         end
       end
     end
-    if @executions.present?
-      mail(to: email, from: "#{SITE_NAME} <clautier@idt.pf>",
-           subject: "#{SITE_NAME} #{@job[:name]}")
-    end
+    return unless @executions.present?
+
+    mail(to: email, from: "#{SITE_NAME} <clautier@idt.pf>",
+         subject: "#{SITE_NAME} #{@job[:name]}")
   end
 
   private

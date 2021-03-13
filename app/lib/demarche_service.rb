@@ -45,7 +45,7 @@ class DemarcheService
       count = 0
       DossierActions.on_dossiers(demarche.id, since) do |dossier|
         Rails.logger.tagged(dossier.number) do
-          return if (count += 1) > 3_000_000
+          next if (count += 1) > 3_000_000
 
           process_dossier(dossier, tasks)
 
@@ -94,10 +94,11 @@ class DemarcheService
   def update_check_messages(task_execution, task)
     old_messages = Set[task_execution.messages.map(&:hashkey)]
     new_messages = Set[task.messages.map(&:hashkey)]
-    return if old_messages == new_messages
+    # return if old_messages == new_messages
 
     task_execution.messages.destroy(task_execution.messages.reject { |m| new_messages.include?(m.hashkey) })
     task_execution.messages << task.messages.reject { |m| old_messages.include?(m.hashkey) }
+    task_execution.failed = task_execution.messages.any? { |m| m.level.zero? }
   end
 
   def create_tasks(job)

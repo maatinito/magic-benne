@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-SITE_NAME = 'Truck'
+SITE_NAME = 'Benne Magique'

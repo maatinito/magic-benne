@@ -46,6 +46,6 @@ class ExportEtatReel < ExportEtatNominatif
     dir = self.class.create_target_dir(self, initial_dossier)
     basename = params[:prefixe_fichier] || params[:champ_etat] || 'Etat'
     index = report_index(@initial_dossier, @month)
-    "#{dir}/#{basename} Mois #{index} - #{dossier_nb} - #{@year}-#{@month}.csv"
+    "#{dir}/#{basename}_Mois_#{index} - #{dossier_nb} - #{@year}-#{@month}.csv"
   end
 end

@@ -36,7 +36,9 @@ class ExportPiecesJointesEtatReel < ExportPiecesJointes
     dir = ExportEtatNominatif.create_target_dir(self, initial_dossier)
     self.class.sanitize(@index, "#{champ} - #{filename}")
     index = report_index(@initial_dossier, @month)
-    file = self.class.sanitize(@index, "#{champ} Mois #{index} - #{dossier.number} - #{@year}-#{@month} - #{filename}")
+
+    extension = File.extname(filename)
+    file = self.class.sanitize(@index, "Mois #{index} - #{champ} - #{@month}-#{@year} - #{dossier.number}#{extension}")
     "#{dir}/#{file}"
   end
 

@@ -51,7 +51,9 @@ module Utils
   end
 
   def create_target_dir(dossier)
-    dir = "#{output_dir}/#{dossier.number}"
+    nb = dossier.number.to_s
+    nb = '0' * (6-nb.length) + nb if nb.length < 6
+    dir = "#{output_dir}/#{nb}"
     FileUtils.mkpath(dir)
     dir
   end

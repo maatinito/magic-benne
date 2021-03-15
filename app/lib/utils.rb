@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 module Utils
-  def dossier_field_value(dossier, field)
+  def dossier_field_value(dossier, field, warn_if_empty: true)
     return nil if dossier.nil? || field.blank?
 
     objects = [*dossier]
     field.split(/\./).each do |name|
       objects = objects.flat_map { |object| object.champs.select { |champ| champ.label == name } }
-      Rails.logger.warn("Sur le dossier #{dossier.number}, le champ #{field} est vide.") if objects.blank?
+      if warn_if_empty && objects.blank?
+        Rails.logger.warn("Sur le dossier #{dossier.number}, le champ #{field} est vide.")
+      end
     end
     objects&.first
   end
@@ -16,16 +18,16 @@ module Utils
 
   def report_index(dossier, month)
     # DIESE initial
-    start_month = dossier_field_value(dossier, 'Mois 1')&.value&.downcase
-    start_month = dossier_field_value(dossier, 'Mois M')&.value&.downcase if start_month.nil?
+    start_month = dossier_field_value(dossier, 'Mois 1', warn_if_empty: false)&.value&.downcase
+    start_month = dossier_field_value(dossier, 'Mois M', warn_if_empty: false)&.value&.downcase if start_month.nil?
     if start_month.nil?
       # CSE initial
-      start_month = dossier_field_value(dossier, 'Date de démarrage de la mesure (Mois 1)')&.value
+      start_month = dossier_field_value(dossier, 'Date de démarrage de la mesure (Mois 1)', warn_if_empty: false)&.value
       start_month = Date.parse(start_month).month if start_month.present?
     end
     if start_month.nil?
       # Avenant
-      mois_2 = dossier_field_value(dossier, 'Nombre de salariés DiESE au mois 2')
+      mois_2 = dossier_field_value(dossier, 'Nombre de salariés DiESE au mois 2', warn_if_empty: false)
       if mois_2.present?
         start_month = mois_2.value.blank? ? 11 : 12
       end

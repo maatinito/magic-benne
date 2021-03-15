@@ -40,23 +40,30 @@ class DemarcheService
       end
       start_time = Time.zone.now
       tasks = create_tasks(job)
-      since = reset?(tasks) ? EPOCH : demarche.queried_at
-      tasks.each(&:before_run)
-      count = 0
-      DossierActions.on_dossiers(demarche.id, since) do |dossier|
-        Rails.logger.tagged(dossier.number) do
-          next if (count += 1) > 3_000_000
-
-          process_dossier(dossier, tasks)
-
-          GC.compact
-        end
-      end
-      tasks.each(&:after_run)
+      process_updated_dossiers(demarche, tasks)
+      process_updated_tasks(demarche, tasks)
       demarche.queried_at = start_time
       demarche.save
       NotificationMailer.with(job: @job).job_report.deliver_now
+    rescue => e
+      Rails.logger.error(e.message + "\n" + e.backtrace.join('\n'))
     end
+  end
+
+  def process_updated_dossiers(demarche, tasks)
+    since = reset?(tasks) ? EPOCH : demarche.queried_at
+    tasks.each(&:before_run)
+    count = 0
+    DossierActions.on_dossiers(demarche.id, since) do |dossier|
+      Rails.logger.tagged(dossier.number) do
+        next if (count += 1) > 1_000_000
+
+        process_dossier(dossier, tasks)
+
+        GC.compact
+      end
+    end
+    tasks.each(&:after_run)
   end
 
   def reset?(tasks)
@@ -72,6 +79,29 @@ class DemarcheService
   #   end
   # end
 
+  def process_updated_tasks(demarche, tasks)
+    conditions = tasks.map do |task|
+      TaskExecution
+        .where.not(version: task.version)
+        .where(job_tasks: { name: task.class.name.underscore })
+    end
+    tasks.each(&:before_run)
+    conditions
+      .reduce { |c1, c2| c1.or(c2) }
+      .joins(:job_task)
+      .where(job_tasks: { demarche_id: demarche.id })
+      .each do |task_execution|
+      on_dossier(task_execution.dossier) do |dossier|
+        if dossier.present?
+          process_dossier(dossier, tasks)
+        else
+          Check.where(dossier: task_execution.dossier).destroy_all
+        end
+      end
+    end
+    tasks.each(&:after_run)
+  end
+
   def process_dossier(dossier, tasks)
     tasks.each do |task|
       Rails.logger.tagged(task.class.name) do
@@ -85,7 +115,13 @@ class DemarcheService
   def apply_task(task, dossier, task_execution)
     task_execution.version = task.version
     if task.valid?
-      task.process_dossier(dossier)
+      begin
+        task.process_dossier(dossier)
+      rescue StandardError => e
+        task.add_message(Message::ERROR, "#{e.message}<br>\n#{e.backtrace.first}")
+        Rails.logger.error("#{e.message}\n#{e.backtrace.join('\n')}")
+        task_execution.failed = true
+      end
       update_check_messages(task_execution, task)
       task_execution.save
     end
@@ -94,11 +130,18 @@ class DemarcheService
   def update_check_messages(task_execution, task)
     old_messages = Set[task_execution.messages.map(&:hashkey)]
     new_messages = Set[task.messages.map(&:hashkey)]
-    # return if old_messages == new_messages
+    return if old_messages == new_messages
 
     task_execution.messages.destroy(task_execution.messages.reject { |m| new_messages.include?(m.hashkey) })
     task_execution.messages << task.messages.reject { |m| old_messages.include?(m.hashkey) }
-    task_execution.failed = task_execution.messages.any? { |m| m.level.zero? }
+  end
+
+  def on_dossier(dossier_number)
+    result = MesDemarches::Client.query(MesDemarches::Queries::Dossier,
+                                        variables: { dossier: dossier_number })
+    dossier = (data = result.data) ? data.dossier : nil
+    yield dossier
+    Rails.logger.error(result.errors.values.join(',')) unless data
   end
 
   def create_tasks(job)

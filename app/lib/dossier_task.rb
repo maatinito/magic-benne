@@ -9,9 +9,6 @@ class DossierTask < Task
     @dossier = dossier
     @messages = []
     run if dossier_has_right_state
-  rescue StandardError => e
-    add_message(Message::ERROR, e.message)
-    Rails.logger.error("#{e.message}\\n#{e.backtrace.join('\n')}")
   end
 
   def authorized_fields

@@ -80,26 +80,36 @@ class DemarcheService
   # end
 
   def process_updated_tasks(demarche, tasks)
+    tasks.each(&:before_run)
+    updated_task_execution_query(demarche, tasks)
+      .group_by(&:dossier)
+      .each do |dossier, task_executions|
+      on_dossier(dossier) do |dossier|
+        apply_updated_tasks(dossier, task_executions, tasks)
+      end
+    end
+    tasks.each(&:after_run)
+  end
+
+  def apply_updated_tasks(dossier, task_executions, tasks)
+    if dossier.present?
+      task_names = Set.new(task_executions.map { |te| te.job_task.name })
+      process_dossier(dossier, tasks.filter { |task| task_names.include?(task.class.name.underscore) })
+    else
+      TaskExecution.where(dossier: dossier).destroy_all
+    end
+  end
+
+  def updated_task_execution_query(demarche, tasks)
     conditions = tasks.map do |task|
       TaskExecution
         .where.not(version: task.version)
         .where(job_tasks: { name: task.class.name.underscore })
     end
-    tasks.each(&:before_run)
     conditions
       .reduce { |c1, c2| c1.or(c2) }
       .joins(:job_task)
       .where(job_tasks: { demarche_id: demarche.id })
-      .each do |task_execution|
-      on_dossier(task_execution.dossier) do |dossier|
-        if dossier.present?
-          process_dossier(dossier, tasks)
-        else
-          Check.where(dossier: task_execution.dossier).destroy_all
-        end
-      end
-    end
-    tasks.each(&:after_run)
   end
 
   def process_dossier(dossier, tasks)

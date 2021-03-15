@@ -7,7 +7,9 @@ require 'open-uri'
 require 'roo'
 require 'fileutils'
 
-class ExportEtatNominatif < DossierTask
+class ExportExcel < DossierTask
+  include Utils
+
   def version
     1
   end
@@ -19,21 +21,6 @@ class ExportEtatNominatif < DossierTask
   def authorized_fields
     super + %i[empty_lines prefixe_fichier]
   end
-
-  def self.symbolize(name)
-    name.tr('%', 'P').parameterize.underscore.to_sym
-  end
-
-  TITLE_LABELS = [
-    'Nom de famille', 'Nom marital', 'Prénom', 'Date de naissance', 'DN', 'Heures avant ',
-    'Brut mensuel moyen', 'Heures à réaliser', 'DMO', "Jours non rémunérés|Jours d'absence",
-    "Jours d'indemnités journalières", 'Taux RTT*', 'Aide', 'Cotisations', '% temps présent',
-    '% réalisé convention|% convention effectuée', '% perte salaire', '% aide', 'plafond'
-  ].freeze
-
-  COLUMN_LABELS = (TITLE_LABELS + ['aide maximale']).freeze
-
-  COLUMNS = TITLE_LABELS.map { |name| [symbolize(name), Regexp.new(name, Regexp::IGNORECASE)] }.to_h
 
   def run
     report = param_value(:champ_etat)
@@ -54,19 +41,6 @@ class ExportEtatNominatif < DossierTask
     else
       Rails.logger.warn("Pas d'état nominatif attaché au dossier #{dossier.number}")
     end
-  end
-
-  def self.create_target_dir(task, dossier)
-    dir = "#{task.output_dir}/#{dossier.number}"
-    FileUtils.mkpath(dir)
-    dir
-  end
-
-  def self.no_tahiti_iti(dossier)
-    field = dossier_field_value(dossier, 'Numéro Tahiti Iti')&.value
-    return nil if field.nil?
-
-    field.strip.upcase.gsub(/[^0-9A-Z]/, '')
   end
 
   def download_report(extension, url)
@@ -90,32 +64,30 @@ class ExportEtatNominatif < DossierTask
   end
 
   def save_sheet(sheet_name, sheet)
-    save_employees(sheet_name, employees(sheet))
+    employees = employees(sheet)
+    if employees.present?
+      save_employees(sheet_name, employees)
+    else
+      add_message(Message::ERROR, "L'onglet #{sheet_name} ne contient aucun employe")
+    end
   rescue Roo::HeaderRowNotFoundError => e
     columns = e.message.gsub(%r{[/\[\]]}, '')
     add_message(Message::ERROR, "Les colonnes suivantes manquent dans le fichier Excel: #{columns}")
   end
 
-  def output_path(_sheet_name)
-    throw 'Must be defined by sub class'
-  end
-
-  def sheet_regexp
-    throw 'Must be defined by subclass'
-  end
-
   def save_employees(sheet_name, employees)
-    Rails.logger.info("Saving #{employees.size} lines")
+    Rails.logger.info("Saving #{employees.size} lines for #{sheet_name}")
+    headers = employees.flat_map(&:keys).reduce(Set[], :add).to_a
     path = output_path(sheet_name)
     CSV.open(path, 'wb',
-             headers: COLUMN_LABELS,
+             headers: headers,
              write_headers: true,
              col_sep: ';') do |csv|
       empty_lines = params[:empty_lines]
       empty_lines.to_i.times { csv << [] } if empty_lines.present?
       employees.each do |line|
-        output_line = COLUMN_LABELS.map do |column|
-          value = line[self.class.symbolize(column)]
+        output_line = headers.map do |column|
+          value = line[column]
           case value
           when Date
             value.strftime('%d/%m/%Y')
@@ -131,30 +103,29 @@ class ExportEtatNominatif < DossierTask
   end
 
   def employees(sheet)
-    rows = sheet.parse(COLUMNS)
-    rows.reject { |line| line[:prenom].nil? || line[:prenom] =~ /Prénom/ }.map do |line|
-      line.each { |_, value| value.strip! if value.is_a?(String) }
-      if (date = line[:date_de_naissance]).present?
-        normalize_date(date, line)
+    rows = sheet.parse(title_regexps)
+    (key, _) = rows&.first&.first
+    rows.reject { |line| line[key].blank? }.map do |line|
+      line.each do |key, value|
+        line[key] = value.strip if value.is_a?(String)
+        line[key] = normalize_date(value) if key.to_s.match?(/date/i)
       end
-      # pp line
-      line[:aide] = line[:aide].round if line[:aide].is_a?(Float)
-      line[:aide_maximale] = 0
-      line
+      normalize_line(line)
     end
   end
 
-  def normalize_date(date, line)
+  def normalize_date(date)
     case date
     when Integer, Float
-      date = Date.new(1899, 12, 30) + line[:date_de_naissance].days
+      Date.new(1899, 12, 30) + date.days
     when String
-      date = parse(date, line)
+      parse(date)
+    else
+      date
     end
-    line[:date_de_naissance] = date
   end
 
-  def parse(date, line)
+  def parse(date)
     date.gsub!(%r{[-:./]}, '-')
     if match = date.match(/(\d+)-(\d+)-(\d+)/)
       day, month, year = match.captures.map(&:to_i)
@@ -162,7 +133,7 @@ class ExportEtatNominatif < DossierTask
       year -= 100 if year > Date.today.year
       date = Date.new(year, month, day)
     else
-      add_message(Message::ERROR, "Impossible de lire la date #{line[:date_de_naissance]} (#{line[:nom]} #{line[:dn]})")
+      add_message(Message::ERROR, "Impossible de lire la date #{date}")
       date = Date.new(1900, 1, 1)
     end
     date
@@ -175,5 +146,27 @@ class ExportEtatNominatif < DossierTask
       f.rewind
       yield f
     end
+  end
+
+  def title_regexps
+    @title_regexps ||= title_labels.map { |name| [symbolize(name), Regexp.new(name, Regexp::IGNORECASE)] }.to_h
+  end
+
+  def title_labels
+    throw 'Must be defined by sub class'
+  end
+
+  def output_path(_sheet_name)
+    throw 'Must be defined by sub class'
+  end
+
+  def sheet_regexp
+    throw 'Must be defined by subclass'
+  end
+
+  def normalize_line(line)
+    # line[:aide] = line[:aide].round if line[:aide].is_a?(Float)
+    # line[:aide_maximale] = 0
+    line
   end
 end

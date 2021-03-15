@@ -33,7 +33,7 @@ class ExportPiecesJointesEtatReel < ExportPiecesJointes
   end
 
   def output_path(champ, filename)
-    dir = ExportEtatNominatif.create_target_dir(self, initial_dossier)
+    dir = create_target_dir(initial_dossier)
     self.class.sanitize(@index, "#{champ} - #{filename}")
     index = report_index(@initial_dossier, @month)
 

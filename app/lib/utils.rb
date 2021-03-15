@@ -43,4 +43,26 @@ module Utils
     current_month += 12 if current_month < start_month
     current_month - start_month + 1
   end
+
+  def symbolize(name)
+    name.tr('%', 'P').parameterize.underscore.to_sym
+  end
+
+  def create_target_dir(dossier)
+    dir = "#{output_dir}/#{dossier.number}"
+    FileUtils.mkpath(dir)
+    dir
+  end
+
+  def initial_dossier
+    if @initial_dossier.nil?
+      initial_dossier_field = param_value(:champ_dossier)
+      if initial_dossier_field.nil?
+        throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}"
+      end
+
+      @initial_dossier = initial_dossier_field.dossier
+    end
+    @initial_dossier
+  end
 end

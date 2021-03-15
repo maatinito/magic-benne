@@ -8,6 +8,8 @@ require 'roo'
 require 'fileutils'
 
 class ExportPiecesJointes < DossierTask
+  include Utils
+
   def version
     2
   end
@@ -57,13 +59,11 @@ class ExportPiecesJointes < DossierTask
       output = output_path(champ, filename)
       download_file(output, url)
       Rails.logger.info("Piece #{output} sauvegardée.")
-    else
-      add_message(Message::WARN, "Pas de pièce jointe dans le champ #{champ}")
     end
   end
 
   def output_path(champ, filename)
-    dir = ExportEtatNominatif.create_target_dir(self, dossier)
+    dir = create_target_dir(dossier)
     file = self.class.sanitize(@index, "#{champ} - #{filename}")
     "#{dir}/#{file}"
   end

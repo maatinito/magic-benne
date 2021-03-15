@@ -51,6 +51,7 @@ ENV \
     API_CPS_CLIENT_SECRET=""\
     API_CPS_PASSWORD=""\
     API_CPS_USERNAME=""\
+    APP_HOST="localhost"\
     CAPYBARA_DRIVER="wsl"\
     DB_DATABASE="demarches_sefi"\
     DB_HOST=""\

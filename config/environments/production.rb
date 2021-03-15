@@ -70,6 +70,12 @@ Rails.application.configure do
     # password: ENV['SMTP_PASSWORD'],
     # authentication: :plain
   }
+  # Configure default root URL for generating URLs to routes
+  config.action_mailer.default_url_options = {
+    protocol: :http,
+    port: 3000,
+    host: ENV['APP_HOST']
+  }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

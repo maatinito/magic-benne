@@ -8,6 +8,8 @@
   %body
     %p{ style: "text-align: center" }
       %img{ :src => image_url("sefidem.png"), alt: 'sefidem', width: '200' }
+      %br
+      = link_to SITE_NAME, root_url
     = yield
     %p{ style: "text-align: center" }
       %img{ :src => image_url("sefidem.png"), alt: 'sefidem', width: '400' }

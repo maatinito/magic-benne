@@ -30,6 +30,7 @@ services:
     ports:
       - ${PORT}:3000
     environment:
+      - APP_HOST
       - DB_DATABASE
       - DB_HOST
       - DB_PASSWORD
@@ -49,6 +50,7 @@ services:
     command: rails jobs:work
     restart: always
     environment:
+      - APP_HOST
       - DB_DATABASE
       - DB_HOST
       - DB_PASSWORD

@@ -61,7 +61,8 @@ ENV \
     GRAPHQL_HOST=https://www.mes-demarches.gov.pf\
     PORT=3003\
     RAILS_SERVE_STATIC_FILES="true"\
-    SECRET_KEY_BASE="bcab70b0157b199a918f0a7f1177e5995d085a919dfb0cc6b2a92dc30877f99dbad5144fe5f64e2a22da70161e6c9a39ede54b54a21a4fc4b78fdf3de55088b1"
+    SECRET_KEY_BASE="bcab70b0157b199a918f0a7f1177e5995d085a919dfb0cc6b2a92dc30877f99dbad5144fe5f64e2a22da70161e6c9a39ede54b54a21a4fc4b78fdf3de55088b1"\
+    SMTP_HOST=""
 
 
 COPY --chown=userapp:userapp . ${APP_PATH}

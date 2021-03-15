@@ -38,6 +38,7 @@ services:
       - GRAPHQL_BEARER
       - GRAPHQL_HOST
       - RAILS_ENV=${ENV:-production}
+      - SMTP_HOST
     volumes:
       - storage:/sefi/storage
       - export:/sefi/export
@@ -56,6 +57,7 @@ services:
       - GRAPHQL_BEARER
       - GRAPHQL_HOST
       - RAILS_ENV=${ENV:-production}
+      - SMTP_HOST
     volumes:
       - storage:/sefi/storage
       - export:/sefi/export

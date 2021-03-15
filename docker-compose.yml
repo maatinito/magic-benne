@@ -28,7 +28,7 @@ services:
     container_name: app-${ENV:-dev}
     restart: always
     ports:
-      - ${PORT}:3000
+      - ${PORT}:3003
     environment:
       - APP_HOST
       - DB_DATABASE

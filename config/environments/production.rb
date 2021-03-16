@@ -76,6 +76,7 @@ Rails.application.configure do
     port: 3000,
     host: ENV['APP_HOST']
   }
+  config.action_mailer.asset_host = "http://#{ENV['APP_HOST']}:3000"
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

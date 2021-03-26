@@ -7,6 +7,7 @@ class NotificationMailer < ApplicationMailer
     @executions = TaskExecution
                   .order('task_executions.updated_at desc')
                   .where(failed: true)
+                  .where(id: Message.select(:task_execution_id))
                   .includes(:messages)
                   .includes(job_task: :demarche)
                   .joins(job_task: :demarche)

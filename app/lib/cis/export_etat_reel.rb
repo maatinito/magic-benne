@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Cis
   class ExportEtatReel < ExportEtatPrevisionnel
     def version

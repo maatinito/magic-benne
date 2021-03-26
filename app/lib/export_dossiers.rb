@@ -53,7 +53,7 @@ class ExportDossiers < DossierTask
   def normalize_cells
     @dossiers.map! do |line|
       line.map do |cell|
-        cell.is_a?(String) ? cell.tr(';', '/') : cell
+        cell.is_a?(String) ? cell.strip.tr(';', '/') : cell
       end
     end
   end

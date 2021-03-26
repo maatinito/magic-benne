@@ -45,8 +45,8 @@ class DemarcheService
       demarche.queried_at = start_time
       demarche.save
       NotificationMailer.with(job: @job).job_report.deliver_now
-    rescue => e
-      Rails.logger.error(e.message + "\n" + e.backtrace.join('\n'))
+    rescue StandardError => e
+      Rails.logger.error("#{e.message}\n#{e.backtrace.join('\n')}")
     end
   end
 

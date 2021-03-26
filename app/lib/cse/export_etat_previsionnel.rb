@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Cse
   class ExportEtatPrevisionnel < ExportEtatNominatif
     def version

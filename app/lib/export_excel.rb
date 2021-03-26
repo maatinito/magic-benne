@@ -104,7 +104,7 @@ class ExportExcel < DossierTask
 
   def employees(sheet)
     rows = sheet.parse(title_regexps)
-    (key, _) = rows&.first&.first
+    (key,) = rows&.first&.first
     rows.reject { |line| line[key].blank? }.map do |line|
       line.each do |key, value|
         line[key] = value.strip if value.is_a?(String)

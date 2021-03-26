@@ -3,7 +3,7 @@
 module Cse
   class ExportEtatPrevisionnel < ExportEtatNominatif
     def version
-      super + 1
+      super + 2
     end
 
     private

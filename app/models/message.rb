@@ -26,6 +26,8 @@ class Message < ApplicationRecord
   INFO = 2
   DEBUG = 3
 
+  LEVELS = %w[Erreur Attention Information Trace].freeze
+
   belongs_to :task_execution
 
   def hashkey
@@ -35,5 +37,9 @@ class Message < ApplicationRecord
   def ==(other)
     message == other.message &&
       level == other.level
+  end
+
+  def level_string
+    level >= 0 && level < LEVELS.size ? LEVELS[level] : 'Inconnu'
   end
 end

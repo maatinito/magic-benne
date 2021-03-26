@@ -14,10 +14,10 @@ class DemarchesController < ApplicationController
   end
 
   def main
+    @with_discarded = session[:with_discarded].present?
     @running = ExportJob.running?
-    puts "Job running=#{@running}"
-
-    @executions = TaskExecution
+    @executions = @with_discarded ? TaskExecution.with_discarded.discarded : TaskExecution.kept
+    @executions = @executions
                   .order('task_executions.updated_at desc')
                   .where(id: Message.select(:task_execution_id))
                   .includes(:messages)
@@ -29,5 +29,14 @@ class DemarchesController < ApplicationController
         end
       end
     end
+  end
+
+  def with_discarded
+    if params[:with_discarded] == 'true'
+      session[:with_discarded] = 'true'
+    else
+      session.delete(:with_discarded)
+    end
+    redirect_to demarches_main_path
   end
 end

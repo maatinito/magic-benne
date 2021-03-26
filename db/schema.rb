@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_210_307_180_722) do
+ActiveRecord::Schema.define(version: 20_210_325_014_731) do
   create_table 'attributes', force: :cascade do |t|
     t.string 'task'
     t.string 'variable'
@@ -80,6 +80,8 @@ ActiveRecord::Schema.define(version: 20_210_307_180_722) do
     t.datetime 'created_at', precision: 6, null: false
     t.datetime 'updated_at', precision: 6, null: false
     t.float 'version'
+    t.datetime 'discarded_at'
+    t.index ['discarded_at'], name: 'index_task_executions_on_discarded_at'
     t.index ['dossier'], name: 'index_task_executions_on_dossier'
     t.index ['failed'], name: 'index_task_executions_on_failed'
     t.index ['job_task_id'], name: 'index_task_executions_on_job_task_id'

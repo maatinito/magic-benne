@@ -5,8 +5,11 @@
         %p
           Synchronisation en cours. Rafraichir la page ulterieurement.
       - else
-        = link_to 'Traiter tous les dossiers', demarches_export_all_path, class: "btn btn-success"
-        = link_to 'Traiter les nouveaux dossiers', demarches_export_path, class: "btn btn-success"
+        = link_to 'Traiter tous les dossiers', demarches_export_all_path, class: "btn btn-primary"
+        = link_to 'Traiter les nouveaux dossiers', demarches_export_path, class: "btn btn-primary"
+    .col.text-right
+      - image = @with_discarded ? 'masquer.svg' : 'afficher.svg'
+      = link_to image_tag(image, class: 'discard btn btn-light'), demarches_with_discarded_path(with_discarded: !@with_discarded)
   .row
     .col
       = tabs do |c|
@@ -29,5 +32,11 @@
                     %table.table
                       - messages.each do |message|
                         %tr.d-flex
-                          %td.col-3.col-md-2=message.level
+                          %td.col-4.col-md-3
+                            - if message.task_execution.discarded?
+                              = link_to image_tag('afficher.svg', class: 'discard btn btn-light'), undiscard_path(message.task_execution, discarded: @discarded)
+                            - else
+                              = link_to image_tag('masquer.svg', class: 'discard btn btn-light'), discard_path(message.task_execution, discarded: @discarded)
+                            = message.task_execution.job_task.name
+                          %td.col-2.col-md-1=message.level_string
                           %td.col-6.col-md-8=message.message

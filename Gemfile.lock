@@ -99,6 +99,8 @@ GEM
       rack-protection (>= 1.5.5)
       sinatra (>= 1.4.4)
     diff-lcs (1.4.4)
+    discard (1.2.0)
+      activerecord (>= 4.2, < 7)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.7.6)
@@ -425,6 +427,7 @@ DEPENDENCIES
   delayed_cron_job
   delayed_job_active_record
   delayed_job_web
+  discard
   dotenv-rails
   factory_bot_rails
   fugit
@@ -448,6 +451,7 @@ DEPENDENCIES
   rubocop-rspec
   rubocop-rspec-focused
   sass-rails (~> 5.0)
+  sassc-rails
   scss_lint
   spring
   spring-commands-rspec

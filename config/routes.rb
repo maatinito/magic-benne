@@ -8,6 +8,10 @@ Rails.application.routes.draw do
   get 'demarches/main'
   get 'demarches/export'
   get 'demarches/export_all'
+  get 'demarches/with_discarded'
+
+  get 'task_executions/:id/discard', to: 'task_executions#discard', as: 'discard'
+  get 'task_executions/:id/undiscard', to: 'task_executions#undiscard', as: 'undiscard'
 
   # view jobs
   match '/delayed_job' => DelayedJobWeb, :anchor => false, :via => %i[get post]

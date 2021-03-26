@@ -15,5 +15,8 @@
           %table.table
             - messages.each do |message|
               %tr
-                %td=message.level
-                %td=message.message
+                %td.col-4.col-md-3
+                  = link_to image_tag('masquer.svg', class: 'discard btn btn-light'), discard_path(message.task_execution, discarded: 'true')
+                  = message.task_execution.job_task.name
+                %td.col-2.col-md-1=message.level_string
+                %td.col-6.col-md-8=message.message

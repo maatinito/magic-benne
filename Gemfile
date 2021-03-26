@@ -41,6 +41,7 @@ gem 'bootstrap', '~> 4.6.0'
 gem 'delayed_cron_job' # Cron jobs
 gem 'delayed_job_active_record'
 gem 'delayed_job_web'
+gem 'discard'
 gem 'fugit'
 gem 'haml-rails'
 gem 'jquery-rails'
@@ -48,6 +49,7 @@ gem 'mailjet'
 gem 'premailer-rails'
 gem 'rails-bootstrap-tabs', '~> 0.2.3'
 gem 'roo-xls'
+gem 'sassc-rails' # Use SCSS for stylesheets
 gem 'typhoeus'
 
 group :development, :test do
@@ -56,6 +58,7 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'letter_opener_web'
+  gem 'scss_lint', require: false
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'spring-watcher-listen', '~> 2.0.0'

@@ -38,7 +38,11 @@ services:
       - DB_USERNAME
       - GRAPHQL_BEARER
       - GRAPHQL_HOST
+      - MAIL_DEV
+      - MAIL_FROM
+      - MAIL_INFRA
       - RAILS_ENV=${ENV:-production}
+      - SITE_NAME
       - SMTP_HOST
     volumes:
       - storage:/sefi/storage
@@ -58,7 +62,11 @@ services:
       - DB_USERNAME
       - GRAPHQL_BEARER
       - GRAPHQL_HOST
+      - MAIL_DEV
+      - MAIL_FROM
+      - MAIL_INFRA
       - RAILS_ENV=${ENV:-production}
+      - SITE_NAME
       - SMTP_HOST
     volumes:
       - storage:/sefi/storage

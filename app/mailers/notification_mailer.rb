@@ -21,13 +21,17 @@ class NotificationMailer < ApplicationMailer
     end
     return unless @executions.present?
 
-    mail(to: email, from: "#{SITE_NAME} <clautier@idt.pf>",
-         subject: "#{SITE_NAME} #{@job[:name]}")
+    mail(to: email, from: MAIL_FROM,
+         subject: "#{SITE_NAME}: #{@job[:name]}")
+  end
+
+  def output_dir_not_accessible
+    mail(to: MAIL_INFRA, from: MAIL_FROM, subject: "#{SITE_NAME}: Répertoire NAS non monté")
   end
 
   private
 
   def email
-    @job[:email] || 'clautier@idt.pf, christian.lautier@informatique.gov.pf'
+    @job[:email] || 'clautier@idt.pf'
   end
 end

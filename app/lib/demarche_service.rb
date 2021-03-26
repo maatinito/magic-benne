@@ -17,6 +17,8 @@ class DemarcheService
   end
 
   def process
+    return unless output_dir_accessible
+
     config.filter { |_k, d| d.key? 'taches' }.each do |job_name, job|
       demarche_number = job['demarche']
       job[:name] = job_name
@@ -31,6 +33,23 @@ class DemarcheService
   EPOCH = Time.zone.parse('2000-01-01 00:00')
 
   private
+
+  def output_dir_accessible
+    output_dir = config.dig('par_defaut', 'rep_sortie')
+    return true unless output_dir
+
+    begin
+      f = File.open("#{output_dir}/test.txt", 'w+')
+      f.write 'test'
+      f.close
+      f.unlink
+      true
+    rescue Errno::ENOENT
+      NotificationMailer.output_dir_not_accessible.deliver_later
+      false
+    end
+
+  end
 
   def process_demarche(demarche_number, job)
     Rails.logger.tagged(@job[:name]) do

@@ -9,4 +9,8 @@ class NotificationMailerPreview < ActionMailer::Preview
     }
     NotificationMailer.with(job: job).job_report
   end
+
+  def output_dir_not_accessible
+    NotificationMailer.output_dir_not_accessible
+  end
 end

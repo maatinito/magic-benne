@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_210_325_014_731) do
+ActiveRecord::Schema.define(version: 20_210_330_020_302) do
   create_table 'attributes', force: :cascade do |t|
     t.string 'task'
     t.string 'variable'
@@ -47,6 +47,12 @@ ActiveRecord::Schema.define(version: 20_210_325_014_731) do
     t.datetime 'queried_at'
     t.datetime 'created_at', precision: 6, null: false
     t.datetime 'updated_at', precision: 6, null: false
+  end
+
+  create_table 'demarches_users', id: false, force: :cascade do |t|
+    t.integer 'demarche_id', null: false
+    t.integer 'user_id', null: false
+    t.index %w[user_id demarche_id], name: 'index_demarches_users_on_user_id_and_demarche_id'
   end
 
   create_table 'job_tasks', force: :cascade do |t|
@@ -87,8 +93,34 @@ ActiveRecord::Schema.define(version: 20_210_325_014_731) do
     t.index ['job_task_id'], name: 'index_task_executions_on_job_task_id'
   end
 
-  add_foreign_key 'attributes', 'demarches', column: 'demarche_id'
-  add_foreign_key 'job_tasks', 'demarches', column: 'demarche_id'
+  create_table 'users', force: :cascade do |t|
+    t.string 'email', default: '', null: false
+    t.string 'encrypted_password', default: '', null: false
+    t.string 'reset_password_token'
+    t.datetime 'reset_password_sent_at'
+    t.datetime 'remember_created_at'
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+    t.integer 'sign_in_count', default: 0, null: false
+    t.datetime 'current_sign_in_at'
+    t.datetime 'last_sign_in_at'
+    t.string 'current_sign_in_ip'
+    t.string 'last_sign_in_ip'
+    t.string 'confirmation_token'
+    t.datetime 'confirmed_at'
+    t.datetime 'confirmation_sent_at'
+    t.string 'unconfirmed_email'
+    t.integer 'failed_attempts', default: 0, null: false
+    t.string 'unlock_token'
+    t.datetime 'locked_at'
+    t.index ['confirmation_token'], name: 'index_users_on_confirmation_token', unique: true
+    t.index ['email'], name: 'index_users_on_email', unique: true
+    t.index ['reset_password_token'], name: 'index_users_on_reset_password_token', unique: true
+    t.index ['unlock_token'], name: 'index_users_on_unlock_token', unique: true
+  end
+
+  add_foreign_key 'attributes', 'demarches'
+  add_foreign_key 'job_tasks', 'demarches'
   add_foreign_key 'messages', 'task_executions'
   add_foreign_key 'task_executions', 'job_tasks'
 end

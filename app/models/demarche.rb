@@ -12,4 +12,5 @@
 #
 class Demarche < ApplicationRecord
   has_many :job_tasks, dependent: :destroy
+  has_and_belongs_to_many :instructeurs, class_name: 'User'
 end

@@ -3,6 +3,8 @@
 # controller to trigger CSV exports
 #
 class DemarchesController < ApplicationController
+  before_action :authenticate_user!
+
   def export
     ExportJob.run(false, 'storage/demarches.yml')
     redirect_to demarches_main_path
@@ -19,6 +21,7 @@ class DemarchesController < ApplicationController
     @executions = @with_discarded ? TaskExecution.with_discarded.discarded : TaskExecution.kept
     @executions = @executions
                   .order('task_executions.updated_at desc')
+                  .joins(job_task: { demarche: :instructeurs }).where(demarches_users: { user_id: current_user })
                   .where(id: Message.select(:task_execution_id))
                   .includes(:messages)
                   .includes(job_task: :demarche)

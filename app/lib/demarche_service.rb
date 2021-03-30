@@ -42,21 +42,17 @@ class DemarcheService
       f = File.open("#{output_dir}/test.txt", 'w+')
       f.write 'test'
       f.close
-      f.unlink
+      File.delete(f)
       true
     rescue Errno::ENOENT
       NotificationMailer.output_dir_not_accessible.deliver_later
       false
     end
-
   end
 
   def process_demarche(demarche_number, job)
     Rails.logger.tagged(@job[:name]) do
-      demarche = Demarche.find_or_create_by({ id: demarche_number }) do |d|
-        d.queried_at = EPOCH
-        d.name = @job[:name]
-      end
+      demarche = DemarcheActions.get_demarche(demarche_number, @job[:name])
       start_time = Time.zone.now
       tasks = create_tasks(job)
       process_updated_dossiers(demarche, tasks)

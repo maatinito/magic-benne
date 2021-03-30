@@ -21,5 +21,8 @@ module DemarchesSefi
     config.time_zone = 'Pacific/Tahiti'
 
     config.active_job.queue_adapter = :delayed_job
+
+    I18n.available_locales = %i[en fr]
+    I18n.default_locale = :fr
   end
 end

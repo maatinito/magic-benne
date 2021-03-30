@@ -64,6 +64,7 @@ GEM
     ast (2.4.2)
     autoprefixer-rails (10.2.4.0)
       execjs
+    bcrypt (3.1.16)
     bindex (0.8.1)
     bootsnap (1.7.3)
       msgpack (~> 1.0)
@@ -98,6 +99,14 @@ GEM
       delayed_job (> 2.0.3)
       rack-protection (>= 1.5.5)
       sinatra (>= 1.4.4)
+    devise (4.7.3)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 4.1.0)
+      responders
+      warden (~> 1.2.3)
+    devise-i18n (1.9.3)
+      devise (>= 4.7.1)
     diff-lcs (1.4.4)
     discard (1.2.0)
       activerecord (>= 4.2, < 7)
@@ -203,6 +212,7 @@ GEM
     nokogiri (1.11.2)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
+    orm_adapter (0.5.0)
     parallel (1.20.1)
     parser (3.0.0.0)
       ast (~> 2.4.1)
@@ -260,6 +270,9 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     regexp_parser (2.1.1)
+    responders (3.0.1)
+      actionpack (>= 5.0)
+      railties (>= 5.0)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -392,6 +405,8 @@ GEM
     unf_ext (0.0.7.7)
     unicode-display_width (2.0.0)
     vcr (5.1.0)
+    warden (1.2.9)
+      rack (>= 2.0.9)
     web-console (4.1.0)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -425,6 +440,8 @@ DEPENDENCIES
   delayed_cron_job
   delayed_job_active_record
   delayed_job_web
+  devise (~> 4.7)
+  devise-i18n
   discard
   dotenv-rails
   factory_bot_rails

@@ -21,9 +21,7 @@ class Task
       @errors << "#{unknown_fields.join(',')} n'existe(nt) pas sur #{self.class.name.underscore}"
     end
     @accessed_fields = Set[]
-    @demarche = Demarche.find_or_create_by(id: demarche_id) do |d|
-      d.name = @job[:name]
-    end
+    @demarche = Demarche.find(demarche_id)
     @demarche_dir = ActiveStorage::Filename.new(@job[:nom_demarche] || @job[:name]).sanitized
     @job_task = JobTask.find_or_create_by(demarche: @demarche, name: self.class.name.underscore)
   end

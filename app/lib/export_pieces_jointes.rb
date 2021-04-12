@@ -73,5 +73,6 @@ class ExportPiecesJointes < DossierTask
       f.binmode
       f.write URI.open(url).read
     end
+    dedupe(output_path)
   end
 end

@@ -145,7 +145,7 @@ class DemarcheService
     task_execution.version = task.version
     if task.valid?
       begin
-        task.process_dossier(dossier)
+        task.process_dossier(task_execution, dossier)
       rescue StandardError => e
         task.add_message(Message::ERROR, "#{e.message}<br>\n#{e.backtrace.first}")
         Rails.logger.error("#{e.message}\n#{e.backtrace.join('\n')}")

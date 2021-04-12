@@ -15,6 +15,10 @@ class DemarchesController < ApplicationController
     redirect_to demarches_main_path
   end
 
+  def clear_checksums
+    Checksum.clear_all
+  end
+
   def main
     @with_discarded = session[:with_discarded].present?
     @running = ExportJob.running?

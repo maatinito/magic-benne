@@ -100,6 +100,7 @@ class ExportExcel < DossierTask
         csv << output_line
       end
     end
+    dedupe(path)
   end
 
   def employees(sheet)

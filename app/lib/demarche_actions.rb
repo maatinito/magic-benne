@@ -6,7 +6,7 @@ class DemarcheActions
   def self.instructeur_id(demarche_number, instructeur_email)
     result = MesDemarches::Client.query(MesDemarches::Queries::Instructeurs,
                                         variables: { demarche: demarche_number })
-    throw StandardError.new result.errors.join(',') if result.errors.present?
+    throw StandardError.new result.errors.messages.values.map { |m| m.join(",") }.join(",") if result.errors.present?
     throw StandardError.new "La démarche #{demarche_number} n'existe pas" if result.data.demarche.nil?
 
     gql_demarche = result.data.demarche
@@ -30,7 +30,7 @@ class DemarcheActions
   def self.get_graphql_demarche(demarche_number)
     result = MesDemarches::Client.query(MesDemarches::Queries::Demarche,
                                         variables: { demarche: demarche_number })
-    throw StandardError.new result.errors.join(',') if result.errors.present?
+    throw StandardError.new result.errors.messages.values.map { |m| m.join(",") }.join(",") if result.errors.present?
     throw StandardError.new "La démarche #{demarche_number} n'existe pas" if result&.data&.demarche.nil?
 
     result.data.demarche

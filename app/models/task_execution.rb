@@ -30,4 +30,5 @@ class TaskExecution < ApplicationRecord
 
   belongs_to :job_task
   has_many :messages, dependent: :destroy
+  has_many :checksums, dependent: :destroy
 end

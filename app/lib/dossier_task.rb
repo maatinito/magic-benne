@@ -5,7 +5,8 @@ require 'set'
 class DossierTask < Task
   attr_reader :dossier, :exception
 
-  def process_dossier(dossier)
+  def process_dossier(task_execution, dossier)
+    @task_execution = task_execution
     @dossier = dossier
     @messages = []
     run if dossier_has_right_state
@@ -36,6 +37,10 @@ class DossierTask < Task
     @messages << Message.new(level: level, message: message)
     Rails.logger.info("Dossier: #{@dossier_nb}: #{message}")
     failed = true if level == Message::ERROR
+  end
+
+  def dedupe(filename)
+    Checksum.dedupe(@task_execution, filename)
   end
 
   private

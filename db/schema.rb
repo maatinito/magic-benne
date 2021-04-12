@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_210_330_020_302) do
+ActiveRecord::Schema.define(version: 20_210_412_024_920) do
   create_table 'attributes', force: :cascade do |t|
     t.string 'task'
     t.string 'variable'
@@ -24,6 +22,17 @@ ActiveRecord::Schema.define(version: 20_210_330_020_302) do
     t.index ['demarche_id'], name: 'index_attributes_on_demarche_id'
     t.index ['dossier'], name: 'index_attributes_on_dossier'
     t.index ['variable'], name: 'index_attributes_on_variable'
+  end
+
+  create_table 'checksums', force: :cascade do |t|
+    t.integer 'task_execution_id', null: false
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+    t.string 'filename'
+    t.string 'md5'
+    t.index ['md5'], name: 'index_checksums_on_md5'
+    t.index %w[task_execution_id filename], name: 'index_checksums_on_task_execution_id_and_filename'
+    t.index ['task_execution_id'], name: 'index_checksums_on_task_execution_id'
   end
 
   create_table 'delayed_jobs', force: :cascade do |t|
@@ -113,6 +122,7 @@ ActiveRecord::Schema.define(version: 20_210_330_020_302) do
     t.integer 'failed_attempts', default: 0, null: false
     t.string 'unlock_token'
     t.datetime 'locked_at'
+    t.boolean 'is_admin'
     t.index ['confirmation_token'], name: 'index_users_on_confirmation_token', unique: true
     t.index ['email'], name: 'index_users_on_email', unique: true
     t.index ['reset_password_token'], name: 'index_users_on_reset_password_token', unique: true
@@ -120,6 +130,7 @@ ActiveRecord::Schema.define(version: 20_210_330_020_302) do
   end
 
   add_foreign_key 'attributes', 'demarches'
+  add_foreign_key 'checksums', 'task_executions'
   add_foreign_key 'job_tasks', 'demarches'
   add_foreign_key 'messages', 'task_executions'
   add_foreign_key 'task_executions', 'job_tasks'

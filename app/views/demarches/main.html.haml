@@ -1,12 +1,14 @@
 .container-fluid
   .row
     .col
-      - if @running
-        %p
-          Synchronisation en cours. Rafraichir la page ulterieurement.
-      - else
-        = link_to 'Traiter les nouveaux dossiers', demarches_export_path, class: "btn btn-primary"
-        = link_to 'Traiter tous les dossiers', demarches_export_all_path, class: "btn btn-secondary"
+      - if current_user.is_admin
+        - if @running
+          %p
+            Synchronisation en cours. Rafraichir la page ulterieurement.
+        - else
+          = link_to 'Traiter les nouveaux dossiers', demarches_export_path, class: "btn btn-primary"
+          = link_to 'Traiter tous les dossiers', demarches_export_all_path, class: "btn btn-secondary"
+          = link_to 'Effacer les checksums', demarches_clear_checksums_path, class: "btn btn-secondary"
     .col.text-right
       - image = @with_discarded ? 'masquer.svg' : 'afficher.svg'
       = link_to image_tag(image, class: 'discard btn btn-light'), demarches_with_discarded_path(with_discarded: !@with_discarded)

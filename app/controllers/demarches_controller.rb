@@ -17,6 +17,7 @@ class DemarchesController < ApplicationController
 
   def clear_checksums
     Checksum.clear_all
+    redirect_to demarches_main_path
   end
 
   def main

@@ -79,33 +79,34 @@ class ExportExcel < DossierTask
     Rails.logger.info("Saving #{employees.size} lines for #{sheet_name}")
     headers = employees.flat_map(&:keys).reduce(Set[], :add).to_a
     path = output_path(sheet_name)
-    CSV.open(path, 'wb',
-             headers: headers,
-             write_headers: true,
-             col_sep: ';') do |csv|
-      empty_lines = params[:empty_lines]
-      empty_lines.to_i.times { csv << [] } if empty_lines.present?
-      employees.each do |line|
-        output_line = headers.map do |column|
-          value = line[column]
-          case value
-          when Date
-            value.strftime('%d/%m/%Y')
-          when Float
-            value.to_s.tr('.', ',')
-          else
-            value
+    dedupe(path) do
+      CSV.open(path, 'wb',
+               headers: headers,
+               write_headers: true,
+               col_sep: ';') do |csv|
+        empty_lines = params[:empty_lines]
+        empty_lines.to_i.times { csv << [] } if empty_lines.present?
+        employees.each do |line|
+          output_line = headers.map do |column|
+            value = line[column]
+            case value
+            when Date
+              value.strftime('%d/%m/%Y')
+            when Float
+              value.to_s.tr('.', ',')
+            else
+              value
+            end
           end
+          csv << output_line
         end
-        csv << output_line
       end
     end
-    dedupe(path)
   end
 
   def employees(sheet)
     rows = sheet.parse(title_regexps)
-    (key,) = rows&.first&.first
+    (key,_value) = rows&.first&.first
     rows.reject { |line| line[key].blank? }.map do |line|
       line.each do |key, value|
         line[key] = value.strip if value.is_a?(String)

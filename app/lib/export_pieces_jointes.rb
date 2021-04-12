@@ -69,10 +69,11 @@ class ExportPiecesJointes < DossierTask
   end
 
   def download_file(output_path, url)
-    File.open(output_path, 'w') do |f|
-      f.binmode
-      f.write URI.open(url).read
+    dedupe(output_path) do
+      File.open(output_path, 'w') do |f|
+        f.binmode
+        f.write URI.open(url).read
+      end
     end
-    dedupe(output_path)
   end
 end

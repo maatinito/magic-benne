@@ -142,18 +142,19 @@ class DemarcheService
   end
 
   def apply_task(task, dossier, task_execution)
+    return unless task.valid?
+
     task_execution.version = task.version
-    if task.valid?
-      begin
-        task.process_dossier(task_execution, dossier)
-      rescue StandardError => e
-        task.add_message(Message::ERROR, "#{e.message}<br>\n#{e.backtrace.first}")
-        Rails.logger.error("#{e.message}\n#{e.backtrace.join('\n')}")
-        task_execution.failed = true
-      end
-      update_check_messages(task_execution, task)
-      task_execution.save
+    task.task_execution = task_execution
+    begin
+      task.process_dossier(dossier)
+    rescue StandardError => e
+      task.add_message(Message::ERROR, "#{e.message}<br>\n#{e.backtrace.first}")
+      Rails.logger.error("#{e.message}\n#{e.backtrace.first(10).join('\n')}")
+      task_execution.failed = true
     end
+    update_check_messages(task_execution, task)
+    task_execution.save
   end
 
   def update_check_messages(task_execution, task)

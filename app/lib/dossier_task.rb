@@ -4,9 +4,9 @@ require 'set'
 
 class DossierTask < Task
   attr_reader :dossier, :exception
+  attr_accessor :task_execution
 
-  def process_dossier(task_execution, dossier)
-    @task_execution = task_execution
+  def process_dossier(dossier)
     @dossier = dossier
     @messages = []
     run if dossier_has_right_state

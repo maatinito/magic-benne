@@ -45,7 +45,9 @@ class DemarcheActions
   end
 
   def self.update_instructeurs(demarche, gql_demarche)
-    instructeurs = User.where(email: gql_demarche.groupe_instructeurs.flat_map(&:instructeurs).map(&:email))
+    instructeurs = User
+      .where(email: gql_demarche.groupe_instructeurs.flat_map(&:instructeurs).map(&:email))
+      .or(User.where(is_admin: true))
     demarche.instructeurs = instructeurs
   end
 end

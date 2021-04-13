@@ -5,7 +5,7 @@ module Cse
     include Utils
 
     def version
-      super + 2
+      super + 3
     end
 
     def required_fields
@@ -36,6 +36,18 @@ module Cse
       basename = params[:prefixe_fichier] || params[:champ_etat] || 'Etat'
       index = report_index(@initial_dossier, @month)
       "#{dir}/#{basename}_Mois_#{index} - #{dossier_nb} - #{@year}-#{@month}.csv"
+    end
+
+    def sheet_ok?(sheet_name, employees)
+      index = report_index(initial_dossier, @month)
+      unless (ok = (1..max_months).include?(index))
+        add_message(Message::ERROR, "Il n'est pas possible de déclarer un mois #{index}, le maximum est #{max_months}.")
+      end
+      super && ok
+    end
+
+    def max_months
+      6
     end
   end
 end

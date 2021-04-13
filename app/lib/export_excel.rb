@@ -11,7 +11,7 @@ class ExportExcel < DossierTask
   include Utils
 
   def version
-    1
+    2
   end
 
   def required_fields
@@ -65,17 +65,15 @@ class ExportExcel < DossierTask
 
   def save_sheet(sheet_name, sheet)
     employees = employees(sheet)
-    if employees.present?
-      save_employees(sheet_name, employees)
-    else
-      add_message(Message::ERROR, "L'onglet #{sheet_name} ne contient aucun employe")
-    end
+    save_employees(sheet_name, employees)
   rescue Roo::HeaderRowNotFoundError => e
     columns = e.message.gsub(%r{[/\[\]]}, '')
     add_message(Message::ERROR, "Les colonnes suivantes manquent dans le fichier Excel: #{columns}")
   end
 
   def save_employees(sheet_name, employees)
+    return unless sheet_ok?(sheet_name, employees)
+
     Rails.logger.info("Saving #{employees.size} lines for #{sheet_name}")
     headers = employees.flat_map(&:keys).reduce(Set[], :add).to_a
     path = output_path(sheet_name)
@@ -94,6 +92,8 @@ class ExportExcel < DossierTask
               value.strftime('%d/%m/%Y')
             when Float
               value.to_s.tr('.', ',')
+            when String
+              value.strip.gsub(/\s+/, ' ')
             else
               value
             end
@@ -104,9 +104,16 @@ class ExportExcel < DossierTask
     end
   end
 
+  def sheet_ok?(sheet_name, employees)
+    unless (ok = employees.present?)
+      add_message(Message::ERROR, "L'onglet #{sheet_name} ne contient aucun employe")
+    end
+    ok
+  end
+
   def employees(sheet)
     rows = sheet.parse(title_regexps)
-    (key,_value) = rows&.first&.first
+    (key, _value) = rows&.first&.first
     rows.reject { |line| line[key].blank? }.map do |line|
       line.each do |key, value|
         line[key] = value.strip if value.is_a?(String)

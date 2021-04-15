@@ -93,7 +93,7 @@ class ExportExcel < DossierTask
             when Float
               value.to_s.tr('.', ',')
             when String
-              value.strip.gsub(/\s+/, ' ')
+              value.strip.gsub(/\s+/, ' ').gsub(/;/, ',')
             else
               value
             end

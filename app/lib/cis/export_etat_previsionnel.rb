@@ -42,6 +42,7 @@ module Cis
       'Espaces verts et jardins' => 'A1203',
       'Habillement (confection)' => 'B1803',
       'Menuisier' => 'H2206',
+      'Mécanicien' => 'I1604',
       'Médiation et proximité' => 'K1204',
       'Propreté des locaux' => 'K2204',
       'Propreté urbaine' => 'K2303',

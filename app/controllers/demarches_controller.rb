@@ -6,12 +6,12 @@ class DemarchesController < ApplicationController
   before_action :authenticate_user!
 
   def export
-    ExportJob.run(false, 'storage/demarches.yml')
+    ExportJob.run(false)
     redirect_to demarches_main_path
   end
 
   def export_all
-    ExportJob.run(true, 'storage/demarches.yml')
+    ExportJob.run(true)
     redirect_to demarches_main_path
   end
 

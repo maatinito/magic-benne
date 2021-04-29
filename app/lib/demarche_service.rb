@@ -167,8 +167,7 @@ class DemarcheService
   end
 
   def on_dossier(dossier_number)
-    result = MesDemarches::Client.query(MesDemarches::Queries::Dossier,
-                                        variables: { dossier: dossier_number })
+    result = MesDemarches::Client.query(MesDemarches::Queries::Dossier,                                        variables: { dossier: dossier_number })
     dossier = (data = result.data) ? data.dossier : nil
     yield dossier
     Rails.logger.error(result.errors.values.join(',')) unless data
@@ -198,6 +197,6 @@ class DemarcheService
   end
 
   def config_file_name
-    @config_file_name ||= Rails.root.join('storage', 'demarches.yml')
+    @config_file_name ||= Rails.root.join('storage', ENV.fetch('CONFIG', 'demarches.yml'))
   end
 end

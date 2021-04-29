@@ -58,6 +58,14 @@ class DossierTask < Task
     objects
   end
 
+  def annotation_values(name)
+    return nil if @dossier.nil? || name.blank?
+
+    objects = @dossier.annotations.select { |champ| champ.label == name }
+    Rails.logger.warn("Sur le dossier #{@dossier.number}, le champ #{name} est vide.") if objects.blank?
+    objects
+  end
+
   def field_value(field_name)
     field_values(field_name)&.first
   end

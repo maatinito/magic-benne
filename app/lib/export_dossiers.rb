@@ -38,7 +38,6 @@ class ExportDossiers < DossierTask
 
     titles = ['ID'] + params[:champs]
     FileUtils.mkpath(output_dir)
-    output_path = "#{output_dir}/#{@demarche_dir} #{demarche_id} #{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
     CSV.open(output_path, 'wb', headers: titles + @dynamic_titles.to_a, write_headers: true, col_sep: ';') do |csv|
       @dossiers.each { |line| csv << line }
     end
@@ -49,6 +48,10 @@ class ExportDossiers < DossierTask
   end
 
   private
+
+  def output_path
+    "#{output_dir}/#{@demarche_dir}-#{demarche_id}-#{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
+  end
 
   def normalize_cells
     @dossiers.map! do |line|
@@ -103,12 +106,14 @@ class ExportDossiers < DossierTask
     }.freeze
 
   def get_fields(fields)
-    line = [dossier.number] + fields.map do |field|
-      if (path = MD_FIELDS[field]).present?
-        dossier_field_values(path)
-      else
-        field_values(field).map(&method(:champ_value)).compact.join('|')
-      end
+    line = [dossier.number] + fields.map(&method(:get_field))
+  end
+
+  def get_field(field)
+    if (path = MD_FIELDS[field]).present?
+      dossier_field_values(path)
+    else
+      (field_values(field) + annotation_values(field)).map(&method(:champ_value)).compact.join('|')
     end
   end
 
@@ -124,6 +129,8 @@ class ExportDossiers < DossierTask
   end
 
   def champ_value(champ)
+    return nil unless champ
+
     case champ.__typename
     when 'TextChamp', 'IntegerNumberChamp', 'DecimalNumberChamp', 'CiviliteChamp'
       champ.value || ''
@@ -140,7 +147,7 @@ class ExportDossiers < DossierTask
     when 'DossierLinkChamp'
       champ.string_value
     when 'PieceJustificativeChamp'
-      champ.file.filename
+      champ&.file&.filename
     when 'SiretChamp'
       champ.string_value
     else

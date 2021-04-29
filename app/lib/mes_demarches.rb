@@ -172,12 +172,11 @@ module MesDemarches
               }
           }
       }
-      groupeInstructeur {
-        instructeurs {
-          id
-          email
-        }
+      instructeurs {
+        id
+        email
       }
+      
     }
 
     query DossiersModifies($demarche: Int!, $since: ISO8601DateTime!, $cursor: String) {
@@ -229,6 +228,11 @@ module MesDemarches
           }
           champs {
             ...ChampInfo
+            ... on RepetitionChamp {
+                champs {
+                    ...ChampInfo
+                }
+            }
             ... on DossierLinkChamp {
               stringValue
               dossier {

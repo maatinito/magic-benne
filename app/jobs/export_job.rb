@@ -5,7 +5,7 @@ class ExportJob < CronJob
 
   MANUAL_SYNC = 'ManualSync'
 
-  def perform(reset: false, config: 'storage/demarches.yml')
+  def perform(reset: false, config: nil)
     Sync.find_or_create_by(job: MANUAL_SYNC)
     Sync.find_or_create_by(job: self.class.name) do
       DemarcheService.new(reset: reset, config_file: config).process
@@ -20,7 +20,7 @@ class ExportJob < CronJob
   end
 
   class << self
-    def run(reset, config)
+    def run(reset, config: nil)
       Sync.find_or_create_by(job: MANUAL_SYNC) do
         ExportJob.perform_later(reset: reset, config: config)
       end

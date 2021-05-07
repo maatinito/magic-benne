@@ -66,6 +66,9 @@ class ExportDossiers < DossierTask
       'ID' => 'number',
       'Email' => 'usager.email',
       'Archivé' => 'archived',
+      'Civilité' => 'demandeur.civilite',
+      'Nom' => 'demandeur.nom',
+      'Prénom' => 'demandeur.prenom',
       'État du dossier' => 'state',
       'Dernière mise à jour le' => 'date_derniere_modification',
       'Déposé le' => 'date_passage_en_construction',
@@ -113,7 +116,7 @@ class ExportDossiers < DossierTask
     if (path = MD_FIELDS[field]).present?
       dossier_field_values(path)
     else
-      (field_values(field) + annotation_values(field)).map(&method(:champ_value)).compact.join('|')
+      (field_values(field) + annotation_values(field)).map(&method(:champ_value)).compact.select(&:present?).join('|')
     end
   end
 

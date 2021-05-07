@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExportJob < CronJob
-  self.schedule_expression = ENV.fetch(SCHEDULE, 'every weekday at 18:30')
+  self.schedule_expression = ENV.fetch('SCHEDULE', 'every weekday at 18:30')
 
   MANUAL_SYNC = 'ManualSync'
 

@@ -67,7 +67,7 @@ module Utils
 
       @initial_dossier = initial_dossier_field.dossier
       if @initial_dossier.nil?
-        throw "Mes-Démarche n'a pas retourné le sous-dossier #{initial_dossier_field.stringValue} à partir du dossier #{dossier.number}"
+        throw "Mes-Démarche n'a pas retourné le sous-dossier #{initial_dossier_field.string_value} à partir du dossier #{dossier.number}"
       end
     end
     @initial_dossier

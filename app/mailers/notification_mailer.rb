@@ -29,6 +29,11 @@ class NotificationMailer < ApplicationMailer
     mail(to: MAIL_INFRA, from: MAIL_FROM, subject: "#{SITE_NAME}: Répertoire NAS non monté")
   end
 
+  def report_error
+    @details = params[:message]
+    mail(to: MAIL_INFRA, from: MAIL_FROM, subject: "#{SITE_NAME}: erreur à l'exécution")
+  end
+
   private
 
   def email

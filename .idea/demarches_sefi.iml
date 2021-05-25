@@ -71,6 +71,7 @@
     <orderEntry type="library" scope="PROVIDED" name="letter_opener_web (v1.4.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="listen (v3.1.5, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="mail (v2.7.1, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="marcel (v0.3.3, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="method_source (v1.0.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="mime-types (v3.3.1, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="mry (v0.78.0.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
@@ -80,6 +81,8 @@
     <orderEntry type="library" scope="PROVIDED" name="parallel (v1.20.1, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="parser (v3.0.0.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="popper_js (v1.16.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="prawn-qrcode (v0.5.2, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="prawn-table (v0.2.2, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="premailer-rails (v1.11.1, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="public_suffix (v4.0.6, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="raabro (v1.4.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />

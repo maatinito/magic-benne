@@ -61,7 +61,8 @@ class DemarcheService
       demarche.save
       NotificationMailer.with(job: @job).job_report.deliver_now
     rescue StandardError => e
-      Rails.logger.error("#{e.message}\n#{e.backtrace.join('\n')}")
+      Rails.logger.error(e.message)
+      e.backtrace.first(15).each { |bt| Rails.logger.error(bt) }
     end
   end
 
@@ -111,19 +112,15 @@ class DemarcheService
   end
 
   def apply_updated_tasks(dossier, task_executions, tasks)
-    if dossier.present?
-      task_names = Set.new(task_executions.map { |te| te.job_task.name })
-      process_dossier(dossier, tasks.filter { |task| task_names.include?(task.class.name.underscore) })
-    else
-      TaskExecution.where(dossier: dossier).destroy_all
-    end
+    obsolete_task_names = Set.new(task_executions.map { |te| te.job_task.name })
+    process_dossier(dossier, tasks.filter { |task| obsolete_task_names.include?(task.job_task.name) })
   end
 
   def updated_task_execution_query(demarche, tasks)
     conditions = tasks.map do |task|
       TaskExecution
         .where.not(version: task.version)
-        .where(job_tasks: { name: task.class.name.underscore })
+        .where(job_task: task.job_task)
     end
     conditions
       .reduce { |c1, c2| c1.or(c2) }
@@ -167,7 +164,7 @@ class DemarcheService
   end
 
   def on_dossier(dossier_number)
-    result = MesDemarches::Client.query(MesDemarches::Queries::Dossier,                                        variables: { dossier: dossier_number })
+    result = MesDemarches::Client.query(MesDemarches::Queries::Dossier, variables: { dossier: dossier_number })
     dossier = (data = result.data) ? data.dossier : nil
     yield dossier
     Rails.logger.error(result.errors.values.join(',')) unless data
@@ -177,12 +174,12 @@ class DemarcheService
     taches = job['taches']
     return [] if taches.nil?
 
-    taches.flatten.map do |task|
+    taches.flatten.map.with_index do |task, i|
       case task
       when String
-        Object.const_get(task.camelize).new(job, {})
+        Object.const_get(task.camelize).new(job, { position_: i })
       when Hash
-        task.map { |name, params| Object.const_get(name.camelize).new(job, params || {}) }
+        task.map { |name, params| Object.const_get(name.camelize).new(job, { position_: i }.merge(params)) }
       end
     end.flatten
   end

@@ -17,8 +17,9 @@ end
 RSpec.describe DossierTask do
   let(:dossier) { FactoryBot.build(:dossier) }
   let(:demarche_id) { 1 }
+  let(:position) { 1 }
 
-  subject { TestDossierTask.new(demarche_id, { fail: failed }) }
+  subject { TestDossierTask.new(demarche_id, { fail: failed, position_: position }) }
 
   before do
     subject.process_dossier(dossier)
@@ -31,7 +32,7 @@ RSpec.describe DossierTask do
       expect(subject.dossier).to equal(dossier)
       expect(subject.demarche.id).to eq(demarche_id)
       expect(subject.exception).to be_nil
-      expect(subject.job_task.name).to eq(subject.class.name.underscore)
+      expect(subject.job_task.name).to eq("#{position}:#{subject.class.name.underscore}")
     end
   end
 

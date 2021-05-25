@@ -30,7 +30,7 @@ class DossierTask < Task
   def after_run; end
 
   def version
-    1.0
+    1.0 + @params.hash
   end
 
   def add_message(level, message)
@@ -47,22 +47,22 @@ class DossierTask < Task
 
   private
 
-  def field_values(field)
+  def field_values(field, log_empty: true)
     return nil if @dossier.nil? || field.blank?
 
     objects = [*@dossier]
     field.split(/\./).each do |name|
       objects = objects.flat_map { |object| object.champs.select { |champ| champ.label == name } }
-      Rails.logger.warn("Sur le dossier #{@dossier.number}, le champ #{field} est vide.") if objects.blank?
+      Rails.logger.warn("Sur le dossier #{@dossier.number}, le champ #{field} est vide.") if log_empty && objects.blank?
     end
     objects
   end
 
-  def annotation_values(name)
+  def annotation_values(name, log_empty: true)
     return nil if @dossier.nil? || name.blank?
 
     objects = @dossier.annotations.select { |champ| champ.label == name }
-    Rails.logger.warn("Sur le dossier #{@dossier.number}, le champ #{name} est vide.") if objects.blank?
+    Rails.logger.warn("Sur le dossier #{@dossier.number}, l'annotation #{name} est vide.") if log_empty && objects.blank?
     objects
   end
 

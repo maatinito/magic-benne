@@ -23,7 +23,8 @@ class Task
     @accessed_fields = Set[]
     @demarche = Demarche.find(demarche_id)
     @demarche_dir = ActiveStorage::Filename.new(@job[:nom_demarche] || @job[:name]).sanitized
-    @job_task = JobTask.find_or_create_by(demarche: @demarche, name: self.class.name.underscore)
+    name = "#{@params[:position_]}:#{self.class.name.underscore}"
+    @job_task = JobTask.find_or_create_by(demarche: @demarche, name: name)
   end
 
   def valid?
@@ -35,6 +36,6 @@ class Task
   end
 
   def authorized_fields
-    [:output_dir]
+    [:output_dir, :position_]
   end
 end

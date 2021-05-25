@@ -11,7 +11,7 @@ class ExportPiecesJointes < DossierTask
   include Utils
 
   def version
-    2
+    super + 2
   end
 
   def required_fields

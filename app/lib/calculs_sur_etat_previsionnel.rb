@@ -9,7 +9,7 @@ require 'fileutils'
 
 class CalculsSurEtatPrevisionnel < ExportDossierCalculations
   def version
-    1
+    super + 1
   end
 
   def required_fields

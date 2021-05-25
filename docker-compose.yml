@@ -31,6 +31,7 @@ services:
       - ${PORT}:3003
     environment:
       - APP_HOST
+      - CONFIG
       - DB_DATABASE
       - DB_HOST
       - DB_PASSWORD
@@ -55,6 +56,7 @@ services:
     restart: always
     environment:
       - APP_HOST
+      - CONFIG
       - DB_DATABASE
       - DB_HOST
       - DB_PASSWORD

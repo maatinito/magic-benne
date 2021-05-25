@@ -53,6 +53,7 @@ ENV \
     API_CPS_USERNAME=""\
     APP_HOST="localhost"\
     CAPYBARA_DRIVER="wsl"\
+    CONFIG="demarches.yml"\
     DB_DATABASE="demarches_sefi"\
     DB_HOST=""\
     DB_PASSWORD="sefi"\

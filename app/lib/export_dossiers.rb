@@ -44,7 +44,7 @@ class ExportDossiers < DossierTask
   end
 
   def version
-    1.0
+    super + 1
   end
 
   private
@@ -109,14 +109,17 @@ class ExportDossiers < DossierTask
     }.freeze
 
   def get_fields(fields)
-    line = [dossier.number] + fields.map(&method(:get_field))
+    [dossier.number] + fields.map(&method(:get_field))
   end
 
   def get_field(field)
-    if (path = MD_FIELDS[field]).present?
+    fields = field_values(field, log_empty: false) + annotation_values(field, log_empty: false)
+    if fields.present?
+      fields.map(&method(:champ_value)).compact.select(&:present?).join('|')
+    elsif (path = MD_FIELDS[field]).present?
       dossier_field_values(path)
     else
-      (field_values(field) + annotation_values(field)).map(&method(:champ_value)).compact.select(&:present?).join('|')
+      add_message(Message::WARN, "Impossible de trouver le champ #{field}")
     end
   end
 
@@ -141,10 +144,12 @@ class ExportDossiers < DossierTask
       champ.values
     when 'LinkedDropDownListChamp'
       "#{champ.primary_value}/#{champ.secondary_value}"
+    when 'DateTimeChamp'
+      date_value(champ, '%d/%m/%Y %H:%M')
     when 'DateChamp'
-      Date.iso8601(champ.value).strftime('%d/%m/%Y %H:%M')
+      date_value(champ, '%d/%m/%Y %H:%M')
     when 'CheckboxChamp'
-      puts champ.value
+      champ.value
     when 'NumeroDnChamp'
       "#{champ.numero_dn}|#{champ.date_de_naissance}"
     when 'DossierLinkChamp'
@@ -155,6 +160,15 @@ class ExportDossiers < DossierTask
       champ.string_value
     else
       puts champ.__typename
+    end
+  end
+
+  def date_value(champ, format)
+    if champ.value.present?
+      Date.iso8601(champ.value).strftime(format)
+    else
+      add_message(Message::WARN, "champ #{champ.label} vide")
+      ''
     end
   end
 

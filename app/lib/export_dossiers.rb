@@ -147,7 +147,7 @@ class ExportDossiers < DossierTask
     when 'DateTimeChamp'
       date_value(champ, '%d/%m/%Y %H:%M')
     when 'DateChamp'
-      date_value(champ, '%d/%m/%Y %H:%M')
+      date_value(champ, '%d/%m/%Y')
     when 'CheckboxChamp'
       champ.value
     when 'NumeroDnChamp'

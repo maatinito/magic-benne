@@ -33,7 +33,7 @@ RUN bundle config --global frozen 1 &&\
 FROM base
 ENV APP_PATH /sefi
 #----- minimum set of packages including PostgreSQL client, yarn
-RUN apk add --no-cache --update tzdata libcurl postgresql-libs yarn sqlite-libs sqlite
+RUN apk add --no-cache --update tzdata libcurl postgresql-libs yarn sqlite-libs sqlite openjdk8-jre-base
 
 WORKDIR ${APP_PATH}
 RUN adduser -Dh ${APP_PATH} userapp

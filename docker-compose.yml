@@ -67,6 +67,8 @@ services:
       - MAIL_DEV
       - MAIL_FROM
       - MAIL_INFRA
+      - MAILJET_API_KEY
+      - MAILJET_SECRET_KEY
       - RAILS_ENV=${ENV:-production}
       - SITE_NAME
       - SMTP_HOST

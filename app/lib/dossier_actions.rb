@@ -6,6 +6,7 @@ class DossierActions
   def self.on_dossiers(demarche_id, since)
     cursor = nil
     loop do
+      GC.compact
       response = MesDemarches::Client.query(MesDemarches::Queries::DossiersModifies,
                                             variables: {
                                               demarche: demarche_id,

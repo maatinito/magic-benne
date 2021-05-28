@@ -76,7 +76,6 @@ class DemarcheService
 
         process_dossier(dossier, tasks)
 
-        GC.compact
       end
     end
     tasks.each(&:after_run)

@@ -45,6 +45,7 @@ services:
       - MAILJET_API_KEY
       - MAILJET_SECRET_KEY
       - RAILS_ENV=${ENV:-production}
+      - SCHEDULE
       - SITE_NAME
       - SMTP_HOST
     volumes:
@@ -72,11 +73,13 @@ services:
       - MAILJET_API_KEY
       - MAILJET_SECRET_KEY
       - RAILS_ENV=${ENV:-production}
+      - SCHEDULE
       - SITE_NAME
       - SMTP_HOST
     volumes:
-      - storage:/sefi/storage
-      - export:/sefi/export
+      - storage:/magic-benne/storage
+      - export1:/magic-benne/export1
+      - export2:/magic-benne/export2
 
 volumes:
   storage:
@@ -85,10 +88,16 @@ volumes:
       type: none
       device: $ROOT/storage
       o: bind
-  export:
+  export1:
     driver: local
     driver_opts:
       type: none
-      device: $ROOT/export
+      device: $EXPORT1
+      o: bind
+  export2:
+    driver: local
+    driver_opts:
+      type: none
+      device: $EXPORT2
       o: bind
 

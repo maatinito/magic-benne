@@ -31,7 +31,7 @@ RUN bundle config --global frozen 1 &&\
 
 #----------- final tps
 FROM base
-ENV APP_PATH /sefi
+ENV APP_PATH /magic-benne
 #----- minimum set of packages including PostgreSQL client, yarn
 RUN apk add --no-cache --update tzdata libcurl postgresql-libs yarn sqlite-libs sqlite openjdk8-jre
 
@@ -54,11 +54,11 @@ ENV \
     APP_HOST="localhost"\
     CAPYBARA_DRIVER="wsl"\
     CONFIG="demarches.yml"\
-    DB_DATABASE="demarches_sefi"\
+    DB_DATABASE="magic-benne"\
     DB_HOST=""\
-    DB_PASSWORD="sefi"\
+    DB_PASSWORD="magic-benne"\
     DB_POOL=""\
-    DB_USERNAME="sefi"\
+    DB_USERNAME="magic-benne"\
     GRAPHQL_BEARER=""\
     GRAPHQL_HOST=https://www.mes-demarches.gov.pf\
     MAIL_DEV=""\
@@ -77,7 +77,7 @@ RUN RAILS_ENV=production bundle exec rails assets:precompile
 RUN chmod a+x $APP_PATH/app/lib/docker-entry-point.sh
 
 EXPOSE 3000
-ENTRYPOINT ["/sefi/app/lib/docker-entry-point.sh"]
+ENTRYPOINT ["/magic-benne/app/lib/docker-entry-point.sh"]
 CMD ["rails", "server", "-b", "0.0.0.0"]
 
 

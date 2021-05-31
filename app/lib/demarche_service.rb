@@ -129,7 +129,7 @@ class DemarcheService
 
   def process_dossier(dossier, tasks)
     tasks.each do |task|
-      Rails.logger.tagged(task.class.name) do
+      Rails.logger.tagged(task.name) do
         task_execution = TaskExecution.find_or_create_by(dossier: dossier.number, job_task: task.job_task)
         apply_task(task, dossier, task_execution)
         task_execution.save

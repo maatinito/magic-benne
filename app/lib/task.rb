@@ -2,7 +2,7 @@
 
 class Task
   attr_accessor :demarche_id
-  attr_reader :params, :demarche_dir, :output_dir, :job_task, :messages
+  attr_reader :params, :demarche_dir, :output_dir, :job_task, :messages, :name
   attr_writer :errors
 
   def initialize(job, params)

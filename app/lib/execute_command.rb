@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'open3'
 
 class ExecuteCommand < DossierTask
-
   def version
     super + 1
   end
@@ -28,7 +29,7 @@ class ExecuteCommand < DossierTask
     command = params[:commande]
     stdout, stderr, status = Open3.capture3(command)
     if status.exitstatus != 0
-      NotificationMailer.with(message: stderr + "\n\nSortie\n" + stdout).report_error.deliver_later
+      NotificationMailer.with(message: "#{stderr}\n\nSortie\n#{stdout}").report_error.deliver_later
     end
   end
 end

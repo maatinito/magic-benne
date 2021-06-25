@@ -62,7 +62,9 @@ class DossierTask < Task
     return nil if @dossier.nil? || name.blank?
 
     objects = @dossier.annotations.select { |champ| champ.label == name }
-    Rails.logger.warn("Sur le dossier #{@dossier.number}, l'annotation #{name} est vide.") if log_empty && objects.blank?
+    if log_empty && objects.blank?
+      Rails.logger.warn("Sur le dossier #{@dossier.number}, l'annotation #{name} est vide.")
+    end
     objects
   end
 

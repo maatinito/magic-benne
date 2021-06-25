@@ -36,6 +36,6 @@ class Task
   end
 
   def authorized_fields
-    [:output_dir, :position_]
+    %i[output_dir position_]
   end
 end

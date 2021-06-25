@@ -12,11 +12,12 @@ class ExportBlocs < ExportDossiers
   end
 
   def run
+    compute_dynamic_fields
     subfields = params[:champs]
     repetitions = param_values(:bloc)
     lines = repetitions_to_table(repetitions, subfields)
+
     lines.each do |line|
-      add_dynamic_columns(line)
       @dossiers << line
     end
   end
@@ -28,28 +29,27 @@ class ExportBlocs < ExportDossiers
     "#{output_dir}/#{@demarche_dir}-#{demarche_id}-#{field_name}-#{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
   end
 
-  private
-
   def repetitions_to_table(repetitions, subfields)
     repetitions.flat_map do |repetition|
-      repetition_to_table(repetition, subfields) if repetition.__typename == 'RepetitionChamp'
-    end
+      if repetition.__typename == 'RepetitionChamp' && repetition.champs.present?
+        repetition_to_table(repetition,
+                            subfields)
+      end
+    end.compact
   end
 
   def repetition_to_table(repetition, subfields)
     repetition_hashes(repetition).map do |hash|
-      [@dossier.number] + subfields.map do |field|
-        hash[field] || get_field(field)
-      end
+      @computed = hash
+      get_fields(subfields)
     end
   end
 
   def repetition_hashes(repetition_champ)
-    repetition_champ.champs.reduce([{}]) do |result, champ|
+    repetition_champ.champs.each_with_object([{}]) do |champ, result|
       hash_line = result.last
       result << (hash_line = {}) if hash_line.key?(champ.label) # next line/hash
       hash_line[champ.label] = champ_value(champ)
-      result
     end
   end
 end

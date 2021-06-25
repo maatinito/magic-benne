@@ -75,7 +75,6 @@ class DemarcheService
         next if (count += 1) > 1_000_000
 
         process_dossier(dossier, tasks)
-
       end
     end
     tasks.each(&:after_run)
@@ -95,19 +94,21 @@ class DemarcheService
   # end
 
   def process_updated_tasks(demarche, tasks)
-    tasks.each(&:before_run)
-    updated_task_execution_query(demarche, tasks)
-      .group_by(&:dossier)
-      .each do |dossier_nb, task_executions|
-      on_dossier(dossier_nb) do |dossier|
-        if dossier.present?
-          apply_updated_tasks(dossier, task_executions, tasks)
-        else
-          TaskExecution.where(dossier: dossier_nb).destroy_all
+    Rails.logger.tagged('UpdatedTasks') do
+      tasks.each(&:before_run)
+      updated_task_execution_query(demarche, tasks)
+        .group_by(&:dossier)
+        .each do |dossier_nb, task_executions|
+        on_dossier(dossier_nb) do |dossier|
+          if dossier.present?
+            apply_updated_tasks(dossier, task_executions, tasks)
+          else
+            TaskExecution.where(dossier: dossier_nb).destroy_all
+          end
         end
       end
+      tasks.each(&:after_run)
     end
-    tasks.each(&:after_run)
   end
 
   def apply_updated_tasks(dossier, task_executions, tasks)
@@ -129,7 +130,7 @@ class DemarcheService
 
   def process_dossier(dossier, tasks)
     tasks.each do |task|
-      Rails.logger.tagged(task.name) do
+      Rails.logger.tagged(task.job_task.name) do
         task_execution = TaskExecution.find_or_create_by(dossier: dossier.number, job_task: task.job_task)
         apply_task(task, dossier, task_execution)
         task_execution.save

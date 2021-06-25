@@ -17,15 +17,13 @@ class ExportDossiers < DossierTask
   end
 
   def run
-    fields = params[:champs]
-    line = get_fields(fields)
-    add_dynamic_columns(line)
+    compute_dynamic_fields
+    line = get_fields(params[:champs])
     @dossiers << line
   end
 
   def before_run
     @dossiers = []
-    @dynamic_titles = Set.new
     @calculs.each(&:before_run)
   end
 
@@ -36,9 +34,8 @@ class ExportDossiers < DossierTask
 
     normalize_cells
 
-    titles = ['ID'] + params[:champs]
     FileUtils.mkpath(output_dir)
-    CSV.open(output_path, 'wb', headers: titles + @dynamic_titles.to_a, write_headers: true, col_sep: ';') do |csv|
+    CSV.open(output_path, 'wb', headers: get_column_names, write_headers: true, col_sep: ';') do |csv|
       @dossiers.each { |line| csv << line }
     end
   end
@@ -48,6 +45,17 @@ class ExportDossiers < DossierTask
   end
 
   private
+
+  def get_column_names
+    ['ID'] + params[:champs].map do |elt|
+      case elt
+      when Hash
+        elt['colonne']
+      when String
+        elt
+      end
+    end
+  end
 
   def output_path
     "#{output_dir}/#{@demarche_dir}-#{demarche_id}-#{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
@@ -112,14 +120,28 @@ class ExportDossiers < DossierTask
     [dossier.number] + fields.map(&method(:get_field))
   end
 
-  def get_field(field)
-    fields = field_values(field, log_empty: false) + annotation_values(field, log_empty: false)
-    if fields.present?
-      fields.map(&method(:champ_value)).compact.select(&:present?).join('|')
-    elsif (path = MD_FIELDS[field]).present?
-      dossier_field_values(path)
+  def get_field(param)
+    case param
+    when String
+      field = param
+      par_defaut = ''
+    when Hash
+      par_defaut = param['par_defaut'] || ''
+      field = param['champ']
+    end
+    if field
+      values = @computed[field] if @computed.is_a? Hash
+      if values
+        values.is_a?(Array) ? values.join('|') : values
+      elsif (values = field_values(field, log_empty: false) + annotation_values(field, log_empty: false)).present?
+        values.map(&method(:champ_value)).compact.select(&:present?).join('|')
+      elsif (path = MD_FIELDS[field]).present?
+        dossier_field_values(path)
+      else
+        add_message(Message::WARN, "Impossible de trouver le champ #{field}")
+      end
     else
-      add_message(Message::WARN, "Impossible de trouver le champ #{field}")
+      par_defaut
     end
   end
 
@@ -172,12 +194,8 @@ class ExportDossiers < DossierTask
     end
   end
 
-  def add_dynamic_columns(line)
-    if @calculs.present?
-      dynamic_cells = compute_cells
-      @dynamic_titles.merge dynamic_cells.keys if dynamic_cells.present?
-      @dynamic_titles.each { |column| line << (dynamic_cells[column] || '') }
-    end
+  def compute_dynamic_fields
+    @computed = compute_cells if @calculs.present?
   end
 
   def compute_cells

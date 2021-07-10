@@ -50,7 +50,8 @@ services:
       - SMTP_HOST
     volumes:
       - storage:/sefi/storage
-      - export:/sefi/export
+      - export1:/magic-benne/export1
+      - export2:/magic-benne/export2
 
   worker:
     image: ${IMAGE}:${TAG:-latest}

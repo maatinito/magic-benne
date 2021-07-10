@@ -49,7 +49,7 @@ services:
       - SITE_NAME
       - SMTP_HOST
     volumes:
-      - storage:/sefi/storage
+      - storage:/magic-benne/storage
       - export1:/magic-benne/export1
       - export2:/magic-benne/export2
 

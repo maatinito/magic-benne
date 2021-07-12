@@ -35,7 +35,8 @@ class DossierTask < Task
   def after_run; end
 
   def version
-    1.0 + @params.hash
+    @params_version ||= @params.values.reduce(Digest::SHA1.new) { |d, s| d << s.to_s }.hexdigest.to_i(16) & 0x7fffffff
+    1 + @params_version
   end
 
   def add_message(level, message)

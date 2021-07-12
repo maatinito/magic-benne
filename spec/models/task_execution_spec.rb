@@ -8,7 +8,7 @@
 #  discarded_at :datetime
 #  dossier      :integer
 #  failed       :boolean
-#  version      :float
+#  version      :bigint
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  job_task_id  :integer          not null

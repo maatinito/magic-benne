@@ -200,20 +200,6 @@ module MesDemarches
               }
               ... on DossierLinkChamp {
                 stringValue
-                dossier {
-                  ...DossierInfo
-                  annotations {
-                      ...ChampInfo
-                  }
-                  champs {
-                      ...ChampInfo
-                      ... on RepetitionChamp {
-                          champs {
-                              ...ChampInfo
-                          }
-                      }
-                  }
-                }
               }
             }
           }
@@ -235,22 +221,30 @@ module MesDemarches
             }
             ... on DossierLinkChamp {
               stringValue
-              dossier {
-                ...DossierInfo
-                annotations {
-                    ...ChampInfo
-                }
-                champs {
-                    ...ChampInfo
-                }
-              }
             }
           }
         }
       }
   GRAPHQL
 
-  Mutation = Client.parse <<-'GRAPHQL'
+  # ... on DossierLinkChamp {
+  #   stringValue
+  #   dossier {
+  #     ...DossierInfo
+  #     annotations {
+  #       ...ChampInfo
+  #     }
+  #     champs {
+  #       ...ChampInfo
+  #       ... on RepetitionChamp {
+  #         champs {
+  #           ...ChampInfo
+  #         }
+  #       }
+  #     }
+  #   }
+
+    Mutation = Client.parse <<-'GRAPHQL'
     mutation EnvoyerMessage($dossierId: ID!, $instructeurId: ID!, $body: String!, $clientMutationId: String) {
         dossierEnvoyerMessage(
             input: {

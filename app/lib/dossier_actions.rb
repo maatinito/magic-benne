@@ -18,6 +18,10 @@ class DossierActions
         throw StandardError.new "La démarche #{demarche_id} est introuvable #{ENV['GRAPHQL_HOST']}: #{response.errors.values.join(',')}"
       end
 
+      if data&.errors&.values&.present?
+        throw StandardError.new "La requete pour recevoir les dossiers de #{demarche_id} comporte des erreurs #{response.errors.values.join(',')}"
+      end
+
       dossiers = data.demarche.dossiers
       dossiers.nodes.each do |dossier|
         yield dossier if dossier.present?

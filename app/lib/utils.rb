@@ -64,12 +64,21 @@ module Utils
       if initial_dossier_field.nil?
         throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}"
       end
-
-      @initial_dossier = initial_dossier_field.dossier
-      if @initial_dossier.nil?
-        throw "Mes-Démarche n'a pas retourné le sous-dossier #{initial_dossier_field.string_value} à partir du dossier #{dossier.number}"
+      dossier_number = initial_dossier_field.string_value
+      if dossier_number.present?
+        on_dossier(dossier_number) do |dossier|
+          @initial_dossier = dossier
+        end
       end
     end
     @initial_dossier
+  end
+
+  def on_dossier(dossier_number)
+    dossier_number = dossier_number.to_i if dossier_number.is_a?(String)
+    result = MesDemarches::Client.query(MesDemarches::Queries::Dossier, variables: { dossier: dossier_number })
+    dossier = (data = result.data) ? data.dossier : nil
+    yield dossier
+    Rails.logger.error(result.errors.values.join(',')) unless data
   end
 end

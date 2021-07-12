@@ -3,7 +3,7 @@
 module Cis
   class ExportEtatReel < ExportEtatPrevisionnel
     def version
-      super + 1
+      super + 2
     end
 
     def required_fields

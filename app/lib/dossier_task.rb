@@ -9,7 +9,12 @@ class DossierTask < Task
   def process_dossier(dossier)
     @dossier = dossier
     @messages = []
-    run if dossier_has_right_state
+
+    if dossier_has_right_state
+      run
+    else
+      Rails.logger.info("Dossier ignoré par la tache (#{dossier.state})")
+    end
   end
 
   def authorized_fields

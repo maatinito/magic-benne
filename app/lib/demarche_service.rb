@@ -147,7 +147,7 @@ class DemarcheService
       task.process_dossier(dossier)
     rescue StandardError => e
       task.add_message(Message::ERROR, "#{e.message}<br>\n#{e.backtrace.first}")
-      Rails.logger.error("#{e.message}\n#{e.backtrace.first(10).join('\n')}")
+      Rails.logger.error("#{e.message}\n#{e.backtrace.first(15).join('\n')}")
       task_execution.failed = true
     end
     update_check_messages(task_execution, task)

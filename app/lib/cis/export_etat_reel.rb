@@ -36,7 +36,7 @@ module Cis
       file = dossier.annotations.select { |champ| champ.label == 'Candidats admis' }&.first&.file
       throw "Le dossier initial #{dossier.number} n'a pas de list de candidats admis" if file.nil?
       download(file.url, file.filename) do |f|
-        xlsx = Roo::Spreadsheet.open(f, csv_options: { col_sep: ';', encoding: Encoding::UTF_8 })
+        xlsx = Roo::Spreadsheet.open(f, csv_options: { col_sep: ';', encoding: Encoding::ISO_8859_1 })
         sheet = xlsx.sheet(0)
         start_date = Date.parse(sheet.cell(2, 2))
         start_month = start_date.month

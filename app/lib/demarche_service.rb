@@ -71,11 +71,9 @@ class DemarcheService
     tasks.each(&:before_run)
     count = 0
     DossierActions.on_dossiers(demarche.id, since) do |dossier|
-      Rails.logger.tagged(dossier.number) do
-        next if (count += 1) > 1_000_000
+      next if (count += 1) > 1_000_000
 
-        process_dossier(dossier, tasks)
-      end
+      process_dossier(dossier, tasks)
     end
     tasks.each(&:after_run)
   end

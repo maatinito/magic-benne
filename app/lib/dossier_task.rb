@@ -42,7 +42,7 @@ class DossierTask < Task
   def dedupe(filename)
     overwritten = File.exist?(filename)
     yield
-    Checksum.dedupe(@task_execution, filename) unless overwritten
+    Checksum.dedupe(@task_execution, filename, overwritten: overwritten)
   end
 
   private

@@ -25,10 +25,10 @@
 class Checksum < ApplicationRecord
   belongs_to :task_execution
 
-  def self.dedupe(task_execution, filename)
+  def self.dedupe(task_execution, filename, overwritten: false)
     md5 = hexdigest(filename)
     checksum = Checksum.find_or_initialize_by(task_execution: task_execution, filename: filename)
-    if checksum.md5 == md5
+    if checksum.md5 == md5 && !overwritten
       File.delete(filename)
     else
       checksum.md5 = md5
@@ -43,7 +43,7 @@ class Checksum < ApplicationRecord
   def self.hexdigest(filename)
     File.open(filename, 'rb') do |io|
       dig = Digest::MD5.new
-      buf = ''
+      buf = +''
       dig.update(buf) while io.read(4096, buf)
       dig.hexdigest
     end

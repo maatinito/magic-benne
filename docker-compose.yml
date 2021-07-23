@@ -52,6 +52,8 @@ services:
       - storage:/magic-benne/storage
       - export1:/magic-benne/export1
       - export2:/magic-benne/export2
+    depends_on:
+      - db
 
   worker:
     image: ${IMAGE}:${TAG:-latest}
@@ -81,6 +83,16 @@ services:
       - storage:/magic-benne/storage
       - export1:/magic-benne/export1
       - export2:/magic-benne/export2
+    depends_on:
+      - db
+
+  db:
+    image: postgres:10-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+    volumes:
+      - db:/var/lib/postgresql/data
 
 volumes:
   storage:
@@ -100,5 +112,11 @@ volumes:
     driver_opts:
       type: none
       device: $EXPORT2
+      o: bind
+  db:
+    driver: local
+    driver_opts:
+      type: none
+      device: $ROOT/postgres
       o: bind
 

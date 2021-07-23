@@ -29,8 +29,10 @@ class Checksum < ApplicationRecord
     md5 = hexdigest(filename)
     checksum = Checksum.find_or_initialize_by(task_execution: task_execution, filename: filename)
     if checksum.md5 == md5 && !overwritten
+      Rails.logger.info("Checksum: #{filename} non regénéré car identique à la précédente version")
       File.delete(filename)
     else
+      Rails.logger.info("Checksum: #{filename} nouveau ou différent de la version précédente.")
       checksum.md5 = md5
       checksum.save
     end

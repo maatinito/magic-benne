@@ -39,6 +39,6 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
-/export/
+/export1/
 /.idea/misc.xml
 /.env

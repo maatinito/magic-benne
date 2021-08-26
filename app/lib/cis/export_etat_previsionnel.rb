@@ -3,7 +3,7 @@
 module Cis
   class ExportEtatPrevisionnel < ExportExcel
     def version
-      super + 1
+      super + 2
     end
 
     private
@@ -19,7 +19,7 @@ module Cis
     end
 
     def sheet_regexp
-      /Stagiaires/
+      /^((?!Menus).)*$/
     end
 
     def output_path(_sheet_name)

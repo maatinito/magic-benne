@@ -35,7 +35,7 @@ class ExportDossiers < DossierTask
     normalize_cells
 
     FileUtils.mkpath(output_dir)
-    CSV.open(output_path, 'wb', headers: get_column_names, write_headers: true, col_sep: ';') do |csv|
+    CSV.open(output_path, 'wb', headers: column_names, write_headers: true, col_sep: ';') do |csv|
       @dossiers.each { |line| csv << line }
     end
   end
@@ -46,7 +46,7 @@ class ExportDossiers < DossierTask
 
   private
 
-  def get_column_names
+  def column_names
     ['ID'] + params[:champs].map do |elt|
       case elt
       when Hash
@@ -174,12 +174,10 @@ class ExportDossiers < DossierTask
       champ.value
     when 'NumeroDnChamp'
       "#{champ.numero_dn}|#{champ.date_de_naissance}"
-    when 'DossierLinkChamp'
+    when 'DossierLinkChamp', 'SiretChamp'
       champ.string_value
     when 'PieceJustificativeChamp'
       champ&.file&.filename
-    when 'SiretChamp'
-      champ.string_value
     else
       puts champ.__typename
     end

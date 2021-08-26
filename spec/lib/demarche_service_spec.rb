@@ -2,8 +2,9 @@
 
 require 'rails_helper'
 
+DEMARCHE = 828
+
 VCR.use_cassette('ds') do
-  DEMARCHE = 828
   DemarcheActions.instructeur_id(DEMARCHE, 'clautier@idt.pf')
 
   describe 'DemarcheService' do

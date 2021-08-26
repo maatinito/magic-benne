@@ -38,8 +38,6 @@ class ExportPiecesJointes < DossierTask
     end
   end
 
-  private
-
   def self.sanitize(index, filename)
     filename = ActiveStorage::Filename.new(filename.to_s).sanitized.tr('"%', '')
     i = index[filename]
@@ -51,6 +49,8 @@ class ExportPiecesJointes < DossierTask
       filename
     end
   end
+
+  private
 
   def export_file(champ, file)
     if file.present?

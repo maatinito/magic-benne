@@ -10,7 +10,7 @@ module MesDemarches
   # puts "url=#{graphql_url}"
   HTTP = GraphQL::Client::HTTP.new(graphql_url) do
     def headers(_context)
-      { "Authorization": "Bearer #{ENV['GRAPHQL_BEARER']}" }
+      { Authorization: "Bearer #{ENV['GRAPHQL_BEARER']}" }
     end
   end
 
@@ -20,7 +20,7 @@ module MesDemarches
       GraphQL::Client::HTTP.new(graphql_url) do
         lambda do
           # headers
-          { "Authorization": "Bearer #{ENV['GRAPHQL_BEARER']}" }
+          { Authorization: "Bearer #{ENV['GRAPHQL_BEARER']}" }
         end
       end
     end
@@ -176,7 +176,6 @@ module MesDemarches
         id
         email
       }
-      
     }
 
     query DossiersModifies($demarche: Int!, $since: ISO8601DateTime!, $cursor: String) {
@@ -244,7 +243,7 @@ module MesDemarches
   #     }
   #   }
 
-    Mutation = Client.parse <<-'GRAPHQL'
+  Mutation = Client.parse <<-'GRAPHQL'
     mutation EnvoyerMessage($dossierId: ID!, $instructeurId: ID!, $body: String!, $clientMutationId: String) {
         dossierEnvoyerMessage(
             input: {

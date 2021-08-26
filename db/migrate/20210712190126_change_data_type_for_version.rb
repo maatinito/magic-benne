@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class ChangeDataTypeForVersion < ActiveRecord::Migration[6.0]
   def self.up
     change_table :task_executions do |t|

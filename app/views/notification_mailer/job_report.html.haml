@@ -6,17 +6,17 @@
     - dossiers.each do |dossier_number, executions|
       %tr.d-flex
         %td
-          = link_to "Dossier #{dossier_number}", ENV['GRAPHQL_HOST'] + "/procedures/#{demarche_number}/dossiers/#{dossier_number}", target: "_blank"
+          = link_to "Dossier #{dossier_number}", ENV['GRAPHQL_HOST'] + "/procedures/#{demarche_number}/dossiers/#{dossier_number}", target: '_blank'
           %br
           Exporté le
-          = executions.first.updated_at.strftime("%d/%m/%Y à %H:%M")
+          = executions.first.updated_at.strftime('%d/%m/%Y à %H:%M')
         %td
-          - messages = executions.flat_map { |c| c.messages }.sort_by { |m| m.level }
+          - messages = executions.flat_map(&:messages).sort_by(&:level)
           %table.table
             - messages.each do |message|
               %tr
                 %td.col-4.col-md-3
                   = link_to image_tag('masquer.svg', class: 'discard btn btn-light'), discard_url(message.task_execution, discarded: 'true')
                   = message.task_execution.job_task.name
-                %td.col-2.col-md-1=message.level_string
-                %td.col-6.col-md-8=message.message
+                %td.col-2.col-md-1= message.level_string
+                %td.col-6.col-md-8= message.message

@@ -42,7 +42,6 @@ class DossierTask < Task
   def add_message(level, message)
     @messages << Message.new(level: level, message: message)
     Rails.logger.info("Dossier: #{@dossier_nb}: #{message}")
-    failed = true if level == Message::ERROR
   end
 
   def dedupe(filename)

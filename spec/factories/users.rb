@@ -35,5 +35,6 @@
 #
 FactoryBot.define do
   factory :user do
+    email { 'toto@tutu.com' }
   end
 end

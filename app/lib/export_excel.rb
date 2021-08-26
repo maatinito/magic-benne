@@ -113,8 +113,8 @@ class ExportExcel < DossierTask
 
   def employees(sheet)
     rows = sheet.parse(title_regexps)
-    (key, _value) = rows&.first&.first
-    rows.reject { |line| line[key].blank? }.map do |line|
+    (first_column_title, _value) = rows&.first&.first
+    rows.reject { |line| line[first_column_title].blank? }.map do |line|
       line.each do |key, value|
         line[key] = value.strip if value.is_a?(String)
         line[key] = normalize_date(value) if key.to_s.match?(/date/i)
@@ -136,7 +136,7 @@ class ExportExcel < DossierTask
 
   def parse(date)
     date.gsub!(%r{[-:./]}, '-')
-    if match = date.match(/(\d+)-(\d+)-(\d+)/)
+    if (match = date.match(/(\d+)-(\d+)-(\d+)/))
       day, month, year = match.captures.map(&:to_i)
       year += 2000 if year < 100
       year -= 100 if year > Date.today.year

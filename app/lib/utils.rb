@@ -27,8 +27,8 @@ module Utils
     end
     if start_month.nil?
       # Avenant
-      mois_2 = dossier_field_value(dossier, 'Nombre de salariés DiESE au mois 2', warn_if_empty: false)
-      if mois_2.present?
+      mois2 = dossier_field_value(dossier, 'Nombre de salariés DiESE au mois 2', warn_if_empty: false)
+      if mois2.present?
         start_month = mois_2.value.blank? ? 11 : 12
       end
     end

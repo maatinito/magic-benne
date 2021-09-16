@@ -52,6 +52,8 @@ module Cis
     def normalize_line(line)
       super
       line[:code_rome] = CODES_ROMES[line[:activite]] || 'Inconnu' if line[:code_rome] == '#NAME?'
+      line[:dn] = line[dn].round if line[:dn].is_a?(Float)
+      line[:dn] = '%07d' % line[dn] if line[:dn].is_a?(String)
       line
     end
   end

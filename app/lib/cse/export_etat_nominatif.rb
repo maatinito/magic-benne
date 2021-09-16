@@ -29,6 +29,8 @@ module Cse
     def normalize_line(line)
       line[:aide] = line[:aide].round if line[:aide].is_a?(Float)
       line[:aide_maximale] = 0
+      line[:dn] = line[dn].round if line[:dn].is_a?(Float)
+      line[:dn] = '%07d' % line[dn] if line[:dn].is_a?(String)
       line
     end
   end

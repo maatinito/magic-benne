@@ -146,12 +146,16 @@ class DemarcheService
     begin
       task.process_dossier(dossier)
     rescue StandardError => e
-      task.add_message(Message::ERROR, "#{e.message}<br>\n#{e.backtrace.first}")
-      Rails.logger.error("#{e.message}\n#{e.backtrace.first(15).join('\n')}")
+      task.add_message(Message::ERROR, "#{e.message}<br>\n#{backtrace(e)}")
+      Rails.logger.error("#{e.message}\n#{e.backtrace.first(15).join("\n")}")
       task_execution.failed = true
     end
     update_check_messages(task_execution, task)
     task_execution.save
+  end
+
+  def backtrace(e)
+    e.backtrace.filter { |b| b.include?('/app/') }.map { |b| b.gsub(%r{.*/app/}, 'app/') }.join("<br>\n")
   end
 
   def update_check_messages(task_execution, task)

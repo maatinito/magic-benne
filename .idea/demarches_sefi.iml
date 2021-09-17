@@ -41,7 +41,6 @@
     <orderEntry type="library" scope="PROVIDED" name="crass (v1.0.6, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="delayed_cron_job (v0.7.4, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="delayed_job (v4.1.9, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="devise (v4.7.3, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="diff-lcs (v1.4.4, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="discard (v1.2.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="domain_name (v0.5.20190701, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
@@ -50,7 +49,6 @@
     <orderEntry type="library" scope="PROVIDED" name="erubi (v1.10.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="erubis (v2.7.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="et-orbi (v1.2.4, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="factory_bot_rails (v6.1.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="graphql-client (v0.16.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="haml-lint (v0.999.999, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="haml-rails (v2.0.1, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
@@ -117,7 +115,6 @@
     <orderEntry type="library" scope="PROVIDED" name="warden (v1.2.9, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="web-console (v4.1.0, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="webmock (v3.8.3, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="webpacker (v5.2.1, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="websocket-extensions (v0.1.5, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="xray-rails (v0.3.2, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="zeitwerk (v2.4.2, Remote-rbenv: ruby-2.7.1-p83) [gem]" level="application" />

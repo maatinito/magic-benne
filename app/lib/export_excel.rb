@@ -31,27 +31,37 @@ class ExportExcel < DossierTask
 
   private
 
+  def normalize_int(symbol, line)
+    line[symbol] = to_i(line[symbol])
+  end
+
+  def to_i(value)
+    value = value.to_i if value.is_a?(String)
+    value = value.round if value.is_a?(Float)
+    value
+  end
+
   def export_report(report)
     file = report.file
     if file.present?
       filename = file.filename
       url = file.url
-      extension = File.extname(filename)
-      download_report(extension, url)
+      download_report(filename, url)
     else
       Rails.logger.warn("Pas d'état nominatif attaché au dossier #{dossier.number}")
     end
   end
 
-  def download_report(extension, url)
-    download(url, extension) do |file|
-      case extension
-      when '.xls', '.xlsx', '.csv'
+  def download_report(filename, url)
+    extension = File.extname(filename).downcase
+    case extension
+    when '.xls', '.xlsx', '.csv'
+      download_with_cache(url, filename) do |file|
         save_report(file)
-      else
-        add_message(Message::ERROR,
-                    "Mauvaise extension de fichier #{extension} pour l'état du dossier #{dossier.number}")
       end
+    else
+      add_message(Message::ERROR,
+                  "Le fichier #{filename} dans le dossier  #{dossier.number} n'est pas un fichier Excel: #{extension}")
     end
   end
 
@@ -146,15 +156,6 @@ class ExportExcel < DossierTask
       date = Date.new(1900, 1, 1)
     end
     date
-  end
-
-  def download(url, extension)
-    Tempfile.create(['res', extension]) do |f|
-      f.binmode
-      f.write URI.open(url).read
-      f.rewind
-      yield f
-    end
   end
 
   def title_regexps

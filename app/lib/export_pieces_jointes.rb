@@ -56,8 +56,7 @@ class ExportPiecesJointes < DossierTask
     if file.present?
       filename = file.filename
       url = file.url
-      output = output_path(champ, filename)
-      download_file(output, url)
+      download_file(champ, filename, url)
       Rails.logger.info("Piece #{output} sauvegardée.")
     end
   end
@@ -68,11 +67,11 @@ class ExportPiecesJointes < DossierTask
     "#{dir}/#{file}"
   end
 
-  def download_file(output_path, url)
-    dedupe(output_path) do
-      File.open(output_path, 'w') do |f|
-        f.binmode
-        f.write URI.open(url).read
+  def download_file(champ, filename, url)
+    output = output_path(champ, filename)
+    dedupe(output) do
+      download_with_cache(url, filename) do |src|
+        IO.copy_stream(src, output)
       end
     end
   end

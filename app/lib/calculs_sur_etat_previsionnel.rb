@@ -34,7 +34,7 @@ class CalculsSurEtatPrevisionnel < ExportDossierCalculations
   def computed_columns_from_field(etat)
     file_desc = etat.file
     if file_desc.present?
-      download(file_desc.url, file_desc.filename) do |file|
+      download_with_cache(file_desc.url, file_desc.filename) do |file|
         case File.extname(file_desc.filename)
         when '.xls', '.xlsx', '.csv'
           computed_columns_from_file(file)
@@ -78,15 +78,6 @@ class CalculsSurEtatPrevisionnel < ExportDossierCalculations
       value.to_s.tr('.', ',')
     else
       value
-    end
-  end
-
-  def download(url, filename)
-    Tempfile.create(['res', filename]) do |f|
-      f.binmode
-      f.write URI.open(url).read
-      f.rewind
-      yield f
     end
   end
 end

@@ -52,6 +52,39 @@ class DossierTask < Task
 
   private
 
+  def download_with_cache(url, filename)
+    date = DateTime.iso8601(dossier.date_derniere_modification).strftime('%Y-%m-%d_%H-%M-%S')
+    dir = "storage/md/#{dossier.number}"
+    FileUtils.mkpath(dir)
+    extension = File.extname(filename)
+    filepath = "#{dir}/#{File.basename(filename,extension)}_#{date}#{extension}"
+    if File.exist? filepath
+      f = File.open(filepath, "rb")
+    else
+      f = File.open(filepath, "wb")
+      f.write URI.open(url).read
+      f.rewind
+    end
+    if block_given?
+      begin
+        yield(f)
+      ensure
+        f.close
+      end
+    else
+      f
+    end
+  end
+
+  def download(url, extension)
+    Tempfile.create(['res', extension]) do |f|
+      f.binmode
+      f.write URI.open(url).read
+      f.rewind
+      yield f
+    end
+  end
+
   def field_values(field, log_empty: true)
     return nil if @dossier.nil? || field.blank?
 

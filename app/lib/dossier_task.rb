@@ -70,7 +70,7 @@ class DossierTask < Task
     if File.exist? filepath
       f = File.open(filepath, 'rb')
     else
-      f = File.open(filepath, 'wb')
+      f = File.open(filepath, 'w+b')
       IO.copy_stream(URI.parse(url).open, f)
       f.rewind
     end

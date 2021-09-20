@@ -11,7 +11,7 @@ class ExportPiecesJointes < DossierTask
   include Utils
 
   def version
-    super + 2
+    super + 3
   end
 
   def required_fields
@@ -53,12 +53,7 @@ class ExportPiecesJointes < DossierTask
   private
 
   def export_file(champ, file)
-    if file.present?
-      filename = file.filename
-      url = file.url
-      download_file(champ, filename, url)
-      Rails.logger.info("Piece #{output} sauvegardée.")
-    end
+    download_file(champ, file.filename, file.url) if file.present?
   end
 
   def output_path(champ, filename)
@@ -74,5 +69,6 @@ class ExportPiecesJointes < DossierTask
         IO.copy_stream(src, output)
       end
     end
+    Rails.logger.info("Piece #{output} sauvegardée.")
   end
 end

@@ -10,7 +10,7 @@ module Cse
     end
 
     def version
-      super + 4
+      super + 5
     end
 
     def required_fields
@@ -65,7 +65,7 @@ module Cse
         res_suspended_days = @res_people[line[:dn]]
         if res_suspended_days.present?
           dse_suspended_days = normalized_suspended(line[:jours_non_remuneres_jours_d_absence])
-          line[:jours_non_remuneres_jours_d_absence] = 100 + max(res_suspended_days, dse_suspended_days)
+          line[:jours_non_remuneres_jours_d_absence] = 100 + [res_suspended_days, dse_suspended_days].max
         end
       end
       line

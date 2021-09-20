@@ -6,7 +6,14 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.7.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.3', '>= 6.0.3.3'
+# gem 'odf-report'
+# gem 'prawn' # PDF Generation
+# gem 'prawn-qrcode' # to generate qrcode in pdfs
+# gem 'prawn-rails' # PDF Generation
+# gem 'prawn-svg'
+# gem 'prawn-table'
+gem 'rails', '~> 6.0.4'
+
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', '~> 1.4'
 # Use Puma as the app server
@@ -48,6 +55,7 @@ gem 'fugit'
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'mailjet'
+gem 'pg'
 gem 'premailer-rails'
 gem 'rails-bootstrap-tabs', '~> 0.2.3'
 gem 'roo-xls'

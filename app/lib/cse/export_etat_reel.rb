@@ -56,7 +56,7 @@ module Cse
     end
 
     RES_MAX_DAYS = 28
-    # RES_MONTH = 'Août'
+    # RES_MONTH = 'Aout'
     RES_MONTH = 'Septembre'
 
     def normalize_line(line)
@@ -85,6 +85,5 @@ module Cse
         end
       end
     end
-
   end
 end

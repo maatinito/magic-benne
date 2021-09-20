@@ -53,18 +53,7 @@ class DossierTask < Task
   private
 
   def download_with_cache(url, filename)
-    date = DateTime.iso8601(dossier.date_derniere_modification).strftime('%Y-%m-%d_%H-%M-%S')
-    dir = "storage/md/#{dossier.number}"
-    FileUtils.mkpath(dir)
-    extension = File.extname(filename)
-    filepath = "#{dir}/#{File.basename(filename,extension)}_#{date}#{extension}"
-    if File.exist? filepath
-      f = File.open(filepath, "rb")
-    else
-      f = File.open(filepath, "wb")
-      f.write URI.open(url).read
-      f.rewind
-    end
+    f = fetch_file(filename, url)
     if block_given?
       begin
         yield(f)
@@ -76,10 +65,30 @@ class DossierTask < Task
     end
   end
 
+  def fetch_file(filename, url)
+    filepath = cache_file_name(filename)
+    if File.exist? filepath
+      f = File.open(filepath, 'rb')
+    else
+      f = File.open(filepath, 'wb')
+      IO.copy_stream(URI.parse(url).open, f)
+      f.rewind
+    end
+    f
+  end
+
+  def cache_file_name(filename)
+    date = DateTime.iso8601(dossier.date_derniere_modification).strftime('%Y-%m-%d_%H-%M-%S')
+    dir = "storage/md/#{dossier.number}"
+    FileUtils.mkpath(dir)
+    extension = File.extname(filename)
+    "#{dir}/#{File.basename(filename, extension)}_#{date}#{extension}"
+  end
+
   def download(url, extension)
     Tempfile.create(['res', extension]) do |f|
       f.binmode
-      f.write URI.open(url).read
+      IO.copy_stream(URI.parse(url).open, f)
       f.rewind
       yield f
     end

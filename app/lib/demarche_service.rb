@@ -157,8 +157,8 @@ class DemarcheService
     task_execution.save
   end
 
-  def backtrace(e)
-    e.backtrace.filter { |b| b.include?('/app/') }.map { |b| b.gsub(%r{.*/app/}, 'app/') }.first(10).join("<br>\n")
+  def backtrace(exception)
+    exception.backtrace.filter { |b| b.include?('/app/') }.map { |b| b.gsub(%r{.*/app/}, 'app/') }.first(10).join("<br>\n")
   end
 
   def update_check_messages(task_execution, task)

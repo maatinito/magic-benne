@@ -21,10 +21,12 @@ module Res
     # end
 
     def normalize_line(line)
+      # rubocop:disable Naming/VariableNumber
       normalize_int(:salaire_brut_mensuel_m_1, line)
       normalize_int(:salaire_brut_mensuel_m_2, line)
       normalize_int(:salaire_brut_mensuel_m_3, line)
       normalize_int(:salaire_brut_mensuel, line)
+      # rubocop:enable Naming/VariableNumber
       line
     end
 

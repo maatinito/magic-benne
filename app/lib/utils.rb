@@ -53,7 +53,7 @@ module Utils
   def create_target_dir(dossier)
     nb = dossier.number.to_s
     nb = ('0' * (6 - nb.length)) + nb if nb.length < 6
-    dir = "#{output_dir}/#{nb}"
+    dir = "#{output_dir}/#{nb}_#{@demarche_dir}"
     FileUtils.mkpath(dir)
     dir
   end

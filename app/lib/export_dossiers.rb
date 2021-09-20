@@ -13,7 +13,7 @@ class ExportDossiers < DossierTask
   end
 
   def authorized_fields
-    super + %i[calculs]
+    super + %i[calculs prefixe_fichier]
   end
 
   def run
@@ -58,7 +58,8 @@ class ExportDossiers < DossierTask
   end
 
   def output_path
-    "#{output_dir}/#{@demarche_dir}-#{demarche_id}-#{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
+    prefixe = @params[:prefixe_fichier] || @demarche_dir
+    "#{output_dir}/#{prefixe}-#{demarche_id}-#{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
   end
 
   def normalize_cells

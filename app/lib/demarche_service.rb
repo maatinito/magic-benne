@@ -69,9 +69,9 @@ class DemarcheService
   def process_updated_dossiers(demarche, tasks)
     since = reset?(tasks) ? EPOCH : demarche.queried_at
     tasks.each(&:before_run)
-    count = 0
+    # count = 0
     DossierActions.on_dossiers(demarche.id, since) do |dossier|
-      next if (count += 1) > 1_000_000
+      # next if Rails.env.development? && (count += 1) > 10
 
       process_dossier(dossier, tasks)
     end
@@ -94,9 +94,12 @@ class DemarcheService
   def process_updated_tasks(demarche, tasks)
     Rails.logger.tagged('UpdatedTasks') do
       tasks.each(&:before_run)
+      # count = 0
       updated_task_execution_query(demarche, tasks)
         .group_by(&:dossier)
         .each do |dossier_nb, task_executions|
+        # next if Rails.env.development? && (count += 1) > 10
+
         on_dossier(dossier_nb) do |dossier|
           if dossier.present?
             apply_updated_tasks(dossier, task_executions, tasks)
@@ -155,7 +158,7 @@ class DemarcheService
   end
 
   def backtrace(e)
-    e.backtrace.filter { |b| b.include?('/app/') }.map { |b| b.gsub(%r{.*/app/}, 'app/') }.join("<br>\n")
+    e.backtrace.filter { |b| b.include?('/app/') }.map { |b| b.gsub(%r{.*/app/}, 'app/') }.first(10).join("<br>\n")
   end
 
   def update_check_messages(task_execution, task)

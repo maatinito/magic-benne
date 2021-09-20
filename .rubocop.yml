@@ -12,3 +12,7 @@ Metrics/AbcSize:
 
 Metrics/ClassLength:
   Enabled: false
+
+# Unable to set executable bit on windows.
+Lint/ScriptPermission:
+  Enabled: false

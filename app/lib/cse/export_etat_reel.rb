@@ -4,8 +4,13 @@ module Cse
   class ExportEtatReel < ExportEtatNominatif
     include Utils
 
+    def initialize(job, params)
+      super
+      load_res_people
+    end
+
     def version
-      super + 3
+      super + 4
     end
 
     def required_fields
@@ -49,5 +54,37 @@ module Cse
     def max_months
       6
     end
+
+    RES_MAX_DAYS = 28
+    # RES_MONTH = 'Août'
+    RES_MONTH = 'Septembre'
+
+    def normalize_line(line)
+      super
+      if @month == RES_MONTH || Rails.env.development?
+        res_suspended_days = @res_people[line[:dn]]
+        if res_suspended_days.present?
+          dse_suspended_days = normalized_suspended(line[:jours_non_remuneres_jours_d_absence])
+          line[:jours_non_remuneres_jours_d_absence] = 100 + max(res_suspended_days, dse_suspended_days)
+        end
+      end
+      line
+    end
+
+    def normalized_suspended(suspended)
+      [0, [RES_MAX_DAYS, to_i(suspended)].min].max
+    end
+
+    def load_res_people
+      dir = 'storage/RES'
+      csvs = Dir.glob("#{dir}/*.csv")
+      @res_people = {}
+      csvs.each do |f|
+        CSV.foreach(f, col_sep: ';', headers: true, header_converters: :symbol) do |line|
+          @res_people[line[:numero_dn]] = normalized_suspended(line[:nombre_de_jours_suspendus])
+        end
+      end
+    end
+
   end
 end

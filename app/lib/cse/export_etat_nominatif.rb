@@ -10,7 +10,7 @@ require 'fileutils'
 module Cse
   class ExportEtatNominatif < ExportExcel
     def version
-      super + 3
+      super + 4
     end
 
     private
@@ -27,10 +27,9 @@ module Cse
     end
 
     def normalize_line(line)
-      line[:aide] = line[:aide].round if line[:aide].is_a?(Float)
+      normalize_int(:aide, line)
+      normalize_int(:dn, line)
       line[:aide_maximale] = 0
-      line[:dn] = line[:dn].round if line[:dn].is_a?(Float)
-      # line[:dn] = format('%07d', line[:dn]) if line[:dn].is_a?(Integer)
       line
     end
   end

@@ -53,6 +53,7 @@ gem 'rails-bootstrap-tabs', '~> 0.2.3'
 gem 'roo-xls'
 gem 'sassc-rails' # Use SCSS for stylesheets
 gem 'typhoeus'
+gem 'yaml_db'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

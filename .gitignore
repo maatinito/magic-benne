@@ -42,3 +42,5 @@ yarn-debug.log*
 /export1/
 /.idea/misc.xml
 /.env
+/pgadmin/
+/postgres/

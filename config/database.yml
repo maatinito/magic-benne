@@ -10,10 +10,10 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("DB_POOL") { 5 } %>
-  username: <%= ENV['DB_USERNAME'] %>
-  password: <%= ENV['DB_PASSWORD'] %>
-  host: <%= ENV["DB_HOST"] %>
-  database: <%= ENV["DB_DATABASE"] %>
+  username: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  host: <%= ENV["POSTGRES_HOST"] %>
+  database: <%= ENV["POSTGRES_DB"] %>
   timeout: 5000
   # sql queries will be killed after 60s
   # we should reduce this number

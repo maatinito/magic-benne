@@ -87,12 +87,27 @@ services:
       - db
 
   db:
-    image: postgres:10-alpine
+    image: postgres:13-alpine
     restart: always
     environment:
-      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_HOST
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
     volumes:
       - db:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    restart: unless-stopped
 
 volumes:
   storage:
@@ -118,5 +133,11 @@ volumes:
     driver_opts:
       type: none
       device: $ROOT/postgres
+      o: bind
+  pgadmin:
+    driver: local
+    driver_opts:
+      type: none
+      device: $ROOT/pgadmin
       o: bind
 

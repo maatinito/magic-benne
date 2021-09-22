@@ -31,9 +31,7 @@ class ExportBlocs < ExportDossiers
 
   def repetitions_to_table(repetitions, subfields)
     repetitions.flat_map do |repetition|
-      if repetition.__typename == 'RepetitionChamp' && repetition.champs.present?
-        repetition_to_table(repetition, subfields)
-      end
+      repetition_to_table(repetition, subfields) if repetition.__typename == 'RepetitionChamp' && repetition.champs.present?
     end.compact
   end
 

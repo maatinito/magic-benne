@@ -45,9 +45,7 @@ class ExportPiecesJointesEtatReel < ExportPiecesJointes
   def initial_dossier
     if @initial_dossier.nil?
       initial_dossier_field = param_value(:champ_dossier)
-      if initial_dossier_field.nil?
-        throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}"
-      end
+      throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}" if initial_dossier_field.nil?
       dossier_number = initial_dossier_field.string_value
       if dossier_number.present?
         on_dossier(dossier_number) do |dossier|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Patch YamlDb to work with foreign keys and to dump empty tables
 module YamlDb
   class Load
@@ -18,9 +20,7 @@ module YamlDb
           foreign_keys.reject { |foreign_key| tables.include?(foreign_key.to_table) }.empty?
         end
 
-        if loadable_tables.empty?
-          abort('Unable to sequence the following tables for loading: ' + unordered_tables.join(', '))
-        end
+        abort("Unable to sequence the following tables for loading: #{unordered_tables.join(', ')}") if loadable_tables.empty?
 
         tables += loadable_tables
         unordered_tables -= loadable_tables

@@ -7,9 +7,7 @@ module Utils
     objects = [*dossier]
     field.split(/\./).each do |name|
       objects = objects.flat_map { |object| object.champs.select { |champ| champ.label == name } }
-      if warn_if_empty && objects.blank?
-        Rails.logger.warn("Sur le dossier #{dossier.number}, le champ #{field} est vide.")
-      end
+      Rails.logger.warn("Sur le dossier #{dossier.number}, le champ #{field} est vide.") if warn_if_empty && objects.blank?
     end
     objects&.first
   end
@@ -62,9 +60,7 @@ module Utils
   def initial_dossier
     if @initial_dossier.nil?
       initial_dossier_field = param_value(:champ_dossier)
-      if initial_dossier_field.nil?
-        throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}"
-      end
+      throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}" if initial_dossier_field.nil?
       dossier_number = initial_dossier_field.string_value
       if dossier_number.present?
         on_dossier(dossier_number) do |dossier|

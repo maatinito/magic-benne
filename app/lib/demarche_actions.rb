@@ -13,9 +13,7 @@ class DemarcheActions
     gql_instructeur = gql_demarche.groupe_instructeurs.flat_map(&:instructeurs).find do |i|
       i.email == instructeur_email
     end
-    if gql_instructeur.nil?
-      throw StandardError.new "Aucun instructeur #{@instructeur.email} sur la demarche #{demarche_number}"
-    end
+    throw StandardError.new "Aucun instructeur #{@instructeur.email} sur la demarche #{demarche_number}" if gql_instructeur.nil?
 
     gql_instructeur.id
   end

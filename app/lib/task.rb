@@ -13,13 +13,9 @@ class Task
 
     @errors = []
     missing_fields = (required_fields - @params.keys)
-    if missing_fields.present?
-      @errors << "Les champs #{missing_fields.join(',')} devrait être définis sur #{self.class.name.underscore}"
-    end
+    @errors << "Les champs #{missing_fields.join(',')} devrait être définis sur #{self.class.name.underscore}" if missing_fields.present?
     unknown_fields = @params.keys - authorized_fields - required_fields - @job.keys
-    if unknown_fields.present?
-      @errors << "#{unknown_fields.join(',')} n'existe(nt) pas sur #{self.class.name.underscore}"
-    end
+    @errors << "#{unknown_fields.join(',')} n'existe(nt) pas sur #{self.class.name.underscore}" if unknown_fields.present?
     @accessed_fields = Set[]
     @demarche = Demarche.find(demarche_id)
     @demarche_dir = ActiveStorage::Filename.new(@job[:nom_demarche] || @job[:name]).sanitized

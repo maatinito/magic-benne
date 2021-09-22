@@ -28,8 +28,6 @@ class ExecuteCommand < DossierTask
 
     command = params[:commande]
     stdout, stderr, status = Open3.capture3(command)
-    if status.exitstatus != 0
-      NotificationMailer.with(message: "#{stderr}\n\nSortie\n#{stdout}").report_error.deliver_later
-    end
+    NotificationMailer.with(message: "#{stderr}\n\nSortie\n#{stdout}").report_error.deliver_later if status.exitstatus != 0
   end
 end

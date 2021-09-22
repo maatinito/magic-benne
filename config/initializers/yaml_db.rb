@@ -1,0 +1,1 @@
+require Rails.root.join('app/lib/yaml_db.rb')

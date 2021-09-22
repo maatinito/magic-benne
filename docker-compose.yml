@@ -32,18 +32,18 @@ services:
     environment:
       - APP_HOST
       - CONFIG
-      - DB_DATABASE
-      - DB_HOST
-      - DB_PASSWORD
       - DB_POOL
-      - DB_USERNAME
       - GRAPHQL_BEARER
       - GRAPHQL_HOST
+      - MAILJET_API_KEY
+      - MAILJET_SECRET_KEY
       - MAIL_DEV
       - MAIL_FROM
       - MAIL_INFRA
-      - MAILJET_API_KEY
-      - MAILJET_SECRET_KEY
+      - POSTGRES_DB
+      - POSTGRES_HOST=db
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
       - RAILS_ENV=${ENV:-production}
       - SCHEDULE
       - SITE_NAME
@@ -63,18 +63,18 @@ services:
     environment:
       - APP_HOST
       - CONFIG
-      - DB_DATABASE
-      - DB_HOST
-      - DB_PASSWORD
       - DB_POOL
-      - DB_USERNAME
       - GRAPHQL_BEARER
       - GRAPHQL_HOST
+      - MAILJET_API_KEY
+      - MAILJET_SECRET_KEY
       - MAIL_DEV
       - MAIL_FROM
       - MAIL_INFRA
-      - MAILJET_API_KEY
-      - MAILJET_SECRET_KEY
+      - POSTGRES_DB
+      - POSTGRES_HOST=db
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
       - RAILS_ENV=${ENV:-production}
       - SCHEDULE
       - SITE_NAME

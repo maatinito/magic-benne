@@ -1,0 +1,6 @@
+.form
+  %label.toggle-switch
+    = check_box_tag :reprocess, '1', task_execution.reprocess,  class: 'toggle-switch-checkbox', data: { remote: true, url: reprocessjs_path(task_execution), method: 'put' }
+    %span.toggle-switch-control.round
+    %span.toggle-switch-label.on A retraiter
+    %span.toggle-switch-label.off Ne pas retraiter

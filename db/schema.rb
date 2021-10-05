@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_12_190126) do
+ActiveRecord::Schema.define(version: 2021_09_28_191337) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "attributes", force: :cascade do |t|
     t.string "task"
@@ -97,6 +100,7 @@ ActiveRecord::Schema.define(version: 2021_07_12_190126) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "version"
     t.datetime "discarded_at"
+    t.boolean "reprocess", default: false
     t.index ["discarded_at"], name: "index_task_executions_on_discarded_at"
     t.index ["dossier"], name: "index_task_executions_on_dossier"
     t.index ["failed"], name: "index_task_executions_on_failed"

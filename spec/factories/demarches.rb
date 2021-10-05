@@ -4,7 +4,7 @@
 #
 # Table name: demarches
 #
-#  id         :integer          not null, primary key
+#  id         :bigint           not null, primary key
 #  name       :string
 #  queried_at :datetime
 #  created_at :datetime         not null

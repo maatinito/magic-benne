@@ -15,6 +15,9 @@ Rails.application.routes.draw do
 
   get 'task_executions/:id/discard', to: 'task_executions#discard', as: 'discard'
   get 'task_executions/:id/undiscard', to: 'task_executions#undiscard', as: 'undiscard'
+  get 'task_executions/search'
+  put 'task_executions/:id/reprocess', to: 'task_executions#reprocess', as: 'reprocess'
+  put 'task_executions/:id/reprocessjs', to: 'task_executions#reprocessjs', as: 'reprocessjs'
 
   # view jobs
   match '/delayed_job' => DelayedJobWeb, :anchor => false, :via => %i[get post]

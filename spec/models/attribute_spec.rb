@@ -4,7 +4,7 @@
 #
 # Table name: attributes
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  dossier     :integer
 #  task        :string
 #  value       :string
@@ -21,7 +21,7 @@
 #
 # Foreign Keys
 #
-#  demarche_id  (demarche_id => demarches.id)
+#  fk_rails_...  (demarche_id => demarches.id)
 #
 require 'rails_helper'
 

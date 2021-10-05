@@ -29,16 +29,19 @@
                     %br
                     Exporté le
                     = executions.first.updated_at.strftime('%d/%m/%Y à %H:%M')
+                    -# = render partial: "shared/reprocess", locals: { task_execution: execution }
                   %td.col-10
-                    - messages = executions.flat_map(&:messages).sort_by(&:level)
-                    %table.table
-                      - messages.each do |message|
-                        %tr.d-flex
-                          %td.col-4.col-md-3
-                            - if message.task_execution.discarded?
-                              = link_to image_tag('afficher.svg', class: 'discard btn btn-light'), undiscard_path(message.task_execution, discarded: @discarded)
-                            - else
-                              = link_to image_tag('masquer.svg', class: 'discard btn btn-light'), discard_path(message.task_execution, discarded: @discarded)
-                            = message.task_execution.job_task.name
-                          %td.col-2.col-md-1= message.level_string
-                          %td.col-6.col-md-8= sanitize(message.message)
+                    - executions.each do |execution|
+                      - if execution.discarded?
+                        = link_to image_tag('afficher.svg', class: 'discard btn btn-light'), undiscard_path(execution, discarded: @discarded)
+                      - else
+                        = link_to image_tag('masquer.svg', class: 'discard btn btn-light'), discard_path(execution, discarded: @discarded)
+                      = execution.job_task.name
+                      = render partial: "shared/reprocess", locals: { task_execution: execution }
+                      - messages = execution.messages.sort_by(&:level)
+                      %table.table
+                        - messages.each do |message|
+                          %tr.d-flex
+                            %td.col-4.col-md-3
+                            %td.col-2.col-md-1= message.level_string
+                            %td.col-6.col-md-8= sanitize(message.message)

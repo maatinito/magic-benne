@@ -3,6 +3,7 @@
     = image_tag 'sefidem.png', style: 'width: 90px'
     = SITE_NAME
   %ul.nav.text-right
+    = render partial: 'layouts/search_dossiers_form'
     - if user_signed_in?
       %li.nav-item
         = link_to 'se déconnecter', destroy_user_session_path, method: :delete, class: 'navlink', style: 'margin-right: 15px'

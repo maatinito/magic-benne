@@ -4,7 +4,7 @@
 #
 # Table name: job_tasks
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  name        :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
@@ -16,7 +16,7 @@
 #
 # Foreign Keys
 #
-#  demarche_id  (demarche_id => demarches.id)
+#  fk_rails_...  (demarche_id => demarches.id)
 #
 class JobTask < ApplicationRecord
   belongs_to :demarche

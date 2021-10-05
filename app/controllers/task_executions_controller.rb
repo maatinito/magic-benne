@@ -12,4 +12,31 @@ class TaskExecutionsController < ApplicationController
     @task_execution&.undiscard
     redirect_to demarches_main_path
   end
+
+  def search
+    @dossier_number = params[:q]
+    @executions = TaskExecution.where(dossier: @dossier_number)
+                               .joins(:job_task)
+                               .includes(:job_task)
+                               .left_outer_joins(:checksums)
+                               .includes(:checksums)
+                               .order('job_tasks.name ASC')
+  end
+
+  def reprocess
+    @execution = TaskExecution.find(params[:id])
+    @execution.update!(reprocess: !@execution.reprocess)
+    flash.notice = @execution.reprocess ? "Retraitement activé pour le prochain export" : "Retraitement désactivé"
+    redirect_to task_executions_search_path(q: @execution.dossier)
+  end
+
+  def reprocessjs
+    @execution = TaskExecution.find_by_id(params[:id]) or not_found
+    @execution.update!(reprocess: !@execution.reprocess)
+    flash.notice = @execution.reprocess ? "Retraitement activé pour le prochain export" : "Retraitement désactivé"
+    respond_to do |format|
+      format.js
+      format.html { 'coucou' }
+    end
+  end
 end

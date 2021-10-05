@@ -4,10 +4,11 @@
 #
 # Table name: task_executions
 #
-#  id           :integer          not null, primary key
+#  id           :bigint           not null, primary key
 #  discarded_at :datetime
 #  dossier      :integer
 #  failed       :boolean
+#  reprocess    :boolean          default(FALSE)
 #  version      :bigint
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
@@ -22,7 +23,7 @@
 #
 # Foreign Keys
 #
-#  job_task_id  (job_task_id => job_tasks.id)
+#  fk_rails_...  (job_task_id => job_tasks.id)
 #
 require 'rails_helper'
 

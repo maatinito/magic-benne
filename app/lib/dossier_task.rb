@@ -67,12 +67,18 @@ class DossierTask < Task
 
   def fetch_file(filename, url)
     filepath = cache_file_name(filename)
-    if File.exist? filepath
+    if File.exist?(filepath) && !@task_execution.reprocess
       f = File.open(filepath, 'rb')
     else
-      f = File.open(filepath, 'w+b')
-      IO.copy_stream(URI.parse(url).open, f)
-      f.rewind
+      begin
+        f = File.open(filepath, 'w+b')
+        IO.copy_stream(URI.parse(url).open, f)
+        f.rewind
+      rescue StandardError
+        f.close
+        File.delete(filepath) if File.exist?(filename)
+        raise
+      end
     end
     f
   end

@@ -4,7 +4,7 @@
 #
 # Table name: messages
 #
-#  id                :integer          not null, primary key
+#  id                :bigint           not null, primary key
 #  level             :integer
 #  message           :string
 #  created_at        :datetime         not null
@@ -18,7 +18,7 @@
 #
 # Foreign Keys
 #
-#  task_execution_id  (task_execution_id => task_executions.id)
+#  fk_rails_...  (task_execution_id => task_executions.id)
 #
 class Message < ApplicationRecord
   ERROR = 0

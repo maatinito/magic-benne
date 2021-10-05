@@ -17,8 +17,7 @@
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   %body
     = render partial: 'layouts/header'
-    - flash.each do |type, msg|
-      - tag = type == 'notice' ? 'info' : 'warning'
-      %div{ class: "alert alert-#{tag}" }= msg
-    = yield
+    = render partial: 'layouts/flash_messages'
+    %div{ class: 'content' }
+      = yield
 

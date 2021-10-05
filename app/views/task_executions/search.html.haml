@@ -1,0 +1,25 @@
+
+- if @executions.present?
+  %h2
+    - demarche_number = @executions.first.job_task.demarche_id
+    = link_to "Dossier #{@dossier_number}", ENV['GRAPHQL_HOST'] + "/procedures/#{demarche_number}/dossiers/#{@dossier_number}", target: '_blank'
+  .container-fluid
+    - @executions.each do |execution|
+      .row
+        %h4= execution.job_task.name
+      .row
+        le
+        = execution.updated_at.strftime('%d/%m/%Y à %H:%M')
+        = render partial: "shared/reprocess", locals: { task_execution: execution }
+        - messages = execution.messages.sort_by(&:level)
+        %table.table.table-striped
+          - messages.each do |message|
+            %tr.d-flex
+              %td.col-2.col-md-1= message.level_string
+              %td.col-10.col-md-11= sanitize(message.message)
+          - outputs = execution.checksums.sort_by(&:filename)
+          - outputs.each do |checksum|
+            %tr.d-flex
+              %td.col-6.col-md-2= checksum.updated_at.strftime('%d/%m/%Y à %H:%M')
+              %td.col-6.col-md-10
+                = checksum.filename

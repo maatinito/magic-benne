@@ -1,0 +1,45 @@
+// Place all the styles related to the Dossier controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+$blue: #0069CC;
+
+@import "utils";
+@import "toggle-switch";
+
+%outline {
+  &:active:not(:disabled),
+  &:focus {
+    outline: 3px solid $blue;
+  }
+}
+
+.header-search {
+  position: relative;
+
+  .form input[type=text] {
+    padding: 9px;
+    max-width: 300px;
+    min-width: 90px;
+    margin: 0 10px 0 0;
+  }
+
+  label.hidden {
+    @extend .hidden;
+  }
+
+  button {
+    @extend %outline;
+
+    padding: 9px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}

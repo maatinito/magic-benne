@@ -50,16 +50,23 @@ class DemarcheService
     end
   end
 
+  def clean_task_executions(demarche_number, tasks)
+    TaskExecution.joins(:job_task)
+                 .where(job_tasks: { demarche_id: demarche_number })
+                 .where.not(job_task: tasks.map(&:job_task)).destroy_all
+  end
+
   def process_demarche(demarche_number, job)
     Rails.logger.tagged(@job[:name]) do
       demarche = DemarcheActions.get_demarche(demarche_number, @job[:name])
       start_time = Time.zone.now
       tasks = create_tasks(job)
+      clean_task_executions(demarche_number, tasks)
       process_updated_dossiers(demarche, tasks)
       process_updated_tasks(demarche, tasks)
       demarche.queried_at = start_time
       demarche.save
-      NotificationMailer.with(job: @job).job_report.deliver_now
+      # NotificationMailer.with(job: @job).job_report.deliver_now
     rescue StandardError => e
       Rails.logger.error(e.message)
       e.backtrace.first(15).each { |bt| Rails.logger.error(bt) }
@@ -113,17 +120,27 @@ class DemarcheService
   end
 
   def apply_updated_tasks(dossier, task_executions, tasks)
+    force_file_output_when_reprocess(task_executions)
     obsolete_task_names = Set.new(task_executions.map { |te| te.job_task.name })
     process_dossier(dossier, tasks.filter { |task| obsolete_task_names.include?(task.job_task.name) })
   end
 
+  def force_file_output_when_reprocess(task_executions)
+    Checksum.where(task_execution: task_executions.filter(&:reprocess)).destroy_all
+  end
+
   def updated_task_execution_query(demarche, tasks)
-    conditions = tasks.map do |task|
+    obsolete = tasks.map do |task|
       TaskExecution
         .where.not(version: task.version)
         .where(job_task: task.job_task)
     end
-    conditions
+    reprocess = tasks.map do |task|
+      TaskExecution
+        .where(reprocess: true)
+        .where(job_task: task.job_task)
+    end
+    (obsolete + reprocess)
       .reduce { |c1, c2| c1.or(c2) }
       .joins(:job_task)
       .where(job_tasks: { demarche_id: demarche.id })
@@ -154,6 +171,7 @@ class DemarcheService
       task_execution.failed = true
     end
     update_check_messages(task_execution, task)
+    task_execution.reprocess = false
     task_execution.save
   end
 

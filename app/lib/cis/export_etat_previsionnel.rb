@@ -19,7 +19,7 @@ module Cis
     end
 
     def sheet_regexp
-      /^((?!Menus).)*$/
+      /^((?!Menus|Feui).)*$/
     end
 
     def output_path(_sheet_name)

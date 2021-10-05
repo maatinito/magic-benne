@@ -176,7 +176,7 @@ class DemarcheService
   end
 
   def backtrace(exception)
-    exception.backtrace.filter { |b| b.include?('/app/') }.map { |b| b.gsub(%r{.*/app/}, 'app/') }.first(10).join("<br>\n")
+    exception.backtrace.filter { |b| b.include?('/app/') }.map { |b| b.gsub(%r{.*/app/}, 'app/') }.first(5).join("<br>\n")
   end
 
   def update_check_messages(task_execution, task)

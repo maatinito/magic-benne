@@ -19,7 +19,8 @@ class ExportDossiers < DossierTask
   def run
     compute_dynamic_fields
     line = get_fields(params[:champs])
-    @dossiers << line
+    @dossiers << normalize_line_for_csv(line)
+    save_csv
   end
 
   def before_run
@@ -29,15 +30,8 @@ class ExportDossiers < DossierTask
 
   def after_run
     @calculs.each(&:after_run)
-    # pp @dossiers
     return if params[:champs].blank? || @dossiers.blank?
-
-    normalize_cells
-
-    FileUtils.mkpath(output_dir)
-    CSV.open(output_path, 'wb', headers: column_names, write_headers: true, col_sep: ';') do |csv|
-      @dossiers.each { |line| csv << line }
-    end
+    save_csv
   end
 
   def version
@@ -45,6 +39,14 @@ class ExportDossiers < DossierTask
   end
 
   private
+
+  def save_csv
+    FileUtils.mkpath(output_dir)
+    CSV.open(output_path, 'wb', headers: column_names, write_headers: true, col_sep: ';') do |csv|
+      @dossiers.each { |line| csv << line }
+    end
+    Rails.logger.info("Dossiers sauveardés dans #{output_path}.")
+  end
 
   def column_names
     ['ID'] + params[:champs].map do |elt|
@@ -63,10 +65,12 @@ class ExportDossiers < DossierTask
   end
 
   def normalize_cells
-    @dossiers.map! do |line|
-      line.map do |cell|
-        cell.is_a?(String) ? cell.strip.tr(';', '/') : cell
-      end
+    @dossiers.map!(&method(:normalize_line_for_csv))
+  end
+
+  def normalize_line_for_csv(line)
+    line.map do |cell|
+      cell.is_a?(String) ? cell.strip.tr(';', '/') : cell
     end
   end
 

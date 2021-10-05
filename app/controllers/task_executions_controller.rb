@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TaskExecutionsController < ApplicationController
+  before_action :authenticate_user!
+
   def discard
     @task_execution = TaskExecution.find_by_id(params[:id])
     @task_execution&.discard
@@ -24,13 +26,6 @@ class TaskExecutionsController < ApplicationController
   end
 
   def reprocess
-    @execution = TaskExecution.find(params[:id])
-    @execution.update!(reprocess: !@execution.reprocess)
-    flash.notice = @execution.reprocess ? "Retraitement activé pour le prochain export" : "Retraitement désactivé"
-    redirect_to task_executions_search_path(q: @execution.dossier)
-  end
-
-  def reprocessjs
     @execution = TaskExecution.find_by_id(params[:id]) or not_found
     @execution.update!(reprocess: !@execution.reprocess)
     flash.notice = @execution.reprocess ? "Retraitement activé pour le prochain export" : "Retraitement désactivé"

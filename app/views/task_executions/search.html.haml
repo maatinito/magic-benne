@@ -1,4 +1,3 @@
-
 - if @executions.present?
   %h2
     - demarche_number = @executions.first.job_task.demarche_id
@@ -23,3 +22,5 @@
               %td.col-6.col-md-2= checksum.updated_at.strftime('%d/%m/%Y à %H:%M')
               %td.col-6.col-md-10
                 = checksum.filename
+- else
+  Le dossier #{@dossier_number} n'a pas été exporté. Aucune information n'est disponible.

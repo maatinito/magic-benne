@@ -67,7 +67,7 @@ class ExportBlocs < ExportDossiers
   def blocks_from(repetition_champ)
     repetition_champ.champs.each_with_object([[]]) do |champ, result|
       block = result.last
-      result << (block = []) if block.first()&.label == champ.label # next line/hash
+      result << (block = []) if block.first&.label == champ.label # next line/hash
       block << champ
     end
   end

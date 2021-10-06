@@ -29,7 +29,7 @@ class ExportDossiers < DossierTask
 
   def after_run
     @calculs.each(&:after_run)
-    @csv.close if @csv
+    @csv&.close
   end
 
   def version

@@ -106,9 +106,9 @@ class DossierTask < Task
     object_field_values(dossier, field, log_empty)
   end
 
-  def object_field_values(object, field, log_empty)
-    objects = [object]
-    field.split(/\./).each do |name|
+  def object_field_values(source, field, log_empty)
+    objects = [source]
+    field.split(/\./).each do |_name|
       objects = objects.flat_map do |object|
         select_champ(object.champs, field) + (object.respond_to?(:annotations) ? select_champ(object.annotations, field) : [])
       end

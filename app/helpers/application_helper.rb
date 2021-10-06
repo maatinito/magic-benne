@@ -13,6 +13,19 @@ module ApplicationHelper
     class_names.join(' ')
   end
 
+  def remove_element(selector, timeout: 0, inner: false)
+    script = +'(function() {'
+    script << "var el = document.querySelector('#{selector}');"
+    method = (inner ? "el.innerHTML = ''" : 'el.parentNode.removeChild(el)')
+    script << if timeout&.positive?
+                "if (el) { setTimeout(function() { #{method}; }, #{timeout}); }"
+              else
+                "if (el) { #{method} };"
+              end
+    script << '})();'
+    raw(script)
+  end
+
   def render_to_element(selector, partial:, outer: false, locals: {})
     method = outer ? 'outerHTML' : 'innerHTML'
     html = escape_javascript(render(partial: partial, locals: locals))

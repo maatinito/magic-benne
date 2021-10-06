@@ -19,7 +19,7 @@
   text-align: right;
 }
 
-.hidden {
+%hidden {
   display: none;
 }
 
@@ -30,8 +30,8 @@
 .empty-text {
   font-size: 20px;
   font-weight: bold;
-  text-align: center;
   margin: 60px 0;
+  text-align: center;
 }
 
 .empty-text-details {

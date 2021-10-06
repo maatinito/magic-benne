@@ -2,10 +2,10 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-$blue: #0069CC;
+$blue: #0069cc;
 
-@import "utils";
-@import "toggle-switch";
+@import 'utils';
+@import 'toggle-switch';
 
 %outline {
   &:active:not(:disabled),
@@ -17,29 +17,29 @@ $blue: #0069CC;
 .header-search {
   position: relative;
 
-  .form input[type=text] {
-    padding: 9px;
+  .form input {
+    margin: 0 10px 0 0;
     max-width: 300px;
     min-width: 90px;
-    margin: 0 10px 0 0;
+    padding: 9px;
   }
 
-  label.hidden {
-    @extend .hidden;
+  .hidden {
+    @extend %hidden;
   }
 
   button {
     @extend %outline;
 
-    padding: 9px;
-    border: none;
     background: none;
+    border: 0;
     cursor: pointer;
+    padding: 9px;
     position: absolute;
     right: 10px;
 
     &:hover {
-      opacity: 0.8;
+      opacity: .8;
     }
   }
 }

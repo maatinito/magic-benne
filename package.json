@@ -10,6 +10,11 @@
   },
   "version": "0.1.0",
   "devDependencies": {
+    "sass-lint-auto-fix": "^0.21.2",
     "webpack-dev-server": "^3.11.0"
+  },
+  "scripts": {
+    "lint": "sass-lint -v",
+    "lint:fix": "sass-lint-auto-fix"
   }
 }

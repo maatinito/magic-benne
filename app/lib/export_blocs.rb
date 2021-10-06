@@ -18,7 +18,7 @@ class ExportBlocs < ExportDossiers
     lines = repetitions_to_table(repetitions, subfields)
 
     lines.each do |line|
-      @dossiers << line
+      save_csv(line)
     end
   end
 
@@ -35,18 +35,40 @@ class ExportBlocs < ExportDossiers
     end.compact
   end
 
+  def get_block_fields(block, columns)
+    [dossier.number] + columns.map { |column| get_block_field(block, column) }
+  end
+
+  def get_block_field(block, column)
+    field, default = definition(column)
+    return default unless field
+
+    names = field.split(/\./)
+    return nil if names.blank?
+
+    champs = select_champ(block, names.shift)
+    look_at_document = champs.blank?
+    return get_field(column) if look_at_document
+
+    methods_to_call_on_champs = names.present?
+    return champs_to_values(champs) unless methods_to_call_on_champs
+
+    objects = champs
+    names.each { |name| objects = objects.filter_map { |object| object.send(name) if object.respond_to?(name) } }
+    objects.present? ? objects : default
+  end
+
   def repetition_to_table(repetition, subfields)
-    repetition_hashes(repetition).map do |hash|
-      @computed = hash
-      get_fields(subfields)
+    blocks_from(repetition).map do |block|
+      get_block_fields(block, subfields)
     end
   end
 
-  def repetition_hashes(repetition_champ)
-    repetition_champ.champs.each_with_object([{}]) do |champ, result|
-      hash_line = result.last
-      result << (hash_line = {}) if hash_line.key?(champ.label) # next line/hash
-      hash_line[champ.label] = champ_value(champ)
+  def blocks_from(repetition_champ)
+    repetition_champ.champs.each_with_object([[]]) do |champ, result|
+      block = result.last
+      result << (block = []) if block.first()&.label == champ.label # next line/hash
+      block << champ
     end
   end
 end

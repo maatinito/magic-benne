@@ -19,19 +19,17 @@ class ExportDossiers < DossierTask
   def run
     compute_dynamic_fields
     line = get_fields(params[:champs])
-    @dossiers << normalize_line_for_csv(line)
-    save_csv
+    save_csv(line)
   end
 
   def before_run
-    @dossiers = []
+    @csv = nil
     @calculs.each(&:before_run)
   end
 
   def after_run
     @calculs.each(&:after_run)
-    return if params[:champs].blank? || @dossiers.blank?
-    save_csv
+    @csv.close if @csv
   end
 
   def version
@@ -40,11 +38,17 @@ class ExportDossiers < DossierTask
 
   private
 
-  def save_csv
-    FileUtils.mkpath(output_dir)
-    CSV.open(output_path, 'wb', headers: column_names, write_headers: true, col_sep: ';') do |csv|
-      @dossiers.each { |line| csv << line }
+  def csv
+    if @csv.nil?
+      FileUtils.mkpath(output_dir)
+      @csv = CSV.open(output_path, 'wb', headers: column_names, write_headers: true, col_sep: ';')
     end
+    @csv
+  end
+
+  def save_csv(line)
+    csv << normalize_line_for_csv(line)
+    @csv.flush
     Rails.logger.info("Dossiers sauveardés dans #{output_path}.")
   end
 
@@ -70,7 +74,8 @@ class ExportDossiers < DossierTask
 
   def normalize_line_for_csv(line)
     line.map do |cell|
-      cell.is_a?(String) ? cell.strip.tr(';', '/') : cell
+      cell = cell.join('|') if cell.is_a? Array
+      cell.to_s.strip.tr(';', '/')
     end
   end
 
@@ -126,37 +131,47 @@ class ExportDossiers < DossierTask
   end
 
   def get_field(param)
-    case param
-    when String
-      field = param
-      par_defaut = ''
-    when Hash
-      par_defaut = param['par_defaut'] || ''
-      field = param['champ']
-    end
-    if field
-      values = @computed[field] if @computed.is_a? Hash
-      if values
-        values.is_a?(Array) ? values.join('|') : values
-      elsif (values = field_values(field, log_empty: false) + annotation_values(field, log_empty: false)).present?
-        values.map(&method(:champ_value)).compact.select(&:present?).join('|')
-      elsif (path = MD_FIELDS[field]).present?
-        dossier_field_values(path)
-      else
-        add_message(Message::WARN, "Impossible de trouver le champ #{field}")
-      end
-    else
-      par_defaut
-    end
+    field, par_defaut = definition(param)
+    return par_defaut unless field
+
+    value = @computed[field] if @computed.is_a? Hash
+    return value if value.present?
+
+    champs = field_values(field, log_empty: false)
+    return champs_to_values(champs) if champs.present?
+
+    values = dossier_values(field)
+    return values if values.present?
+
+    add_message(Message::WARN, "Impossible de trouver le champ #{field}")
+    par_defaut
   end
 
-  def dossier_field_values(path)
+  def definition(param)
+    if param.is_a?(Hash)
+      par_defaut = param['par_defaut'] || ''
+      field = param['champ']
+    else
+      field = param.to_s
+      par_defaut = ''
+    end
+    [field, par_defaut]
+  end
+
+  def champs_to_values(champs)
+    champs.map(&method(:champ_value)).compact.select(&:present?)
+  end
+
+  def dossier_values(field)
+    path = MD_FIELDS[field]
+    return if path.nil?
+
     path.split(/\./).reduce(@dossier) do |o, f|
       case o
-      when GraphQL::Client::List
+      when GraphQL::Client::List, Array
         o.map { |elt| elt.send(f) }
       else
-        o.send(f) if o.present?
+        [o.send(f)] if o.present?
       end
     end
   end

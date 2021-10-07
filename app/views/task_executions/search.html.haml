@@ -9,7 +9,7 @@
       .row
         le
         = execution.updated_at.strftime('%d/%m/%Y à %H:%M')
-        = render partial: "shared/reprocess", locals: { task_execution: execution }
+        = render partial: 'shared/reprocess', locals: { task_execution: execution }
         - messages = execution.messages.sort_by(&:level)
         %table.table.table-striped
           - messages.each do |message|

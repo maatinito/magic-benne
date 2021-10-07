@@ -37,7 +37,7 @@
                       - else
                         = link_to image_tag('masquer.svg', class: 'discard btn btn-light'), discard_path(execution, discarded: @discarded)
                       = execution.job_task.name
-                      = render partial: "shared/reprocess", locals: { task_execution: execution }
+                      = render partial: 'shared/reprocess', locals: { task_execution: execution }
                       - messages = execution.messages.sort_by(&:level)
                       %table.table
                         - messages.each do |message|

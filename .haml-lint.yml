@@ -10,13 +10,7 @@ linters:
 
   # Offense count: 20
   LineLength:
-    exclude:
-      - "app/views/demarches/main.html.haml"
-      - "app/views/layouts/_header.html.haml"
-      - "app/views/layouts/application.html.haml"
-      - "app/views/layouts/mailer.html.haml"
-      - "app/views/notification_mailer/job_report.html.haml"
-      - "app/views/notification_mailer/output_dir_not_accessible.html.haml"
+    enabled: false
 
   # Offense count: 1
   InlineStyles:

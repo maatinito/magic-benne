@@ -40,9 +40,9 @@ module ApplicationHelper
   def render_flash(timeout: false, sticky: false, fixed: false)
     return unless flash.any?
 
-    html = render_to_element('#flash_messages', partial: 'layouts/flash_messages', locals: { sticky: sticky, fixed: fixed }, outer: true)
+    html = render_to_element('#flash-messages', partial: 'layouts/flash_messages', locals: { sticky: sticky, fixed: fixed }, outer: true)
     flash.clear
-    html += remove_element('#flash_messages', timeout: timeout, inner: true) if timeout
+    html += remove_element('#flash-messages', timeout: timeout, inner: true) if timeout
     html
   end
 end

@@ -28,7 +28,6 @@ class TaskExecutionsController < ApplicationController
   def reprocess
     @execution = TaskExecution.find_by_id(params[:id]) or not_found
     @execution.update!(reprocess: !@execution.reprocess)
-    flash.notice = @execution.reprocess ? 'Retraitement activé pour le prochain export' : 'Retraitement désactivé'
     respond_to do |format|
       format.js
       format.html { 'coucou' }

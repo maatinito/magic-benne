@@ -54,7 +54,10 @@ class ExportBlocs < ExportDossiers
     return champs_to_values(champs) unless methods_to_call_on_champs
 
     objects = champs
-    names.each { |name| objects = objects.filter_map { |object| object.send(name) if object.respond_to?(name) } }
+    names.each do |name|
+      objects = objects.filter_map { |object| object.send(name) if object.respond_to?(name) }
+      objects.map! { |v| v.is_a?(String) ? Date.iso8601(v) : v } if name.match?(/date/i)
+    end
     objects.present? ? objects : default
   end
 

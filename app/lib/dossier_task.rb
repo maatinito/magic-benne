@@ -108,13 +108,24 @@ class DossierTask < Task
 
   def object_field_values(source, field, log_empty)
     objects = [source]
-    field.split(/\./).each do |_name|
+    field.split(/\./).each do |name|
       objects = objects.flat_map do |object|
-        select_champ(object.champs, field) + (object.respond_to?(:annotations) ? select_champ(object.annotations, field) : [])
+        r = []
+        r += select_champ(object.champs, name) if object.respond_to?(:champs)
+        r += select_champ(object.annotations, name) if object.respond_to?(:annotations)
+        r += attributes(object, name) if object.respond_to?(name)
+        r
       end
       Rails.logger.warn("Sur le dossier #{@dossier.number}, le champ #{field} est vide.") if log_empty && objects.blank?
     end
     objects
+  end
+
+  def attributes(object, name)
+    values = Array(object.send(name))
+    return values unless name.match?(/date/i)
+
+    values.map { |v| v.is_a?(String) ? Date.iso8601(v) : v }
   end
 
   def select_champ(champs, name)

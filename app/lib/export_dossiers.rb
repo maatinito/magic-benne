@@ -68,14 +68,11 @@ class ExportDossiers < DossierTask
     "#{output_dir}/#{prefixe}-#{demarche_id}-#{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
   end
 
-  def normalize_cells
-    @dossiers.map!(&method(:normalize_line_for_csv))
-  end
-
   def normalize_line_for_csv(line)
-    line.map do |cell|
-      cell = cell.join('|') if cell.is_a? Array
-      cell.to_s.strip.tr(';', '/')
+    line.map do |cells|
+      cells = Array(cells)
+      cells.map! { |v| v.is_a?(Date) ? v.strftime('%d/%m/%Y') : v }
+      cells.join('|').strip.tr(';', '/')
     end
   end
 
@@ -178,6 +175,8 @@ class ExportDossiers < DossierTask
 
   def champ_value(champ)
     return nil unless champ
+
+    return champ unless champ.respond_to?(:__typename) # direct value
 
     case champ.__typename
     when 'TextChamp', 'IntegerNumberChamp', 'DecimalNumberChamp', 'CiviliteChamp'

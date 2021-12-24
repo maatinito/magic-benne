@@ -62,8 +62,10 @@ class DemarcheService
       start_time = Time.zone.now
       tasks = create_tasks(job)
       clean_task_executions(demarche_number, tasks)
+      tasks.each(&:before_run)
       process_updated_dossiers(demarche, tasks)
       process_updated_tasks(demarche, tasks)
+      tasks.each(&:after_run)
       demarche.queried_at = start_time
       demarche.save
       # NotificationMailer.with(job: @job).job_report.deliver_now
@@ -75,14 +77,12 @@ class DemarcheService
 
   def process_updated_dossiers(demarche, tasks)
     since = reset?(tasks) ? EPOCH : demarche.queried_at
-    tasks.each(&:before_run)
     # count = 0
     DossierActions.on_dossiers(demarche.id, since) do |dossier|
       # next if Rails.env.development? && (count += 1) > 10
 
       process_dossier(dossier, tasks)
     end
-    tasks.each(&:after_run)
   end
 
   def reset?(tasks)
@@ -100,7 +100,6 @@ class DemarcheService
 
   def process_updated_tasks(demarche, tasks)
     Rails.logger.tagged('UpdatedTasks') do
-      tasks.each(&:before_run)
       # count = 0
       updated_task_execution_query(demarche, tasks)
         .group_by(&:dossier)
@@ -115,7 +114,6 @@ class DemarcheService
           end
         end
       end
-      tasks.each(&:after_run)
     end
   end
 

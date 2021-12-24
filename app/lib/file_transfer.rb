@@ -17,17 +17,7 @@ class FileTransfer < DossierTask
     super + %i[port]
   end
 
-  def before_run
-    @has_new_dossier = false
-  end
-
-  def run
-    @has_new_dossier = true
-  end
-
   def after_run
-    # return unless @has_new_dossier || ENV.fetch('FORCE_EXECUTION', nil)
-
     host = params[:serveur]
     Rails.logger.tagged(host) do
       user = params[:identifiant]

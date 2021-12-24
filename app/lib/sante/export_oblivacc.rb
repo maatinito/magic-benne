@@ -7,7 +7,7 @@ module Sante
     end
 
     TITLE_LABELS = [
-      'Civilité', 'Nom', 'Prénom', 'Nom marital', 'DN', 'Date de naissance', 'Téléphone', 'Activité'
+      'Nom', 'Nom marital', 'Prénom', 'Civilité', 'Date de naissance', 'DN', 'Téléphone', 'Activité'
     ].freeze
 
     def title_labels
@@ -33,7 +33,10 @@ module Sante
       old = line.dup
       line.clear
       line[:ID] = dossier.number
-      line.merge!(old)
+      line[:demarche] = demarche_id
+      %i[civilite nom prenom nom_marital dn date_de_naissance telephone activite].each do |key|
+        line[key] = old[key]
+      end
       super
     end
   end

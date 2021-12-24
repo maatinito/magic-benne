@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'fileutils'
 require 'testftpd'
 
 describe FileTransfer do
   let(:demarche_id) { 1008 }
-  let(:job) { { demarche: demarche_id, name: 'name' }}
+  let(:job) { { demarche: demarche_id, name: 'name' } }
   let(:server) { '127.0.0.1' }
   let(:login) { 'username' }
   let(:password) { 'password' }
@@ -16,7 +18,7 @@ describe FileTransfer do
   let(:port) { 2121 }
   let(:ftp_server) { TestFtpd::Server.new(port: port, root_dir: ftp_root.to_s) }
 
-  subject { FileTransfer.new(job, { serveur: server, port: port, identifiant: login, mot_de_passe: password, taches: tasks}) }
+  subject { FileTransfer.new(job, { serveur: server, port: port, identifiant: login, mot_de_passe: password, taches: tasks }) }
 
   before do
     Demarche.new(id: demarche_id).save

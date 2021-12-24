@@ -72,14 +72,13 @@ group :development, :test do
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'testftpd', require: false, github: 'christian-schulze/testftpd'
   gem 'vcr', '~> 5.1.0'
   gem 'webmock', '~> 3.8.0'
   gem 'xray-rails'
-  gem 'testftpd', :require => false, github: 'christian-schulze/testftpd'
 end
 
 group :development do
-  gem 'annotate'
   gem 'annotate'
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'listen', '>= 3.0.5', '< 3.2'

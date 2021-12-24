@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/ftp'
 
 class FileTransfer < DossierTask
@@ -74,10 +76,10 @@ class FileTransfer < DossierTask
     end
   end
 
-  def log_error(message, e)
-    message = "#{message}: #{e.message}"
+  def log_error(message, exception)
+    message = "#{message}: #{exception.message}"
     Rails.logger.error(message)
-    e.backtrace.first(15).each { |bt| Rails.logger.error(bt) }
+    exception.backtrace.first(15).each { |bt| Rails.logger.error(bt) }
     NotificationMailer.with(message: message).report_error.deliver_later
   end
 

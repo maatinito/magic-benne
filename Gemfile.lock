@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/christian-schulze/testftpd.git
+  revision: dd75f8409b3e04b1f306949d27508aa4e63e67db
+  specs:
+    testftpd (0.2.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -430,9 +436,6 @@ GEM
     websocket-extensions (0.1.5)
     xray-rails (0.3.2)
       rails (>= 3.1.0)
-    yaml_db (0.7.0)
-      rails (>= 3.0)
-      rake (>= 0.8.7)
     zeitwerk (2.4.2)
 
 PLATFORMS
@@ -465,7 +468,7 @@ DEPENDENCIES
   pg
   premailer-rails
   puma (>= 3.12.6)
-  rails (~> 6.0.4)
+  rails (~> 6.0.4.1)
   rails-bootstrap-tabs (~> 0.2.3)
   roo-xls
   rspec-rails (~> 4.0.1)
@@ -473,6 +476,7 @@ DEPENDENCIES
   rubocop-rails_config
   rubocop-rspec
   rubocop-rspec-focused
+  rubyzip
   sass-rails (~> 5.0)
   sassc-rails
   scss_lint
@@ -480,6 +484,7 @@ DEPENDENCIES
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)
   sqlite3 (~> 1.4)
+  testftpd!
   turbolinks (~> 5)
   typhoeus
   tzinfo-data
@@ -489,7 +494,6 @@ DEPENDENCIES
   webmock (~> 3.8.0)
   webpacker
   xray-rails
-  yaml_db
 
 RUBY VERSION
    ruby 2.7.1p83

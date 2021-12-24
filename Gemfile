@@ -12,7 +12,7 @@ ruby '2.7.1'
 # gem 'prawn-rails' # PDF Generation
 # gem 'prawn-svg'
 # gem 'prawn-table'
-gem 'rails', '~> 6.0.4'
+gem 'rails', '~> 6.0.4.1'
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', '~> 1.4'
@@ -59,9 +59,9 @@ gem 'pg'
 gem 'premailer-rails'
 gem 'rails-bootstrap-tabs', '~> 0.2.3'
 gem 'roo-xls'
+gem 'rubyzip'
 gem 'sassc-rails' # Use SCSS for stylesheets
 gem 'typhoeus'
-gem 'yaml_db'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -75,9 +75,11 @@ group :development, :test do
   gem 'vcr', '~> 5.1.0'
   gem 'webmock', '~> 3.8.0'
   gem 'xray-rails'
+  gem 'testftpd', :require => false, github: 'christian-schulze/testftpd'
 end
 
 group :development do
+  gem 'annotate'
   gem 'annotate'
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'listen', '>= 3.0.5', '< 3.2'

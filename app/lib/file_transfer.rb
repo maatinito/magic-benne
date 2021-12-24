@@ -17,7 +17,7 @@ class FileTransfer < DossierTask
     super + %i[port]
   end
 
-  def run;  end
+  def run; end
 
   def after_run
     host = params[:serveur]

@@ -15,6 +15,8 @@ class ExecuteCommand < DossierTask
     super + %i[alerte]
   end
 
+  def run; end
+
   def after_run
     command = params[:commande]
     stdout, stderr, status = Open3.capture3(command)

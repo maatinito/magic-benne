@@ -71,6 +71,16 @@ module MesDemarches
       }
     }
 
+    query DossierMessages($number: Int!) {
+      dossier(number: $number) {
+        id
+        messages {
+          createdAt
+          body
+        }
+      }
+    }
+
     fragment ChampInfo on Champ {
       label
       ... on TextChamp {
@@ -178,6 +188,40 @@ module MesDemarches
       }
     }
 
+    query Dossier($number: Int!) {
+      dossier(number: $number) {
+          ...DossierInfo
+          annotations {
+            ...ChampInfo
+          }
+          champs {
+            ...ChampInfo
+            ... on RepetitionChamp {
+                champs {
+                    ...ChampInfo
+                }
+            }
+            ... on DossierLinkChamp {
+              stringValue
+            }
+          }
+        }
+      }
+
+    query DossierInfos($demarche: Int!, $since: ISO8601DateTime!, $state: DossierState, $cursor: String) {
+      demarche(number: $demarche) {
+        dossiers(updatedSince: $since, state: $state, after: $cursor) {
+          pageInfo {
+              endCursor
+              hasNextPage
+          }
+          nodes {
+            ...DossierInfo
+          }
+        }
+      }
+    }
+
     query DossiersModifies($demarche: Int!, $since: ISO8601DateTime!, $cursor: String) {
       demarche(number: $demarche) {
         dossiers(updatedSince: $since, after: $cursor) {
@@ -205,25 +249,6 @@ module MesDemarches
         }
       }
     }
-    query Dossier($dossier: Int!) {
-      dossier(number: $dossier) {
-          ...DossierInfo
-          annotations {
-            ...ChampInfo
-          }
-          champs {
-            ...ChampInfo
-            ... on RepetitionChamp {
-                champs {
-                    ...ChampInfo
-                }
-            }
-            ... on DossierLinkChamp {
-              stringValue
-            }
-          }
-        }
-      }
   GRAPHQL
 
   # ... on DossierLinkChamp {

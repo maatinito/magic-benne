@@ -3,14 +3,28 @@
 class DossierActions
   EPOCH = Time.zone.parse('2000-01-01 00:00')
 
-  def self.on_dossiers(demarche_id, since)
+  def self.on_dossiers(demarche_id, since, &block)
+    on_query(MesDemarches::Queries::DossiersModifies, demarche_id, since: since) do |dossier|
+      block.call dossier
+    end
+  end
+
+  def self.on_dossier(dossier_number, query: MesDemarches::Client::Dossier)
+    result = MesDemarches::Client.query(query, variables: { number: dossier_number })
+    dossier = result.data&.dossier
+    yield dossier if dossier.present?
+    Rails.logger.error(result.errors.values.join(',')) unless dossier
+  end
+
+  def self.on_query(query, demarche_id, since: nil, state: nil)
     cursor = nil
     loop do
       GC.compact
-      response = MesDemarches::Client.query(MesDemarches::Queries::DossiersModifies,
+      response = MesDemarches::Client.query(query,
                                             variables: {
                                               demarche: demarche_id,
                                               since: since.iso8601,
+                                              state: state,
                                               cursor: cursor
                                             })
 
@@ -32,13 +46,5 @@ class DossierActions
 
       cursor = page_info.end_cursor
     end
-  end
-
-  def self.on_dossier(dossier_number)
-    result = MesDemarches::Client.query(MesDemarches::Queries::Dossier,
-                                        variables: { dossier: dossier_number })
-    dossier = result.data&.dossier
-    yield dossier if dossier.present?
-    Rails.logger.error(result.errors.values.join(',')) unless dossier
   end
 end

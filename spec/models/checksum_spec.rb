@@ -28,7 +28,7 @@ RSpec.describe Checksum, type: :model do
   let(:filename) { 'bonjour.txt' }
 
   it "doesn't remove file exported for the first time" do
-    File.open(filename, 'w') { |f|  f.write 'bonjour' }
+    File.write(filename, 'bonjour')
     Checksum.dedupe(task_execution, filename)
     expect(File).to exist(filename)
   ensure
@@ -36,7 +36,7 @@ RSpec.describe Checksum, type: :model do
   end
 
   it 'remove file exported for the second time' do
-    File.open(filename, 'w') { |f|  f.write 'bonjour' }
+    File.write(filename, 'bonjour')
     Checksum.dedupe(task_execution, filename)
     Checksum.dedupe(task_execution, filename)
     expect(File).not_to exist(filename)
@@ -45,9 +45,9 @@ RSpec.describe Checksum, type: :model do
   end
 
   it "doesn't remove updated file" do
-    File.open(filename, 'w') { |f|  f.write 'bonjour' }
+    File.write(filename, 'bonjour')
     Checksum.dedupe(task_execution, filename)
-    File.open(filename, 'w') { |f|  f.write 'bonjour à tous' }
+    File.write(filename, 'bonjour à tous')
     Checksum.dedupe(task_execution, filename)
     expect(File).to exist(filename)
   ensure

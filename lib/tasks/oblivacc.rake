@@ -19,24 +19,24 @@ namespace :dossiers do
         DossierActions.on_dossier(dossier.number, query: MesDemarches::Queries::DossierMessages) do |dossier_with_messages|
           unless msg_present(dossier_with_messages)
             send_enterprise_message(dossier, gql_instructeur.id, ENTERPRISE_MESSAGE)
-            puts "  message sent."
+            puts '  message sent.'
           end
         end
       end
     end
   end
 
-  ENTERPRISE_MESSAGE = <<~MSG
+  ENTERPRISE_MESSAGE = <<~MSG.freeze
     Bonjour,
 
     Vous avez complété un dossier concernant l'obligation vaccinale.
 
     Ce dossier est traité et les certificats de conformité sont maintenant disponibles pour chaque salarié dont la conformité <u>est connue</u>.
 
-    Pouvez-vous demander aux salariés que vous avez déclarés d'aller sur leur espace Tatou https://tatou.cps.pf 
+    Pouvez-vous demander aux salariés que vous avez déclarés d'aller sur leur espace Tatou https://tatou.cps.pf#{' '}
     pour que chacun vérifie s'il a bien reçu son document de conformité ?
 
-    Attention: si le document n'est pas disponible, cela signifie juste que sa situation vis à vis de la conformité n'est <b>pas connu</b>. 
+    Attention: si le document n'est pas disponible, cela signifie juste que sa situation vis à vis de la conformité n'est <b>pas connu</b>.#{' '}
     Chaque salarié doit alors déclarer sa situation dans les 15 jours en allant sur la page http://www .
 
     Cordialement.

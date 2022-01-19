@@ -12,8 +12,8 @@ class ColonnesFixes < ExportDossierCalculations
   end
 
   def run
-    params[:colonnes].map do |key, value|
+    params[:colonnes].to_h do |key, value|
       [key, value]
-    end.to_h
+    end
   end
 end

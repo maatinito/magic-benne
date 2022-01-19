@@ -58,13 +58,13 @@ class CalculsSurEtatPrevisionnel < ExportDossierCalculations
   end
 
   def computed_columns_from_sheet(sheet, name)
-    CELLS.map do |key, cell|
+    CELLS.to_h do |key, cell|
       puts "#{name}/#{key}/#{cell}"
       [
         "#{key} #{name}",
         normalize(sheet.cell(cell[1].to_i, cell[0]))
       ]
-    end.to_h
+    end
   rescue Roo::HeaderRowNotFoundError => e
     columns = e.message.gsub(%r{[/\[\]]}, '')
     add_message(Message::ERROR, "Les colonnes suivantes manquent dans le fichier Excel: #{columns}")

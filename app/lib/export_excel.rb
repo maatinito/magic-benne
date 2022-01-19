@@ -159,7 +159,7 @@ class ExportExcel < DossierTask
   end
 
   def title_regexps
-    @title_regexps ||= title_labels.map { |name| [symbolize(name), Regexp.new(name, Regexp::IGNORECASE)] }.to_h
+    @title_regexps ||= title_labels.to_h { |name| [symbolize(name), Regexp.new(name, Regexp::IGNORECASE)] }
   end
 
   def title_labels

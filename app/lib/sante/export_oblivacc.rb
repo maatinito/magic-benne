@@ -3,7 +3,7 @@
 module Sante
   class ExportOblivacc < ExportExcel
     def version
-      super + 4
+      super + 5
     end
 
     TITLE_LABELS = [
@@ -37,6 +37,7 @@ module Sante
       %i[civilite nom prenom nom_marital dn date_de_naissance telephone activite].each do |key|
         line[key] = old[key]
       end
+      line[:dn] = line[:dn].round if line[:dn].is_a?(Float)
       super
     end
   end

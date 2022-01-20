@@ -3,7 +3,7 @@
 module Sante
   class ExportOblivacc < ExportExcel
     def version
-      super + 5
+      super + 8
     end
 
     TITLE_LABELS = [

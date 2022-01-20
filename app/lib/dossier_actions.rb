@@ -9,7 +9,7 @@ class DossierActions
     end
   end
 
-  def self.on_dossier(dossier_number, query: MesDemarches::Client::Dossier)
+  def self.on_dossier(dossier_number, query: MesDemarches::Queries::Dossier)
     result = MesDemarches::Client.query(query, variables: { number: dossier_number })
     dossier = result.data&.dossier
     yield dossier if dossier.present?

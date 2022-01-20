@@ -106,7 +106,7 @@ class DemarcheService
         .each do |dossier_nb, task_executions|
         # next if Rails.env.development? && (count += 1) > 10
 
-        on_dossier(dossier_nb) do |dossier|
+        DossierActions.on_dossier(dossier_nb) do |dossier|
           if dossier.present?
             apply_updated_tasks(dossier, task_executions, tasks)
           else
@@ -184,13 +184,6 @@ class DemarcheService
 
     task_execution.messages.destroy(task_execution.messages.reject { |m| new_messages.include?(m.hashkey) })
     task_execution.messages << task.messages.reject { |m| old_messages.include?(m.hashkey) }
-  end
-
-  def on_dossier(dossier_number)
-    result = MesDemarches::Client.query(MesDemarches::Queries::Dossier, variables: { dossier: dossier_number })
-    dossier = (data = result.data) ? data.dossier : nil
-    yield dossier
-    Rails.logger.error(result.errors.values.join(',')) unless data
   end
 
   def create_tasks(job)

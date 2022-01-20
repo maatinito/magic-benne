@@ -49,7 +49,7 @@ class ExportDossiers < DossierTask
   def save_csv(line)
     csv << normalize_line_for_csv(line)
     @csv.flush
-    Rails.logger.info("Dossiers sauveardés dans #{output_path}.")
+    Rails.logger.info("Dossier #{dossier.number} sauvegardé dans #{output_path}.")
   end
 
   def column_names

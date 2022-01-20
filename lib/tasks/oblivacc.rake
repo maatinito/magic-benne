@@ -4,6 +4,25 @@ def msg_present(dossier_with_messages)
   dossier_with_messages.messages&.any? { |msg| msg.body.include?(MESSAGE_MARKER) }
 end
 
+ENTERPRISE_MESSAGE = <<~MSG.freeze
+  Bonjour,
+
+  Vous avez complété un dossier concernant l'obligation vaccinale.
+
+  Ce dossier est traité et les certificats de conformité sont maintenant disponibles pour chaque salarié dont la conformité <u>est connue</u>.
+
+  Pouvez-vous demander aux salariés que vous avez déclarés d'aller sur leur espace Tatou https://tatou.cps.pf#{' '}
+  pour que chacun vérifie s'il a bien reçu son document de conformité ?
+
+  Attention: si le document n'est pas disponible, cela signifie juste que sa situation vis à vis de la conformité n'est <b>pas connu</b>.#{' '}
+  Chaque salarié doit alors déclarer sa situation dans les 15 jours en allant sur la page http://www .
+
+  Cordialement.
+  La plateforme Oblivacc.
+MSG
+
+MESSAGE_MARKER = 'reçu son document de conformité'
+
 namespace :dossiers do
   desc 'close dossiers where arrival date is after June 23'
   task info_particulier: :environment do
@@ -25,25 +44,6 @@ namespace :dossiers do
       end
     end
   end
-
-  ENTERPRISE_MESSAGE = <<~MSG.freeze
-    Bonjour,
-
-    Vous avez complété un dossier concernant l'obligation vaccinale.
-
-    Ce dossier est traité et les certificats de conformité sont maintenant disponibles pour chaque salarié dont la conformité <u>est connue</u>.
-
-    Pouvez-vous demander aux salariés que vous avez déclarés d'aller sur leur espace Tatou https://tatou.cps.pf#{' '}
-    pour que chacun vérifie s'il a bien reçu son document de conformité ?
-
-    Attention: si le document n'est pas disponible, cela signifie juste que sa situation vis à vis de la conformité n'est <b>pas connu</b>.#{' '}
-    Chaque salarié doit alors déclarer sa situation dans les 15 jours en allant sur la page http://www .
-
-    Cordialement.
-    La plateforme Oblivacc.
-  MSG
-
-  MESSAGE_MARKER = 'reçu son document de conformité'
 
   def send_enterprise_message(dossier, instructeur_id, message)
     # result = MesDemarches::Client.query(MesDemarches::Mutation::EnvoyerMessage,

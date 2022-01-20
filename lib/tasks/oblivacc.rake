@@ -4,7 +4,7 @@ def msg_present(dossier_with_messages)
   dossier_with_messages.messages&.any? { |msg| msg.body.include?(MESSAGE_MARKER) }
 end
 
-ENTERPRISE_MESSAGE = <<~MSG.freeze
+ENTERPRISE_MESSAGE = <<~MSG
   Bonjour,
 
   Vous avez complété un dossier concernant l'obligation vaccinale.

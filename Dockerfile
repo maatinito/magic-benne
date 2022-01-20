@@ -23,17 +23,17 @@ WORKDIR ${INSTALL_PATH}
 
 # sassc https://github.com/sass/sassc-ruby/issues/146#issuecomment-608489863
 RUN bundle config specific_platform x86_64-linux \
-  && bundle config --local build.sassc --disable-march-tune-native
-
-RUN bundle config --global frozen 1 &&\
-    bundle install --deployment --without development test&&\
-    yarn install --production
+  && bundle config build.sassc --disable-march-tune-native \
+    && bundle config deployment true \
+       && bundle config without "development test" \
+         && bundle install \
+  && yarn install --production
 
 #----------- final tps
 FROM base
 ENV APP_PATH /magic-benne
 #----- minimum set of packages including PostgreSQL client, yarn
-RUN apk add --no-cache --update tzdata libcurl postgresql-libs yarn sqlite-libs sqlite openjdk8-jre
+RUN apk add --no-cache --update tzdata libcurl postgresql-libs yarn sqlite-libs sqlite openjdk8-jre python3
 
 WORKDIR ${APP_PATH}
 RUN adduser -Dh ${APP_PATH} userapp
@@ -42,9 +42,13 @@ RUN adduser -Dh ${APP_PATH} userapp
 USER userapp
 
 COPY --chown=userapp:userapp --from=builder /app ${APP_PATH}/
-RUN bundle install --deployment --without development test && \
-    rm -fr .git && \
-    yarn install --production
+RUN bundle config specific_platform x86_64-linux \
+  && bundle config build.sassc --disable-march-tune-native \
+    && bundle config deployment true \
+       && bundle config without "development test" \
+         && bundle install \
+    && rm -fr .git \
+    && yarn install --production
 
 ENV \
     API_CPS_CLIENT_ID=""\

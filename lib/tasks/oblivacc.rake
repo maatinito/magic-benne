@@ -43,16 +43,16 @@ namespace :dossiers do
   end
 
   def send_enterprise_message(dossier, instructeur_id, message)
-    if dossier.number == 215_286
-      result = MesDemarches::Client.query(MesDemarches::Mutation::EnvoyerMessage,
-                                          variables: {
-                                            dossierId: dossier.id,
-                                            instructeurId: instructeur_id,
-                                            body: message,
-                                            clientMutationId: 'dededed'
-                                          })
-      puts(result.errors.map(&:message).join(',')) if result.errors&.present?
-    end
+    return unless dossier.number == 215_286
+
+    result = MesDemarches::Client.query(MesDemarches::Mutation::EnvoyerMessage,
+                                        variables: {
+                                          dossierId: dossier.id,
+                                          instructeurId: instructeur_id,
+                                          body: message,
+                                          clientMutationId: 'dededed'
+                                        })
+    puts(result.errors.map(&:message).join(',')) if result.errors&.present?
   end
 
   def instructeur(demarche_id, instructeur_email)

@@ -11,7 +11,7 @@ module Sante
     end
 
     def url_params_for_sending(tel, message)
-      tel = '689' + tel unless tel&.starts_with?('689')
+      tel = "689#{tel}" unless tel&.starts_with?('689')
       {
         fct: 'sms',
         mobile: tel,
@@ -39,7 +39,7 @@ module Sante
       '440': 'contenu trop long',
       '441': 'destination non autorisée',
       '442': 'sender non autorisé'
-    }
+    }.freeze
 
     TIMEOUT = 3
 

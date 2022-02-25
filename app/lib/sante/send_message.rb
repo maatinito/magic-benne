@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Sante
   class SendMessage < DossierTask
     def version
@@ -7,7 +9,7 @@ module Sante
     COLUMNS = [
       'Nom', 'Nom de naissance', 'Nom normalisé', 'Prénom', 'Date de naissance', 'N° DN', 'Téléphone', 'Email',
       'Statut de la vérification', "Date de la 1ère tentative d'appel", 'Date du 1er contact effectif'
-    ]
+    ].freeze
 
     STATUT_VERIFICATION = [
       'À contrôler',
@@ -22,16 +24,16 @@ module Sante
       'Verbalisé',
       'Pas concerné',
       'Ligne à supprimer'
-    ]
+    ].freeze
 
     SMS = 'Bonjour {}. Etant concerné par l’obligation vaccinale, merci de justifier de votre situation sur https://www.service-public.pf/arass/di'
-    MAIL = <<~EOT
+    MAIL = <<~MAIL
       Bonjour {},
       Votre employeur vous a déclaré comme personne concernée par la vaccination obligatoire contre la covid-19 et nous n’avons aucune information sur votre situation vaccinale.
       Pour justifier de votre situation vis à vis de l'obligation vaccinale, cliquez sur https://www.service-public.pf/arass/di
       Cordialement,#{' '}
       Les contrôleurs de l'Agence de Régulation de l'Action Sanitaire et Sociale (ARASS) et de la Direction de la santé
-    EOT
+    MAIL
 
     SHEET_NAME = 'Personnes à conformité inconnue'
 
@@ -104,11 +106,11 @@ module Sante
     end
 
     def person_name(person)
-      name = person[:prenom]&.gsub(/[ ,].*/,'')&.gsub(/\b([a-z])/) { |m| m.upcase } || '' # remove trailing first names & upcase each word (Jean-Marie)
-      family_name = person[:nom_de_naissance]&.sub(/ ([eéÉ]p\.?|[éeÉ]pouse) .*/i,'')&.upcase || ''
+      name = person[:prenom]&.gsub(/[ ,].*/, '')&.gsub(/\b([a-z])/) { |m| m.upcase } || '' # remove trailing first names & upcase each word (Jean-Marie)
+      family_name = person[:nom_de_naissance]&.sub(/ ([eéÉ]p\.?|[éeÉ]pouse) .*/i, '')&.upcase || ''
 
       if family_name.present? && name.length + family_name.length + SMS.length - 1 <= 157
-        name += ' ' if name.length > 0
+        name += ' ' if name.length.positive?
         name += family_name
       end
       name

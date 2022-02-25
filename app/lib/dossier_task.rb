@@ -110,6 +110,7 @@ class DossierTask < Task
     objects = [source]
     field.split(/\./).each do |name|
       objects = objects.flat_map do |object|
+        object = object.dossier if object.respond_to?(:dossier)
         r = []
         r += select_champ(object.champs, name) if object.respond_to?(:champs)
         r += select_champ(object.annotations, name) if object.respond_to?(:annotations)

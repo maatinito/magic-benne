@@ -14,6 +14,8 @@ ruby '2.7.3'
 # gem 'prawn-table'
 gem 'rails', '~> 6.0.4.1'
 
+# to write Excelx
+gem 'caxlsx'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', '~> 1.4'
 # Use Puma as the app server

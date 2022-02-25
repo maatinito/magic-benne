@@ -38,7 +38,30 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
-  config.action_mailer.delivery_method = :letter_opener_web
+  if ENV.fetch('SENDINBLUE_USER_NAME', '').present?
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      user_name: ENV['SENDINBLUE_USER_NAME'],
+      password: ENV['SENDINBLUE_SMTP_KEY'],
+      address: 'smtp-relay.sendinblue.com',
+      domain: 'smtp-relay.sendinblue.com',
+      port: '587',
+      authentication: :cram_md5
+    }
+  elsif ENV.fetch('MAILJET_API_KEY', '').present?
+    config.action_mailer.delivery_method = :mailjet_api
+  elsif ENV.fetch('SMTP_HOST').present?
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      address: ENV['SMTP_HOST'],
+      user_name: ENV['SMTP_LOGIN'],
+      password: ENV['SMTP_PASSWORD'],
+      authentication: :plain
+    }
+  else
+    config.action_mailer.delivery_method = :letter_opener_web
+  end
+
   # config.action_mailer.delivery_method = :smtp
   # config.action_mailer.smtp_settings = {
   #   # user_name: ENV['SMTP_LOGIN'],

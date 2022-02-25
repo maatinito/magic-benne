@@ -63,13 +63,28 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "demarches_sefi_production"
 
   config.action_mailer.perform_caching = false
-  config.action_mailer.delivery_method = ENV.fetch('MAILJET_API_KEY', '').present? ? :mailjet_api : :smtp
-  config.action_mailer.smtp_settings = {
-    address: ENV['SMTP_HOST'],
-    user_name: ENV['SMTP_LOGIN'],
-    password: ENV['SMTP_PASSWORD'],
-    authentication: :plain
-  }
+  if ENV.fetch('SENDINBLUE_USER_NAME', '').present?
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      user_name: ENV['SENDINBLUE_USER_NAME'],
+      password: ENV['SENDINBLUE_SMTP_KEY'],
+      address: 'smtp-relay.sendinblue.com',
+      domain: 'smtp-relay.sendinblue.com',
+      port: '587',
+      authentication: :cram_md5
+    }
+  elsif ENV.fetch('MAILJET_API_KEY', '').present?
+    config.action_mailer.delivery_method = :mailjet_api
+  else
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      address: ENV['SMTP_HOST'],
+      user_name: ENV['SMTP_LOGIN'],
+      password: ENV['SMTP_PASSWORD'],
+      authentication: :plain
+    }
+  end
+
   # Configure default root URL for generating URLs to routes
   config.action_mailer.default_url_options = {
     protocol: :http,

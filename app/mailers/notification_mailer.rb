@@ -34,6 +34,14 @@ class NotificationMailer < ApplicationMailer
     mail(to: MAIL_INFRA, from: MAIL_FROM, subject: "#{SITE_NAME}: erreur à l'exécution")
   end
 
+  def send_mail(to, subject, body)
+    @body = body
+    mail(to: to, from: MAIL_FROM, subject: subject) do |format|
+      format.html { render(layout: false) } # no layout is used
+      format.text # use the special.text.erb like normal
+    end
+  end
+
   private
 
   def email

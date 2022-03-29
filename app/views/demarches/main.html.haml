@@ -31,7 +31,7 @@
                     = executions.first.updated_at.strftime('%d/%m/%Y à %H:%M')
                     -# = render partial: "shared/reprocess", locals: { task_execution: execution }
                   %td.col-10
-                    - executions.each do |execution|
+                    - executions.first(50).each do |execution|
                       - if execution.discarded?
                         = link_to image_tag('afficher.svg', class: 'discard btn btn-light'), undiscard_path(execution, discarded: @discarded)
                       - else

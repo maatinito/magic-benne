@@ -68,8 +68,13 @@ class ExportExcel < DossierTask
   def save_report(file)
     xlsx = Roo::Spreadsheet.open(file)
     regexp = sheet_regexp
-    xlsx.sheets.filter { |name| name =~ regexp }.each do |name|
-      save_sheet(name, xlsx.sheet(name))
+    if regexp.present?
+      xlsx.sheets.filter { |name| name =~ regexp }.each do |name|
+        save_sheet(name, xlsx.sheet(name))
+      end
+    else
+      # save first sheet by default
+      save_sheet(name, xlsx.sheet(0))
     end
   end
 
@@ -159,7 +164,7 @@ class ExportExcel < DossierTask
   end
 
   def title_regexps
-    @title_regexps ||= title_labels.to_h { |name| [symbolize(name), Regexp.new(name, Regexp::IGNORECASE)] }
+    @title_regexps ||= title_labels.to_h { |name| [symbolize(name), Regexp.new(Regexp.quote(name), Regexp::IGNORECASE)] }
   end
 
   def title_labels

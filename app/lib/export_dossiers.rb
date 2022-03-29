@@ -13,18 +13,21 @@ class ExportDossiers < DossierTask
   end
 
   def authorized_fields
-    super + %i[calculs prefixe_fichier]
-  end
-
-  def run
-    compute_dynamic_fields
-    line = get_fields(params[:champs])
-    save_csv(line)
+    super + %i[calculs fichier]
   end
 
   def before_run
-    @csv = nil
+    @timestamp = Time.zone.now.strftime('%Y-%m-%d-%Hh%M')
     @calculs.each(&:before_run)
+  end
+
+  def run
+    @csv = nil if @current_path != output_path
+    compute_dynamic_fields
+    line = get_fields(params[:champs])
+    save_csv(line)
+    @csv&.flush
+    Rails.logger.info("Dossier #{dossier.number} sauvegardé dans #{@current_path}.")
   end
 
   def after_run
@@ -39,21 +42,19 @@ class ExportDossiers < DossierTask
   private
 
   def csv
-    if @csv.nil?
-      FileUtils.mkpath(output_dir)
-      @csv = CSV.open(output_path, 'wb', headers: column_names, write_headers: true, col_sep: ';')
-    end
-    @csv
+    return @csv unless @csv.nil?
+
+    @current_path = output_path
+    FileUtils.mkpath(output_dir)
+    @csv = CSV.open(@current_path, 'wb', headers: column_names, write_headers: true, col_sep: ';')
   end
 
   def save_csv(line)
     csv << normalize_line_for_csv(line)
-    @csv.flush
-    Rails.logger.info("Dossier #{dossier.number} sauvegardé dans #{output_path}.")
   end
 
   def column_names
-    ['ID'] + params[:champs].map do |elt|
+    params[:champs].map do |elt|
       case elt
       when Hash
         elt['colonne']
@@ -64,8 +65,14 @@ class ExportDossiers < DossierTask
   end
 
   def output_path
-    prefixe = @params[:prefixe_fichier] || @demarche_dir
-    "#{output_dir}/#{prefixe}-#{demarche_id}-#{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
+    file_template = @params[:fichier]
+    if file_template.present?
+      variables = { timestamp: @timestamp }.merge(@params)
+      path = StringTemplate.new(FieldSource.new(@dossier, variables)).instanciate_filename(file_template)
+      "#{output_dir}/#{path}"
+    else
+      "#{output_dir}/#{demarche_dir}-#{demarche_id}-#{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
+    end
   end
 
   def normalize_line_for_csv(line)
@@ -124,7 +131,7 @@ class ExportDossiers < DossierTask
     }.freeze
 
   def get_fields(fields)
-    [dossier.number] + fields.map(&method(:get_field))
+    fields.map(&method(:get_field))
   end
 
   def get_field(param)

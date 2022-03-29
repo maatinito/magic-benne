@@ -11,23 +11,25 @@ class ExportBlocs < ExportDossiers
     super + %i[bloc]
   end
 
+  def authorized_fields
+    super + %i[fichier]
+  end
+
   def run
+    @csv = nil if @current_path != output_path
     compute_dynamic_fields
-    subfields = params[:champs]
+    columns = params[:champs]
     repetitions = param_values(:bloc)
-    lines = repetitions_to_table(repetitions, subfields)
+    lines = repetitions_to_table(repetitions, columns)
 
     lines.each do |line|
       save_csv(line)
     end
+    @csv&.flush
+    Rails.logger.info("Dossier #{dossier.number} sauvegardé dans #{@current_path}.")
   end
 
   private
-
-  def output_path
-    field_name = ActiveStorage::Filename.new(@params[:bloc].to_s).sanitized.tr('"%', '')
-    "#{output_dir}/#{@demarche_dir}-#{demarche_id}-#{field_name}-#{Time.zone.now.strftime('%Y-%m-%d-%Hh%M')}.csv"
-  end
 
   def repetitions_to_table(repetitions, subfields)
     repetitions.flat_map do |repetition|
@@ -36,7 +38,7 @@ class ExportBlocs < ExportDossiers
   end
 
   def get_block_fields(block, columns)
-    [dossier.number] + columns.map { |column| get_block_field(block, column) }
+    columns.map { |column| get_block_field(block, column) }
   end
 
   def get_block_field(block, column)

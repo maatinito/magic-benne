@@ -96,9 +96,11 @@ module Sante
     end
 
     def process_person(output_sheet, person)
+      @sent = 0 if person[:nom_normalise] == 'Nom normalisé'
       return if person[:nom_normalise] == 'Nom normalisé' || person[:nom_normalise].blank?
 
-      if person[:date_de_la_1ere_tentative_d_appel].blank? && send_message(person)
+      if @sent < 1000 && person[:date_de_la_1ere_tentative_d_appel].blank? && send_message(person)
+        @sent += 1
         person[:date_de_la_1ere_tentative_d_appel] = Time.zone.now
         person[:statut_de_la_verification] = STATUT_VERIFICATION[6]
       end

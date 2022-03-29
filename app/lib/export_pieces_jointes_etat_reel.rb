@@ -41,18 +41,4 @@ class ExportPiecesJointesEtatReel < ExportPiecesJointes
     file = self.class.sanitize(@index, "Mois #{index} - #{champ} - #{@month}-#{@year} - #{dossier.number}#{extension}")
     "#{dir}/#{file}"
   end
-
-  def initial_dossier
-    if @initial_dossier.nil?
-      initial_dossier_field = param_value(:champ_dossier)
-      throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}" if initial_dossier_field.nil?
-      dossier_number = initial_dossier_field.string_value
-      if dossier_number.present?
-        on_dossier(dossier_number) do |dossier|
-          @initial_dossier = dossier
-        end
-      end
-    end
-    @initial_dossier
-  end
 end

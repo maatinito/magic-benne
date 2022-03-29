@@ -93,7 +93,6 @@ group :development do
   gem 'rubocop', require: false
   gem 'rubocop-rails_config'
   gem 'rubocop-rspec'
-  gem 'rubocop-rspec-focused', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

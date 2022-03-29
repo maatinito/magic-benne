@@ -3,6 +3,8 @@
 require 'set'
 
 class DossierTask < Task
+  include DossierHelper
+
   attr_reader :dossier, :exception
   attr_accessor :task_execution
 
@@ -100,59 +102,6 @@ class DossierTask < Task
     end
   end
 
-  def field_values(field, log_empty: true)
-    return nil if @dossier.nil? || field.blank?
-
-    object_field_values(dossier, field, log_empty)
-  end
-
-  def object_field_values(source, field, log_empty)
-    objects = [source]
-    field.split(/\./).each do |name|
-      objects = objects.flat_map do |object|
-        object = object.dossier if object.respond_to?(:dossier)
-        r = []
-        r += select_champ(object.champs, name) if object.respond_to?(:champs)
-        r += select_champ(object.annotations, name) if object.respond_to?(:annotations)
-        r += attributes(object, name) if object.respond_to?(name)
-        r
-      end
-      Rails.logger.warn("Sur le dossier #{@dossier.number}, le champ #{field} est vide.") if log_empty && objects.blank?
-    end
-    objects
-  end
-
-  def attributes(object, name)
-    values = Array(object.send(name))
-    return values unless name.match?(/date/i)
-
-    values.map { |v| v.is_a?(String) ? Date.iso8601(v) : v }
-  end
-
-  def select_champ(champs, name)
-    champs.select { |champ| champ.label == name }
-  end
-
-  def annotation_values(name, log_empty: true)
-    return nil if @dossier.nil? || name.blank?
-
-    objects = @dossier.annotations.select { |champ| champ.label == name }
-    Rails.logger.warn("Sur le dossier #{@dossier.number}, l'annotation #{name} est vide.") if log_empty && objects.blank?
-    objects
-  end
-
-  def field_value(field_name)
-    field_values(field_name)&.first
-  end
-
-  def param_values(param_name)
-    field_values(@params[param_name])
-  end
-
-  def param_value(param_name)
-    param_values(param_name)&.first
-  end
-
   def set_variable(variable, value)
     attribute = Attribute.find_or_create_by(dossier: @dossier_nb, task: self.class.name.underscore, variable: variable)
     attribute.value = value
@@ -161,5 +110,35 @@ class DossierTask < Task
 
   def get_variable(variable)
     Attribute.find_by(dossier: @dossier_nb, task: self.class.name.underscore, variable: variable)&.value
+  end
+
+  def param_value(param_name)
+    param_values(param_name)&.first
+  end
+
+  def param_values(param_name)
+    field_values(@params[param_name])
+  end
+
+  def field_value(field_name)
+    field_values(field_name)&.first
+  end
+
+  def annotation_values(name, log_empty: true)
+    return nil if @dossier.nil? || name.blank?
+
+    objects = select_champ(@dossier.annotations, name)
+    Rails.logger.warn("Sur le dossier #{@dossier.number}, l'annotation #{name} est vide.") if log_empty && objects.blank?
+    objects
+  end
+
+  def annotation_value(name, log_empty: true)
+    annotation_values(name, log_empty)&.first
+  end
+
+  def field_values(field, log_empty: true)
+    return nil if @dossier.nil? || field.blank?
+
+    object_values(@dossier, field, log_empty: log_empty)
   end
 end

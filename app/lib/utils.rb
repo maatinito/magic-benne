@@ -1,31 +1,20 @@
 # frozen_string_literal: true
 
 module Utils
-  def dossier_field_value(dossier, field, warn_if_empty: true)
-    return nil if dossier.nil? || field.blank?
-
-    objects = [*dossier]
-    field.split(/\./).each do |name|
-      objects = objects.flat_map { |object| object.champs.select { |champ| champ.label == name } }
-      Rails.logger.warn("Sur le dossier #{dossier.number}, le champ #{field} est vide.") if warn_if_empty && objects.blank?
-    end
-    objects&.first
-  end
-
   MONTHS = %w[zero janvier février mars avril mai juin juillet août septembre octobre novembre décembre].freeze
 
   def report_index(dossier, month)
     # DIESE initial
-    start_month = dossier_field_value(dossier, 'Mois 1', warn_if_empty: false)&.value&.downcase
-    start_month = dossier_field_value(dossier, 'Mois M', warn_if_empty: false)&.value&.downcase if start_month.nil?
+    start_month = dossier_value(dossier, 'Mois 1', log_empty: false)&.value&.downcase
+    start_month = dossier_value(dossier, 'Mois M', log_empty: false)&.value&.downcase if start_month.nil?
     if start_month.nil?
       # CSE initial
-      start_month = dossier_field_value(dossier, 'Date de démarrage de la mesure (Mois 1)', warn_if_empty: false)&.value
+      start_month = dossier_value(dossier, 'Date de démarrage de la mesure (Mois 1)', log_empty: false)&.value
       start_month = Date.parse(start_month).month if start_month.present?
     end
     if start_month.nil?
       # Avenant
-      mois2 = dossier_field_value(dossier, 'Nombre de salariés DiESE au mois 2', warn_if_empty: false)
+      mois2 = dossier_value(dossier, 'Nombre de salariés DiESE au mois 2', log_empty: false)
       if mois2.present?
         start_month = mois_2.value.blank? ? 11 : 12
       end
@@ -61,7 +50,7 @@ module Utils
     if @initial_dossier.nil?
       initial_dossier_field = param_value(:champ_dossier)
       throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}" if initial_dossier_field.nil?
-      dossier_number = initial_dossier_field.string_value
+      dossier_number = initial_dossier_field.string_value.to_i
       if dossier_number.present?
         DossierActions.on_dossier(dossier_number) do |dossier|
           @initial_dossier = dossier

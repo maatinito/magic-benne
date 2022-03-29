@@ -6,11 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 1
-Lint/RescueException:
-  Exclude:
-    - 'app/lib/yaml_db.rb'
-
 # Offense count: 8
 # Configuration parameters: CountComments, CountAsOne, ExcludedMethods, IgnoredMethods.
 # IgnoredMethods: refine
@@ -53,13 +48,6 @@ Style/GuardClause:
 Style/MixinUsage:
   Exclude:
     - 'bin/update'
-
-# Offense count: 1
-# Configuration parameters: AllowedMethods.
-# AllowedMethods: respond_to_missing?
-Style/OptionalBooleanParameter:
-  Exclude:
-    - 'app/lib/yaml_db.rb'
 
 # Offense count: 12
 # Cop supports --auto-correct.

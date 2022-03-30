@@ -26,6 +26,7 @@ class DemarcheService
       process_demarche(demarche_number, job)
     end
   rescue StandardError => e
+    Sentry.capture_exception(e)
     pp e
     pp e.backtrace
   end
@@ -70,6 +71,7 @@ class DemarcheService
       demarche.save
       # NotificationMailer.with(job: @job).job_report.deliver_now
     rescue StandardError => e
+      Sentry.capture_exception(e)
       Rails.logger.error(e.message)
       e.backtrace.first(15).each { |bt| Rails.logger.error(bt) }
     end
@@ -165,6 +167,7 @@ class DemarcheService
       task.process_dossier(dossier)
     rescue StandardError => e
       task.add_message(Message::ERROR, "#{e.message}<br>\n#{backtrace(e)}")
+      Sentry.capture_exception(e)
       Rails.logger.error("#{e.message}\n#{e.backtrace.first(15).join("\n")}")
       task_execution.failed = true
     end

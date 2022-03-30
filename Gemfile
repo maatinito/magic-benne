@@ -63,6 +63,9 @@ gem 'rails-bootstrap-tabs', '~> 0.2.3'
 gem 'roo-xls'
 gem 'rubyzip'
 gem 'sassc-rails' # Use SCSS for stylesheets
+gem "sentry-ruby"
+gem "sentry-rails"
+gem "sentry-delayed_job"
 gem 'typhoeus'
 
 group :development, :test do

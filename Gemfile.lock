@@ -347,8 +347,6 @@ GEM
       rubocop-rails (~> 2.0)
     rubocop-rspec (2.5.0)
       rubocop (~> 1.19)
-    rubocop-rspec-focused (1.0.0)
-      rubocop (>= 0.51)
     ruby-ole (1.2.12.2)
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
@@ -377,6 +375,17 @@ GEM
     scss_lint (0.59.0)
       sass (~> 3.5, >= 3.5.5)
     semantic_range (3.0.0)
+    sentry-delayed_job (5.2.1)
+      delayed_job (>= 4.0)
+      sentry-ruby-core (~> 5.2.1)
+    sentry-rails (5.2.1)
+      railties (>= 5.0)
+      sentry-ruby-core (~> 5.2.1)
+    sentry-ruby (5.2.1)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      sentry-ruby-core (= 5.2.1)
+    sentry-ruby-core (5.2.1)
+      concurrent-ruby
     sexp_processor (4.15.3)
     sinatra (2.1.0)
       mustermann (~> 1.0)
@@ -479,11 +488,13 @@ DEPENDENCIES
   rubocop
   rubocop-rails_config
   rubocop-rspec
-  rubocop-rspec-focused
   rubyzip
   sass-rails (~> 5.0)
   sassc-rails
   scss_lint
+  sentry-delayed_job
+  sentry-rails
+  sentry-ruby
   spring
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)

@@ -76,6 +76,8 @@ class ExportExcel < DossierTask
       # save first sheet by default
       save_sheet(name, xlsx.sheet(0))
     end
+  rescue Zip::Error => e
+    add_message(Message::ERROR, "Impossible d'ouvrir le fichier Excel. (#{e.message})")
   end
 
   def save_sheet(sheet_name, sheet)

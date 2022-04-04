@@ -35,8 +35,8 @@ module Cis
       end
     end
 
-    def title_labels
-      definitions.map { |d| d[0] }
+    def title_regexps
+      definitions.to_h { |d| [d[0], d[2]] }
     end
 
     def definitions
@@ -46,12 +46,14 @@ module Cis
     def definition(param)
       if param.is_a?(Hash)
         par_defaut = param['par_defaut'] || ''
-        field = param['champ']
+        field = param['colonne']
+        regexp = Regexp.new(param['regexp'] || Regexp.quote(field))
       else
         field = param.to_s
         par_defaut = ''
+        regexp = Regexp.new(Regexp.quote(field))
       end
-      [field, par_defaut]
+      [field, par_defaut, regexp]
     end
 
     def sheet_regexp

@@ -11,7 +11,7 @@ class ExportExcel < DossierTask
   include Utils
 
   def version
-    super + 2
+    super + 3
   end
 
   def required_fields
@@ -127,7 +127,8 @@ class ExportExcel < DossierTask
   end
 
   def employees(sheet)
-    rows = sheet.parse(title_regexps)
+    @title_regexps ||= title_regexps
+    rows = sheet.parse(@title_regexps)
     (first_column_title, _value) = rows&.first&.first
     rows.reject { |line| line[first_column_title].blank? }.map do |line|
       line.each do |key, value|
@@ -164,7 +165,10 @@ class ExportExcel < DossierTask
   end
 
   def title_regexps
-    @title_regexps ||= title_labels.to_h { |name| [symbolize(name), Regexp.new(Regexp.quote(name), Regexp::IGNORECASE)] }
+    title_labels.to_h do |name|
+      [symbolize(name),
+       Regexp.new(name, Regexp::IGNORECASE)]
+    end
   end
 
   def title_labels

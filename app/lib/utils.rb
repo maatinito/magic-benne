@@ -20,7 +20,8 @@ module Utils
       end
     end
     if start_month.nil?
-      throw ExportError.new("Le dossier initial #{dossier.number} n'a pas de champ permettant de connaitre le mois de démarrage de la mesure. (champ mois_1?)")
+      message = "Le dossier initial #{dossier.number} n'a pas de champ permettant de connaitre le mois de démarrage de la mesure. (champ mois_1?)"
+      throw ExportError.new(message)
     end
 
     start_month = MONTHS.index(start_month) if start_month.is_a?(String)

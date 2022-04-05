@@ -41,7 +41,8 @@ module Cis
         start_date = Date.parse(sheet.cell(2, 2))
         start_month = start_date.month
         if start_month.nil?
-          throw ExportError.new("Le dossier initial #{dossier.number} n'a pas de champ permettant de connaitre le mois de démarrage de la mesure. (champ mois_1?)")
+          message = "Le dossier initial #{dossier.number} n'a pas de champ permettant de connaitre le mois de démarrage de la mesure. (champ mois_1?)"
+          throw ExportError.new(message)
         end
         current_month = MONTHS.index(month.downcase)
         throw ExportError.new("Impossible de reconnaitre les mois de démarrage (#{start_month})") if start_month.nil?

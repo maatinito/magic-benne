@@ -79,10 +79,10 @@ class DemarcheService
 
   def process_updated_dossiers(demarche, tasks)
     since = reset?(tasks) ? EPOCH : demarche.queried_at
+    Rails.logger.info("Processing demarche #{demarche.id} #{demarche.name} since #{since}")
     # count = 0
     DossierActions.on_dossiers(demarche.id, since) do |dossier|
       # next if Rails.env.development? && (count += 1) > 10
-
       process_dossier(dossier, tasks)
     end
   end
@@ -112,6 +112,7 @@ class DemarcheService
           if dossier.present?
             apply_updated_tasks(dossier, task_executions, tasks)
           else
+            Rails.logger.info("Dossier #{dossier_nb} plus accessible ==> Oublié")
             TaskExecution.where(dossier: dossier_nb).destroy_all
           end
         end
@@ -147,8 +148,10 @@ class DemarcheService
   end
 
   def process_dossier(dossier, tasks)
+    Rails.logger.info("Processing dossier #{dossier.number}")
     Rails.logger.tagged(dossier.number) do
       tasks.each do |task|
+        Rails.logger.info("Processing task #{task.job_task.name}")
         Rails.logger.tagged(task.job_task.name) do
           task_execution = TaskExecution.find_or_create_by(dossier: dossier.number, job_task: task.job_task)
           apply_task(task, dossier, task_execution)

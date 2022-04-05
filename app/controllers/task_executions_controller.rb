@@ -10,7 +10,7 @@ class TaskExecutionsController < ApplicationController
   end
 
   def undiscard
-    @task_execution = TaskExecution.with_discarded.find(params[:id])
+    @task_execution = TaskExecution.find(params[:id])
     @task_execution&.undiscard
     redirect_to demarches_main_path
   end

@@ -27,7 +27,6 @@
 #
 class TaskExecution < ApplicationRecord
   include Discard::Model
-  default_scope -> { kept }
 
   belongs_to :job_task
   has_many :messages, dependent: :destroy

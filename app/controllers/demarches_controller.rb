@@ -23,7 +23,7 @@ class DemarchesController < ApplicationController
   def main
     @with_discarded = session[:with_discarded].present?
     @running = ExportJob.running?
-    @executions = @with_discarded ? TaskExecution.with_discarded.discarded : TaskExecution.kept
+    @executions = @with_discarded ? TaskExecution.discarded : TaskExecution.kept
     @executions = @executions
                   .order('task_executions.updated_at desc')
                   .joins(job_task: { demarche: :instructeurs }).where(demarches_users: { user_id: current_user })

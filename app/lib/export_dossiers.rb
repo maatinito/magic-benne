@@ -22,11 +22,11 @@ class ExportDossiers < DossierTask
   end
 
   def run
-    @csv = nil if @current_path != output_path
+    reset_csv
     compute_dynamic_fields
     line = get_fields(params[:champs])
     save_csv(line)
-    @csv&.flush
+    csv&.flush
     Rails.logger.info("Dossier #{dossier.number} sauvegardé dans #{@current_path}.")
   end
 
@@ -40,6 +40,13 @@ class ExportDossiers < DossierTask
   end
 
   private
+
+  def reset_csv
+    return if @csv.nil? || @current_path == output_path
+
+    @csv.close unless @csv.closed?
+    @csv = nil
+  end
 
   def csv
     return @csv unless @csv.nil?

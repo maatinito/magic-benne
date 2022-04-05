@@ -16,7 +16,7 @@ class ExportBlocs < ExportDossiers
   end
 
   def run
-    @csv = nil if @current_path != output_path
+    reset_csv
     compute_dynamic_fields
     columns = params[:champs]
     repetitions = param_values(:bloc)
@@ -25,7 +25,7 @@ class ExportBlocs < ExportDossiers
     lines.each do |line|
       save_csv(line)
     end
-    @csv&.flush
+    csv.flush
     Rails.logger.info("Dossier #{dossier.number} sauvegardé dans #{@current_path}.")
   end
 

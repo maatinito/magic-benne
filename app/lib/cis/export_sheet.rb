@@ -47,11 +47,11 @@ module Cis
       if param.is_a?(Hash)
         par_defaut = param['par_defaut'] || ''
         field = param['colonne']
-        regexp = Regexp.new(param['regexp'] || Regexp.quote(field))
+        regexp = Regexp.new(param['regexp'] || Regexp.quote(field), Regexp::IGNORECASE)
       else
         field = param.to_s
         par_defaut = ''
-        regexp = Regexp.new(Regexp.quote(field))
+        regexp = Regexp.new(Regexp.quote(field), Regexp::IGNORECASE)
       end
       [field, par_defaut, regexp]
     end

@@ -6,14 +6,14 @@ class DemarcheActions
   def self.instructeur_id(demarche_number, instructeur_email)
     result = MesDemarches::Client.query(MesDemarches::Queries::Instructeurs,
                                         variables: { demarche: demarche_number })
-    throw StandardError.new result.errors.messages.values.map { |m| m.join(',') }.join(',') if result.errors.present?
-    throw StandardError.new "La démarche #{demarche_number} n'existe pas" if result.data.demarche.nil?
+    throw ExportError.new result.errors.messages.values.map { |m| m.join(',') }.join(',') if result.errors.present?
+    throw ExportError.new "La démarche #{demarche_number} n'existe pas" if result.data.demarche.nil?
 
     gql_demarche = result.data.demarche
     gql_instructeur = gql_demarche.groupe_instructeurs.flat_map(&:instructeurs).find do |i|
       i.email == instructeur_email
     end
-    throw StandardError.new "Aucun instructeur #{@instructeur.email} sur la demarche #{demarche_number}" if gql_instructeur.nil?
+    throw ExportError.new("Aucun instructeur #{@instructeur.email} sur la demarche #{demarche_number}") if gql_instructeur.nil?
 
     gql_instructeur.id
   end
@@ -28,8 +28,8 @@ class DemarcheActions
   def self.get_graphql_demarche(demarche_number)
     result = MesDemarches::Client.query(MesDemarches::Queries::Demarche,
                                         variables: { demarche: demarche_number })
-    throw StandardError.new result.errors.messages.values.map { |m| m.join(',') }.join(',') if result.errors.present?
-    throw StandardError.new "La démarche #{demarche_number} n'existe pas" if result&.data&.demarche.nil?
+    throw ExportError.new result.errors.messages.values.map { |m| m.join(',') }.join(',') if result.errors.present?
+    throw ExportError.new("La démarche #{demarche_number} n'existe pas") if result&.data&.demarche.nil?
 
     result.data.demarche
   end

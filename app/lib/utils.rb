@@ -20,14 +20,14 @@ module Utils
       end
     end
     if start_month.nil?
-      throw "Le dossier initial #{dossier.number} n'a pas de champ permettant de connaitre le mois de démarrage de la mesure. (champ mois_1?)"
+      throw ExportError.new("Le dossier initial #{dossier.number} n'a pas de champ permettant de connaitre le mois de démarrage de la mesure. (champ mois_1?)")
     end
 
     start_month = MONTHS.index(start_month) if start_month.is_a?(String)
     current_month = MONTHS.index(month.downcase)
-    throw "Impossible de reconnaitre les mois de démarrage (#{start_month})" if start_month.nil?
+    throw ExportError.new("Impossible de reconnaitre les mois de démarrage (#{start_month})") if start_month.nil?
 
-    throw "Impossible de reconnaitre les mois de l'etat en cours (#{month})" if current_month.nil?
+    throw ExportError.new("Impossible de reconnaitre les mois de l'etat en cours (#{month})") if current_month.nil?
 
     current_month += 12 if current_month < start_month
     current_month - start_month + 1
@@ -49,7 +49,7 @@ module Utils
   def initial_dossier
     if @initial_dossier.nil?
       initial_dossier_field = param_value(:champ_dossier)
-      throw "Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}" if initial_dossier_field.nil?
+      throw ExportError.new("Impossible de trouver le dossier prévisionnel via le champ #{params[:champ_dossier]}") if initial_dossier_field.nil?
       dossier_number = initial_dossier_field.string_value.to_i
       if dossier_number.present?
         DossierActions.on_dossier(dossier_number) do |dossier|

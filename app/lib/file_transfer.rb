@@ -43,7 +43,7 @@ class FileTransfer < DossierTask
       when 'effacer'
         delete(task)
       else
-        throw "Instruction de transfer ftp inconnue #{task.first[0]}"
+        throw ExportError.new("Instruction de transfer ftp inconnue #{task.first[0]}")
       end
     end
   end

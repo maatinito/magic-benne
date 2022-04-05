@@ -60,7 +60,7 @@ module DossierHelper
     when 'PieceJustificativeChamp'
       champ&.file&.filename
     else
-      throw "Unknown field type #{champ.label}:#{champ.__typename}"
+      throw ExportError.new("Unknown field type #{champ.label}:#{champ.__typename}")
     end
   end
 

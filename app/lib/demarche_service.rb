@@ -27,8 +27,8 @@ class DemarcheService
     end
   rescue StandardError => e
     Sentry.capture_exception(e)
-    pp e
-    pp e.backtrace
+    Rails.logger.error(e.message)
+    e.backtrace.first(15).each { |bt| Rails.logger.error(bt) }
   end
 
   EPOCH = Time.zone.parse('2000-01-01 00:00')
@@ -70,6 +70,9 @@ class DemarcheService
       demarche.queried_at = start_time
       demarche.save
       # NotificationMailer.with(job: @job).job_report.deliver_now
+    rescue ExportError => e
+      Rails.logger.error("#{e.message}\n#{e.backtrace.first(15).join("\n")}")
+      NotificationMailer.with(message: e.message).report_error.deliver_later
     rescue StandardError => e
       Sentry.capture_exception(e)
       Rails.logger.error(e.message)
@@ -168,10 +171,14 @@ class DemarcheService
     task.task_execution = task_execution
     begin
       task.process_dossier(dossier)
+    rescue ExportError => e
+      Rails.logger.error("#{e.message}\n#{e.backtrace.first(15).join("\n")}")
+      task.add_message(Message::ERROR, e.message)
+      task_execution.failed = true
     rescue StandardError => e
-      task.add_message(Message::ERROR, "#{e.message}<br>\n#{backtrace(e)}")
       Sentry.capture_exception(e)
       Rails.logger.error("#{e.message}\n#{e.backtrace.first(15).join("\n")}")
+      task.add_message(Message::ERROR, "#{e.message}<br>\n#{backtrace(e)}")
       task_execution.failed = true
     end
     update_check_messages(task_execution, task)
@@ -208,11 +215,13 @@ class DemarcheService
 
   def config
     file_mtime = File.mtime(config_file_name)
-    if @config.nil? || @config_time < file_mtime
-      @config = YAML.safe_load(File.read(config_file_name), [], [], true)
-      @config_time = file_mtime
-    end
-    @config
+    return @config if @config.present? && @config_time >= file_mtime
+
+    @config_time = file_mtime
+    @config = YAML.safe_load(File.read(config_file_name), [], [], true)
+  rescue StandardError => e
+    NotificationMailer.with(message: "Impossible de lire le fichier de configuration: #{e.message}").report_error.deliver_later
+    @config = {}
   end
 
   def config_file_name

@@ -30,7 +30,7 @@ module Cis
           h[key] = sheet.cell(m[1], m[2].to_i)
           h
         else
-          throw "Invalid Excel reference #{reference} for variable #{key}. it should respect the syntax {Letter}+{Digit}+ (example: C3)."
+          throw ExportError.new("Invalid Excel reference #{reference} for variable #{key}. it should respect the syntax {Letter}+{Digit}+ (example: C3).")
         end
       end
     end

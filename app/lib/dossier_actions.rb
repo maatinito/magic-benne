@@ -12,8 +12,8 @@ class DossierActions
   def self.on_dossier(dossier_number, query: MesDemarches::Queries::Dossier)
     result = MesDemarches::Client.query(query, variables: { number: dossier_number })
     dossier = result.data&.dossier
-    yield dossier if dossier.present?
-    Rails.logger.error(result.errors.values.join(',')) unless dossier
+    Rails.logger.error("Impossible d'accéder au dossier #{dossier_number}: #{result.errors.values.join(',')}") unless dossier
+    yield dossier
   end
 
   def self.on_query(query, demarche_id, since: nil, state: nil)
@@ -29,11 +29,11 @@ class DossierActions
                                             })
 
       unless (data = response.data)
-        throw StandardError.new "La démarche #{demarche_id} est introuvable #{ENV['GRAPHQL_HOST']}: #{response.errors.values.join(',')}"
+        throw ExportError.new("La démarche #{demarche_id} est introuvable #{ENV['GRAPHQL_HOST']}: #{response.errors.values.join(',')}")
       end
 
       if data&.errors&.values&.present?
-        throw StandardError.new "La requete pour recevoir les dossiers de #{demarche_id} comporte des erreurs #{response.errors.values.join(',')}"
+        throw ExportError.new("La requete pour recevoir les dossiers de #{demarche_id} comporte des erreurs #{response.errors.values.join(',')}")
       end
 
       dossiers = data.demarche.dossiers

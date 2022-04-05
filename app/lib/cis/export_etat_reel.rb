@@ -34,19 +34,19 @@ module Cis
 
     def report_index(dossier, month)
       file = dossier.annotations.select { |champ| champ.label == 'Candidats admis' }&.first&.file
-      throw "Le dossier initial #{dossier.number} n'a pas de list de candidats admis" if file.nil?
+      throw ExportError.new("Le dossier initial #{dossier.number} n'a pas de list de candidats admis") if file.nil?
       download_with_cache(file.url, file.filename) do |f|
         xlsx = Roo::Spreadsheet.open(f, csv_options: { col_sep: ';', encoding: Encoding::ISO_8859_1 })
         sheet = xlsx.sheet(0)
         start_date = Date.parse(sheet.cell(2, 2))
         start_month = start_date.month
         if start_month.nil?
-          throw "Le dossier initial #{dossier.number} n'a pas de champ permettant de connaitre le mois de démarrage de la mesure. (champ mois_1?)"
+          throw ExportError.new("Le dossier initial #{dossier.number} n'a pas de champ permettant de connaitre le mois de démarrage de la mesure. (champ mois_1?)")
         end
         current_month = MONTHS.index(month.downcase)
-        throw "Impossible de reconnaitre les mois de démarrage (#{start_month})" if start_month.nil?
+        throw ExportError.new("Impossible de reconnaitre les mois de démarrage (#{start_month})") if start_month.nil?
 
-        throw "Impossible de reconnaitre les mois de l'etat en cours (#{month})" if current_month.nil?
+        throw ExportError.new("Impossible de reconnaitre les mois de l'etat en cours (#{month})") if current_month.nil?
 
         current_month += 12 if current_month < start_month
         current_month - start_month + 1

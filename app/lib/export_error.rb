@@ -1,0 +1,2 @@
+class ExportError < StandardError
+end

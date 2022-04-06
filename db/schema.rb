@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_28_191337) do
+ActiveRecord::Schema.define(version: 2022_04_06_024038) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(version: 2021_09_28_191337) do
     t.datetime "discarded_at"
     t.boolean "reprocess", default: false
     t.index ["discarded_at"], name: "index_task_executions_on_discarded_at"
+    t.index ["dossier", "job_task_id"], name: "index_task_executions_on_dossier_and_job_task_id", unique: true
     t.index ["dossier"], name: "index_task_executions_on_dossier"
     t.index ["failed"], name: "index_task_executions_on_failed"
     t.index ["job_task_id"], name: "index_task_executions_on_job_task_id"

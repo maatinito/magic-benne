@@ -20,23 +20,15 @@ class DemarchesController < ApplicationController
     redirect_to demarches_main_path
   end
 
-  def main
+  def show
     @with_discarded = session[:with_discarded].present?
     @running = ExportJob.running?
-    @executions = @with_discarded ? TaskExecution.discarded : TaskExecution.kept
-    @executions = @executions
-                  .order('task_executions.updated_at desc')
-                  .joins(job_task: { demarche: :instructeurs }).where(demarches_users: { user_id: current_user })
-                  .where(id: Message.select(:task_execution_id))
-                  .includes(:messages)
-                  .includes(job_task: :demarche)
-                  .each_with_object({}) do |te, h|
-      h.update(te.job_task.demarche => { te.dossier => [te] }) do |_, h1, h2|
-        h1.update(h2) do |_, l1, l2|
-          l1 + l2
-        end
-      end
-    end
+    demarche_id = params[:demarche]
+    @demarche = Demarche.find_by_id(demarche_id) if demarche_id.present?
+    @demarche ||= last_processed_demarche
+
+    @dossiers = dossiers_for_current_demarche
+    @demarches = demarche_list
   end
 
   def with_discarded
@@ -46,5 +38,34 @@ class DemarchesController < ApplicationController
       session.delete(:with_discarded)
     end
     redirect_to demarches_main_path
+  end
+
+  private
+
+  def dossiers_for_current_demarche
+    return [] unless @demarche.present?
+
+    (@with_discarded ? TaskExecution.discarded : TaskExecution.kept)
+      .order('task_executions.updated_at desc')
+      .joins(job_task: { demarche: :instructeurs })
+      .where(demarches_users: { user_id: current_user })
+      .where(job_tasks: { demarche: @demarche })
+      .where(id: Message.select(:task_execution_id))
+      .includes(:messages)
+      .includes(:job_task)
+      .group_by(&:dossier)
+  end
+
+  def demarche_list
+    TaskExecution
+      .where(id: Message.select(:task_execution_id))
+      .joins(job_task: :demarche)
+      .distinct
+      .group('demarches.id', 'demarches.name')
+      .count(:dossier)
+  end
+
+  def last_processed_demarche
+    TaskExecution.order('task_executions.updated_at desc').joins(:messages).first.job_task.demarche
   end
 end

@@ -20,5 +20,5 @@
 #
 class JobTask < ApplicationRecord
   belongs_to :demarche
-  has_many :task_execution, dependent: :destroy
+  has_many :task_executions, dependent: :destroy
 end

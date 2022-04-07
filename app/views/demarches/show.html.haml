@@ -1,0 +1,55 @@
+.container-fluid
+  .row
+    .col-10
+      - if current_user.is_admin
+        - if @running
+          %p
+            Synchronisation en cours. Rafraichir la page ulterieurement.
+        - else
+          = link_to 'Traiter les nouveaux dossiers', demarches_export_path, class: 'btn btn-primary'
+          = link_to 'Traiter tous les dossiers', demarches_export_all_path, class: 'btn btn-secondary'
+          = link_to 'Effacer les checksums', demarches_clear_checksums_path, class: 'btn btn-secondary'
+    .col.text-right
+      - image = @with_discarded ? 'masquer.svg' : 'afficher.svg'
+      = link_to image_tag(image, class: 'discard btn btn-light'), demarches_with_discarded_path(with_discarded: !@with_discarded)
+  .row
+    %p
+  .row
+    .col
+      %nav
+        %ul.nav.nav-tabs
+          - @demarches.each do |demarche, count|
+            = tab_item(demarche[1],
+                demarches_path(demarche: demarche[0]),
+                active: demarche[0] == @demarche.id,
+                badge: count)
+  .row
+    .col
+      %h3
+        = @dossiers.size
+        dossiers
+      %table.table.table-striped
+        - @dossiers.each do |dossier_number, executions|
+          %tr.d-flex
+            %td
+              - demarche_number = executions.first.job_task.demarche_id
+              = link_to "Dossier #{dossier_number}", ENV['GRAPHQL_HOST'] + "/procedures/#{demarche_number}/dossiers/#{dossier_number}", target: '_blank'
+              %br
+              Exporté le
+              = executions.first.updated_at.strftime('%d/%m/%Y à %H:%M')
+              -# = render partial: "shared/reprocess", locals: { task_execution: execution }
+            %td.col-10
+              - executions.first(50).each do |execution|
+                - if execution.discarded?
+                  = link_to image_tag('afficher.svg', class: 'discard btn btn-light'), undiscard_path(execution, discarded: @discarded)
+                - else
+                  = link_to image_tag('masquer.svg', class: 'discard btn btn-light'), discard_path(execution, discarded: @discarded)
+                = execution.job_task.name
+                = render partial: 'shared/reprocess', locals: { task_execution: execution }
+                - messages = execution.messages.sort_by(&:level)
+                %table.table
+                  - messages.each do |message|
+                    %tr.d-flex
+                      %td.col-4.col-md-3
+                      %td.col-2.col-md-1= message.level_string
+                      %td.col-6.col-md-8= sanitize(message.message)

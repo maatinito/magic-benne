@@ -7,28 +7,25 @@ class DemarchesController < ApplicationController
 
   def export
     ExportJob.run(false)
-    redirect_to demarches_main_path
+    redirect_to demarches_path
   end
 
   def export_all
     ExportJob.run(true)
-    redirect_to demarches_main_path
+    redirect_to demarches_path
   end
 
   def clear_checksums
     Checksum.clear_all
-    redirect_to demarches_main_path
+    redirect_to demarches_path
   end
 
   def show
     @with_discarded = session[:with_discarded].present?
     @running = ExportJob.running?
-    demarche_id = params[:demarche]
-    @demarche = Demarche.find_by_id(demarche_id) if demarche_id.present?
-    @demarche ||= last_processed_demarche
-
-    @dossiers = dossiers_for_current_demarche
     @demarches = demarche_list
+    @demarche = current_demarche
+    @dossiers = dossiers_for_current_demarche
   end
 
   def with_discarded
@@ -37,15 +34,28 @@ class DemarchesController < ApplicationController
     else
       session.delete(:with_discarded)
     end
-    redirect_to demarches_main_path
+    redirect_to demarches_path(params[:demarche])
   end
 
   private
 
+  def current_demarche
+    demarche_id = (params[:demarche].presence || session[:demarche])&.to_i
+    if demarche_id.present? && @demarches.any? { |demarche, _count| demarche[0] == demarche_id }
+      demarche = Demarche.find_by_id(demarche_id)
+      if demarche.present?
+        session[:demarche] = demarche.id.to_s
+      else
+        session.delete(:demarche)
+      end
+    end
+    demarche || last_processed_demarche
+  end
+
   def dossiers_for_current_demarche
     return [] unless @demarche.present?
 
-    (@with_discarded ? TaskExecution.discarded : TaskExecution.kept)
+    task_executions
       .order('task_executions.updated_at desc')
       .joins(job_task: { demarche: :instructeurs })
       .where(demarches_users: { user_id: current_user })
@@ -56,10 +66,15 @@ class DemarchesController < ApplicationController
       .group_by(&:dossier)
   end
 
+  def task_executions
+    @with_discarded ? TaskExecution.discarded : TaskExecution.kept
+  end
+
   def demarche_list
-    TaskExecution
+    task_executions
       .where(id: Message.select(:task_execution_id))
-      .joins(job_task: :demarche)
+      .joins(job_task: { demarche: :instructeurs })
+      .where(demarches_users: { user_id: current_user })
       .distinct
       .group('demarches.id', 'demarches.name')
       .count(:dossier)

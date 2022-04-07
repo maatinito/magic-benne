@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   get 'demarches/export'
   get 'demarches/export_all'
   get 'demarches/clear_checksums'
-  get 'demarches/with_discarded'
+  get 'demarches/:demarche/with_discarded', to: 'demarches#with_discarded', as: 'demarches_with_discarded'
 
   get 'demarches(/:demarche)', to: 'demarches#show', as: 'demarches'
 

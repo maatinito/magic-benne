@@ -11,7 +11,7 @@
           = link_to 'Effacer les checksums', demarches_clear_checksums_path, class: 'btn btn-secondary'
     .col.text-right
       - image = @with_discarded ? 'masquer.svg' : 'afficher.svg'
-      = link_to image_tag(image, class: 'discard btn btn-light'), demarches_with_discarded_path(with_discarded: !@with_discarded)
+      = link_to image_tag(image, class: 'discard btn btn-light'), demarches_with_discarded_path(with_discarded: !@with_discarded, demarche: @demarche)
   .row
     %p
   .row

@@ -28,7 +28,7 @@ services:
     container_name: app-${ENV:-dev}
     restart: always
     ports:
-      - ${PORT}:3003
+      - ${PORT}:${PORT}
     environment:
       - APP_HOST
       - CONFIG
@@ -40,6 +40,7 @@ services:
       - MAIL_DEV
       - MAIL_FROM
       - MAIL_INFRA
+      - PORT
       - POSTGRES_DB
       - POSTGRES_HOST
       - POSTGRES_PASSWORD
@@ -75,6 +76,7 @@ services:
       - POSTGRES_HOST
       - POSTGRES_PASSWORD
       - POSTGRES_USER
+      - PORT
       - RAILS_ENV=${ENV:-production}
       - SCHEDULE
       - SITE_NAME

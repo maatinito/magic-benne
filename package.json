@@ -2,15 +2,15 @@
   "name": "demarches_sefi",
   "private": true,
   "dependencies": {
+    "@rails/webpacker": "5.4.3",
     "@rails/activestorage": "^6.0.4",
     "@rails/ujs": "^6.0.4",
-    "@rails/webpacker": "5.2.1",
     "turbolinks": "^5.2.0"
   },
   "version": "0.1.0",
   "devDependencies": {
     "sass-lint-auto-fix": "^0.21.2",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^4.6.0"
   },
   "scripts": {
     "lint": "sass-lint -v",

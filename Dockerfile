@@ -22,12 +22,12 @@ COPY Gemfile Gemfile.lock package.json yarn.lock  ${INSTALL_PATH}/
 WORKDIR ${INSTALL_PATH}
 
 # sassc https://github.com/sass/sassc-ruby/issues/146#issuecomment-608489863
-RUN bundle config specific_platform x86_64-linux \
-  && bundle config build.sassc --disable-march-tune-native \
-    && bundle config deployment true \
-       && bundle config without "development test" \
-         && bundle install \
-  && yarn install --production
+RUN bundle config specific_platform x86_64-linux &&\
+    bundle config build.sassc --disable-march-tune-native &&\
+    bundle config deployment true &&\
+    bundle config without "development test" &&\
+    bundle install &&\
+    yarn install --production
 
 #----------- final tps
 FROM base

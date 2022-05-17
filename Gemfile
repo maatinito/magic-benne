@@ -74,7 +74,6 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
-  gem 'scss_lint', require: false
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'spring-watcher-listen', '~> 2.0.0'
@@ -96,6 +95,7 @@ group :development do
   gem 'rubocop', require: false
   gem 'rubocop-rails_config'
   gem 'rubocop-rspec'
+  gem 'scss_lint', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require "active_support/core_ext/integer/time"
+
+require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -54,7 +55,7 @@ Rails.application.configure do
   config.log_level = :info
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -67,8 +68,8 @@ Rails.application.configure do
   if ENV.fetch('SENDINBLUE_USER_NAME', '').present?
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
-      user_name: ENV['SENDINBLUE_USER_NAME'],
-      password: ENV['SENDINBLUE_SMTP_KEY'],
+      user_name: ENV.fetch('SENDINBLUE_USER_NAME', nil),
+      password: ENV.fetch('SENDINBLUE_SMTP_KEY', nil),
       address: 'smtp-relay.sendinblue.com',
       domain: 'smtp-relay.sendinblue.com',
       port: '587',
@@ -79,9 +80,9 @@ Rails.application.configure do
   else
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
-      address: ENV['SMTP_HOST'],
-      user_name: ENV['SMTP_LOGIN'],
-      password: ENV['SMTP_PASSWORD'],
+      address: ENV.fetch('SMTP_HOST', nil),
+      user_name: ENV.fetch('SMTP_LOGIN', nil),
+      password: ENV.fetch('SMTP_PASSWORD', nil),
       authentication: :plain
     }
   end
@@ -89,10 +90,10 @@ Rails.application.configure do
   # Configure default root URL for generating URLs to routes
   config.action_mailer.default_url_options = {
     protocol: :http,
-    port: ENV['PORT'],
-    host: ENV['APP_HOST']
+    port: ENV.fetch('PORT', nil),
+    host: ENV.fetch('APP_HOST', nil)
   }
-  config.action_mailer.asset_host = "http://#{ENV['APP_HOST']}:#{ENV['PORT']}"
+  config.action_mailer.asset_host = "http://#{ENV.fetch('APP_HOST', nil)}:#{ENV.fetch('PORT', nil)}"
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
@@ -118,8 +119,8 @@ Rails.application.configure do
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
-  if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
+  if ENV['RAILS_LOG_TO_STDOUT'].present?
+    logger           = ActiveSupport::Logger.new($stdout)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end

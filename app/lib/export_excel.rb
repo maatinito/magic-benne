@@ -96,7 +96,7 @@ class ExportExcel < DossierTask
     path = output_path(sheet_name)
     dedupe(path) do
       CSV.open(path, 'wb',
-               headers: headers,
+               headers:,
                write_headers: true,
                col_sep: ';') do |csv|
         empty_lines = params[:empty_lines]

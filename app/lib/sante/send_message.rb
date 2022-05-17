@@ -27,7 +27,7 @@ module Sante
     ].freeze
 
     SMS = 'Bonjour {}. Etant concerné par l’obligation vaccinale, merci de justifier de votre situation sur https://www.service-public.pf/arass/di'
-    MAIL = <<~MAIL
+    MAIL = <<~MAIL.freeze
       Bonjour {},
       Votre employeur vous a déclaré comme personne concernée par la vaccination obligatoire contre la covid-19 et nous n’avons aucune information sur votre situation vaccinale.
       Pour justifier de votre situation vis à vis de l'obligation vaccinale, cliquez sur https://www.service-public.pf/arass/di

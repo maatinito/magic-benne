@@ -4,7 +4,7 @@ class DossierActions
   EPOCH = Time.zone.parse('2000-01-01 00:00')
 
   def self.on_dossiers(demarche_id, since, &block)
-    on_query(MesDemarches::Queries::DossiersModifies, demarche_id, since: since) do |dossier|
+    on_query(MesDemarches::Queries::DossiersModifies, demarche_id, since:) do |dossier|
       block.call dossier
     end
   end
@@ -24,12 +24,12 @@ class DossierActions
                                             variables: {
                                               demarche: demarche_id,
                                               since: since.iso8601,
-                                              state: state,
-                                              cursor: cursor
+                                              state:,
+                                              cursor:
                                             })
 
       unless (data = response.data)
-        throw ExportError.new("La démarche #{demarche_id} est introuvable #{ENV['GRAPHQL_HOST']}: #{response.errors.values.join(',')}")
+        throw ExportError.new("La démarche #{demarche_id} est introuvable #{ENV.fetch('GRAPHQL_HOST', nil)}: #{response.errors.values.join(',')}")
       end
 
       if data&.errors&.values&.present?

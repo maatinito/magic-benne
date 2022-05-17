@@ -28,21 +28,21 @@ module ApplicationHelper
 
   def render_to_element(selector, partial:, outer: false, locals: {})
     method = outer ? 'outerHTML' : 'innerHTML'
-    html = escape_javascript(render(partial: partial, locals: locals))
+    html = escape_javascript(render(partial:, locals:))
     raw("document.querySelector('#{selector}').#{method} = \"#{html}\";")
   end
 
   def append_to_element(selector, partial:, locals: {})
-    html = escape_javascript(render(partial: partial, locals: locals))
+    html = escape_javascript(render(partial:, locals:))
     raw("document.querySelector('#{selector}').insertAdjacentHTML('beforeend', \"#{html}\");")
   end
 
   def render_flash(timeout: false, sticky: false, fixed: false)
     return unless flash.any?
 
-    html = render_to_element('#flash-messages', partial: 'layouts/flash_messages', locals: { sticky: sticky, fixed: fixed }, outer: true)
+    html = render_to_element('#flash-messages', partial: 'layouts/flash_messages', locals: { sticky:, fixed: }, outer: true)
     flash.clear
-    html += remove_element('#flash-messages', timeout: timeout, inner: true) if timeout
+    html += remove_element('#flash-messages', timeout:, inner: true) if timeout
     html
   end
 end

@@ -42,14 +42,14 @@ class DossierTask < Task
   end
 
   def add_message(level, message)
-    @messages << Message.new(level: level, message: message)
+    @messages << Message.new(level:, message:)
     Rails.logger.info("Dossier: #{@dossier_nb}: #{message}")
   end
 
   def dedupe(filename)
     overwritten = File.exist?(filename)
     yield
-    Checksum.dedupe(@task_execution, filename, overwritten: overwritten)
+    Checksum.dedupe(@task_execution, filename, overwritten:)
   end
 
   private
@@ -103,13 +103,13 @@ class DossierTask < Task
   end
 
   def set_variable(variable, value)
-    attribute = Attribute.find_or_create_by(dossier: @dossier_nb, task: self.class.name.underscore, variable: variable)
+    attribute = Attribute.find_or_create_by(dossier: @dossier_nb, task: self.class.name.underscore, variable:)
     attribute.value = value
     attribute.save
   end
 
   def get_variable(variable)
-    Attribute.find_by(dossier: @dossier_nb, task: self.class.name.underscore, variable: variable)&.value
+    Attribute.find_by(dossier: @dossier_nb, task: self.class.name.underscore, variable:)&.value
   end
 
   def param_value(param_name)
@@ -139,6 +139,6 @@ class DossierTask < Task
   def field_values(field, log_empty: true)
     return nil if @dossier.nil? || field.blank?
 
-    object_values(@dossier, field, log_empty: log_empty)
+    object_values(@dossier, field, log_empty:)
   end
 end

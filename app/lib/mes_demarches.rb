@@ -10,7 +10,7 @@ module MesDemarches
   # puts "url=#{graphql_url}"
   HTTP = GraphQL::Client::HTTP.new(graphql_url) do
     def headers(_context)
-      { Authorization: "Bearer #{ENV['GRAPHQL_BEARER']}" }
+      { Authorization: "Bearer #{ENV.fetch('GRAPHQL_BEARER', nil)}" }
     end
   end
 
@@ -20,7 +20,7 @@ module MesDemarches
       GraphQL::Client::HTTP.new(graphql_url) do
         lambda do
           # headers
-          { Authorization: "Bearer #{ENV['GRAPHQL_BEARER']}" }
+          { Authorization: "Bearer #{ENV.fetch('GRAPHQL_BEARER', nil)}" }
         end
       end
     end

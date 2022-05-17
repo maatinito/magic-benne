@@ -26,11 +26,11 @@ module DossierHelper
   end
 
   def dossier_values(dossier, field, log_empty: true)
-    object_values(dossier, field, log_empty: log_empty)
+    object_values(dossier, field, log_empty:)
   end
 
   def dossier_value(dossier, field, log_empty: true)
-    dossier_values(dossier, field, log_empty: log_empty)&.first
+    dossier_values(dossier, field, log_empty:)&.first
   end
 
   def champ_value(champ)

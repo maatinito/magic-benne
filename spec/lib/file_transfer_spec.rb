@@ -16,9 +16,9 @@ describe FileTransfer do
   let(:remote_dir) { ftp_root / 'input' }
   let(:local_dir) { root / 'local' }
   let(:port) { 2121 }
-  let(:ftp_server) { TestFtpd::Server.new(port: port, root_dir: ftp_root.to_s) }
+  let(:ftp_server) { TestFtpd::Server.new(port:, root_dir: ftp_root.to_s) }
 
-  subject { FileTransfer.new(job, { serveur: server, port: port, identifiant: login, mot_de_passe: password, taches: tasks }) }
+  subject { FileTransfer.new(job, { serveur: server, port:, identifiant: login, mot_de_passe: password, taches: tasks }) }
 
   before do
     Demarche.new(id: demarche_id).save

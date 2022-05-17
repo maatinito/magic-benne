@@ -4,7 +4,7 @@ def msg_present(dossier_with_messages)
   dossier_with_messages.messages&.any? { |msg| msg.body.include?(MESSAGE_MARKER) }
 end
 
-ENTERPRISE_MESSAGE = <<~MSG
+ENTERPRISE_MESSAGE = <<~MSG.freeze
   Bonjour,
 
   Vous avez complété le dossier concernant l'obligation vaccinale.
@@ -28,7 +28,7 @@ namespace :dossiers do
     demarches.each do |demarche_id|
       gql_instructeur = instructeur(demarche_id, 'magic.benne@informatique.gov.pf')
 
-      DossierActions.on_query(MesDemarches::Queries::DossierInfos, demarche_id, since: since, state: 'accepte') do |dossier|
+      DossierActions.on_query(MesDemarches::Queries::DossierInfos, demarche_id, since:, state: 'accepte') do |dossier|
         puts "Processing #{dossier.number} on demarche #{demarche_id}"
         DossierActions.on_dossier(dossier.number, query: MesDemarches::Queries::DossierMessages) do |dossier_with_messages|
           if msg_present(dossier_with_messages)

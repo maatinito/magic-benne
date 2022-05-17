@@ -36,7 +36,7 @@ class NotificationMailer < ApplicationMailer
 
   def send_mail(to, subject, body)
     @body = body
-    mail(to: to, from: MAIL_FROM, subject: subject) do |format|
+    mail(to:, from: MAIL_FROM, subject:) do |format|
       format.html { render(layout: false) } # no layout is used
       format.text # use the special.text.erb like normal
     end

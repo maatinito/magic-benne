@@ -6,8 +6,8 @@ module Sante
     API_URL = 'https://smsmasse.vodafone.pf/Api/Api.aspx'
 
     def initialize
-      @key = ENV['VODAFONE_SECRET']
-      @sender = ENV['VODAFONE_SENDER']
+      @key = ENV.fetch('VODAFONE_SECRET', nil)
+      @sender = ENV.fetch('VODAFONE_SENDER', nil)
     end
 
     def url_params_for_sending(tel, message)

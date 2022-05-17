@@ -3,11 +3,11 @@
 module TabsHelper
   def tab_item(label, url, active: false, badge: nil, notification: false)
     render partial: 'shared/tab_item', locals: {
-      label: label,
-      url: url,
-      active: active,
-      badge: badge,
-      notification: notification
+      label:,
+      url:,
+      active:,
+      badge:,
+      notification:
     }
   end
 
@@ -16,6 +16,6 @@ module TabsHelper
     url = urls.first
     active = urls.any? { |u| current_page?(u) }
 
-    tab_item(label, url, active: active, badge: badge, notification: notification)
+    tab_item(label, url, active:, badge:, notification:)
   end
 end

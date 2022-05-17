@@ -27,7 +27,7 @@ class Checksum < ApplicationRecord
 
   def self.dedupe(task_execution, filename, overwritten: false)
     md5 = hexdigest(filename)
-    checksum = Checksum.find_or_initialize_by(task_execution: task_execution, filename: filename)
+    checksum = Checksum.find_or_initialize_by(task_execution:, filename:)
     if checksum.md5 == md5 && !overwritten
       Rails.logger.info("Checksum: #{filename} non regénéré car identique à la précédente version")
       File.delete(filename)

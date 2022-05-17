@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require "active_support/core_ext/integer/time"
+
+require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -42,8 +43,8 @@ Rails.application.configure do
   if ENV.fetch('SENDINBLUE_USER_NAME', '').present?
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
-      user_name: ENV['SENDINBLUE_USER_NAME'],
-      password: ENV['SENDINBLUE_SMTP_KEY'],
+      user_name: ENV.fetch('SENDINBLUE_USER_NAME', nil),
+      password: ENV.fetch('SENDINBLUE_SMTP_KEY', nil),
       address: 'smtp-relay.sendinblue.com',
       domain: 'smtp-relay.sendinblue.com',
       port: '587',
@@ -54,9 +55,9 @@ Rails.application.configure do
   elsif ENV.fetch('SMTP_HOST').present?
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
-      address: ENV['SMTP_HOST'],
-      user_name: ENV['SMTP_LOGIN'],
-      password: ENV['SMTP_PASSWORD'],
+      address: ENV.fetch('SMTP_HOST', nil),
+      user_name: ENV.fetch('SMTP_LOGIN', nil),
+      password: ENV.fetch('SMTP_PASSWORD', nil),
       authentication: :plain
     }
   else

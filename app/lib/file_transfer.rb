@@ -25,7 +25,7 @@ class FileTransfer < DossierTask
       user = params[:identifiant]
       password = params[:mot_de_passe]
       port = params[:port] || '21'
-      @ftp = Net::FTP.new(host, port: port, username: user, password: password, ssl: port == '21')
+      @ftp = Net::FTP.new(host, port:, username: user, password:, ssl: port == '21')
       execute_tasks
     end
   end
@@ -72,7 +72,7 @@ class FileTransfer < DossierTask
     message = "#{message}: #{exception.message}"
     Rails.logger.error(message)
     exception.backtrace.first(15).each { |bt| Rails.logger.error(bt) }
-    NotificationMailer.with(message: message).report_error.deliver_later
+    NotificationMailer.with(message:).report_error.deliver_later
   end
 
   def delete_remote_file(filename, localfile, pattern)
@@ -84,7 +84,7 @@ class FileTransfer < DossierTask
                 "Taille du fichier en local: #{File.new(localfile).size}. " \
                 "Taille du fichier distant: #{@ftp.size(filename)}"
       Rails.logger.error(message)
-      NotificationMailer.with(message: message).report_error.deliver_later if @ftp.closed?
+      NotificationMailer.with(message:).report_error.deliver_later if @ftp.closed?
     end
   end
 
@@ -115,7 +115,7 @@ class FileTransfer < DossierTask
                 "Taille du fichier en local: #{File.new(filename).size}. " \
                 "Taille du fichier distant: #{@ftp.size(basename)}"
       Rails.logger.error(message)
-      NotificationMailer.with(message: message).report_error.deliver_later if @ftp.closed?
+      NotificationMailer.with(message:).report_error.deliver_later if @ftp.closed?
     end
   end
 

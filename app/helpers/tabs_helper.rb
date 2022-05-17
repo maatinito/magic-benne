@@ -2,13 +2,7 @@
 
 module TabsHelper
   def tab_item(label, url, active: false, badge: nil, notification: false)
-    render partial: 'shared/tab_item', locals: {
-      label:,
-      url:,
-      active:,
-      badge:,
-      notification:
-    }
+    render partial: 'shared/tab_item', locals: { label:, url:, active:, badge:, notification: }
   end
 
   def dynamic_tab_item(label, url_or_urls, badge: nil, notification: false)

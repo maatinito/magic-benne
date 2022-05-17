@@ -12,7 +12,7 @@ ruby '3.1.2'
 # gem 'prawn-rails' # PDF Generation
 # gem 'prawn-svg'
 # gem 'prawn-table'
-gem 'rails', '~> 6.0.4.1'
+gem 'rails', '~> 6.1.5'
 
 # to write Excelx
 gem 'caxlsx'
@@ -45,21 +45,22 @@ gem 'jbuilder', '~> 2.5'
 
 # Reduces boot times through caching; required in config/boot.rb
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.1.0', require: false
+gem 'bootsnap', require: false
 gem 'bootstrap', '~> 4.6.0'
 gem 'delayed_cron_job' # Cron jobs
 gem 'delayed_job_active_record'
 gem 'delayed_job_web'
-gem 'devise', '~> 4.7'
+gem 'devise'
 gem 'devise-i18n'
 gem 'discard'
 gem 'fugit'
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'mailjet'
+gem 'net-smtp'
 gem 'pg'
 gem 'premailer-rails'
-gem 'rails-bootstrap-tabs', '~> 0.2.3'
+gem 'rails-bootstrap-tabs'
 gem 'roo-xls'
 gem 'rubyzip'
 gem 'sassc-rails' # Use SCSS for stylesheets
@@ -80,7 +81,6 @@ group :development, :test do
   gem 'testftpd', require: false, github: 'christian-schulze/testftpd'
   gem 'vcr', '~> 5.1.0'
   gem 'webmock', '~> 3.8.0'
-  gem 'xray-rails'
 end
 
 group :development do

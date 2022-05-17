@@ -1,7 +1,7 @@
 - if @executions.present?
   %h2
     - demarche_number = @executions.first.job_task.demarche_id
-    = link_to "Dossier #{@dossier_number}", ENV['GRAPHQL_HOST'] + "/procedures/#{demarche_number}/dossiers/#{@dossier_number}", target: '_blank'
+    = link_to "Dossier #{@dossier_number}", ENV.fetch('GRAPHQL_HOST') + "/procedures/#{demarche_number}/dossiers/#{@dossier_number}", target: '_blank'
   .container-fluid
     - @executions.each do |execution|
       .row

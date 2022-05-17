@@ -33,7 +33,7 @@
           %tr.d-flex
             %td
               - demarche_number = executions.first.job_task.demarche_id
-              = link_to "Dossier #{dossier_number}", ENV['GRAPHQL_HOST'] + "/procedures/#{demarche_number}/dossiers/#{dossier_number}", target: '_blank'
+              = link_to "Dossier #{dossier_number}", ENV.fetch('GRAPHQL_HOST') + "/procedures/#{demarche_number}/dossiers/#{dossier_number}", target: '_blank'
               %br
               Exporté le
               = executions.first.updated_at.strftime('%d/%m/%Y à %H:%M')

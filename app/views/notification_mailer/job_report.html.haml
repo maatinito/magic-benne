@@ -6,7 +6,7 @@
     - dossiers.each do |dossier_number, executions|
       %tr.d-flex
         %td
-          = link_to "Dossier #{dossier_number}", ENV['GRAPHQL_HOST'] + "/procedures/#{demarche_number}/dossiers/#{dossier_number}", target: '_blank'
+          = link_to "Dossier #{dossier_number}", ENV.fetch('GRAPHQL_HOST') + "/procedures/#{demarche_number}/dossiers/#{dossier_number}", target: '_blank'
           %br
           Exporté le
           = executions.first.updated_at.strftime('%d/%m/%Y à %H:%M')

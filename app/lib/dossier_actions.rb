@@ -10,10 +10,12 @@ class DossierActions
   end
 
   def self.on_dossier(dossier_number, query: MesDemarches::Queries::Dossier)
+    dossier_number = dossier_number.to_i if dossier_number.is_a?(String)
     result = MesDemarches::Client.query(query, variables: { number: dossier_number })
     dossier = result.data&.dossier
     Rails.logger.error("Impossible d'accéder au dossier #{dossier_number}: #{result.errors.values.join(',')}") unless dossier
-    yield dossier
+    yield dossier if block_given?
+    dossier
   end
 
   def self.on_query(query, demarche_id, since: nil, state: nil)

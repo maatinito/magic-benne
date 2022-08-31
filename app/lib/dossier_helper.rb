@@ -5,7 +5,7 @@ module DossierHelper
     objects = [field_source]
     field.split(/\./).each do |name|
       objects = objects.flat_map do |object|
-        object = object.dossier if object.respond_to?(:dossier)
+        object = follow_dossier_link(object)
         r = []
         r += select_champ(object.champs, name) if object.respond_to?(:champs)
         r += select_champ(object.annotations, name) if object.respond_to?(:annotations)
@@ -69,6 +69,17 @@ module DossierHelper
   end
 
   private
+
+  def follow_dossier_link(object)
+    object = object.dossier if object.respond_to?(:dossier)
+    object = get_dossier(object.string_value) if object.respond_to?(:__typename) && object.__typename == 'DossierLinkChamp'
+    object
+  end
+
+  def get_dossier(number)
+    @dossiers ||= {}
+    (@dossiers[number] ||= DossierActions.on_dossier(number))
+  end
 
   def hash_values(name, object)
     ((v = object[name]).is_a?(Array) ? v : [v])

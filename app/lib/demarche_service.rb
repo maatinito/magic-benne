@@ -218,7 +218,7 @@ class DemarcheService
     return @config if @config.present? && @config_time >= file_mtime
 
     @config_time = file_mtime
-    @config = YAML.safe_load(File.read(config_file_name), [], [], true)
+    @config = YAML.safe_load(File.read(config_file_name), aliases: true)
   rescue StandardError => e
     NotificationMailer.with(message: "Impossible de lire le fichier de configuration: #{e.message}").report_error.deliver_later
     @config = {}

@@ -12,7 +12,7 @@ ruby '3.1.2'
 # gem 'prawn-rails' # PDF Generation
 # gem 'prawn-svg'
 # gem 'prawn-table'
-gem 'rails', '~> 6.1.5'
+gem 'rails', '~> 6.1.6'
 
 # to write Excelx
 gem 'caxlsx'
@@ -61,7 +61,6 @@ gem 'net-ftp'
 gem 'net-smtp'
 gem 'pg'
 gem 'premailer-rails'
-gem 'rails-bootstrap-tabs'
 gem 'roo-xls'
 gem 'rubyzip'
 gem 'sassc-rails' # Use SCSS for stylesheets
@@ -92,7 +91,7 @@ group :development do
   gem 'haml-lint'
   gem 'letter_opener_web'
   gem 'mry'
-  gem 'rspec-rails', '~> 4.0.1'
+  gem 'rspec-rails'
   gem 'rubocop', require: false
   gem 'rubocop-rails_config'
   gem 'rubocop-rspec'

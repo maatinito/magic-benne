@@ -19,7 +19,7 @@ class ExportPiecesJointes < DossierTask
   end
 
   def authorized_fields
-    super + %i[etat_du_dossier]
+    super + %i[etat_du_dossier nom_fichier]
   end
 
   def run
@@ -57,9 +57,20 @@ class ExportPiecesJointes < DossierTask
   end
 
   def output_path(champ, filename)
-    dir = create_target_dir(dossier)
-    file = self.class.sanitize(@index, "#{champ} - #{filename}")
+    dir = StringTemplate.new(@dossier).instanciate_filename(@output_dir)
+    FileUtils.mkpath(dir)
+    file = output_filename(champ, filename)
     "#{dir}/#{file}"
+  end
+
+  def output_filename(champ, filename)
+    file = if @params[:nom_fichier].present?
+             variables = { champ:, filename: }.merge(@params)
+             StringTemplate.new(FieldSource.new(@dossier, variables)).instanciate_filename(@params[:nom_fichier])
+           else
+             "#{champ} - #{filename}"
+           end
+    self.class.sanitize(@index, file)
   end
 
   def download_file(champ, filename, url)

@@ -21,22 +21,21 @@ class NotificationMailer < ApplicationMailer
     end
     return unless @executions.present?
 
-    mail(to: email, from: MAIL_FROM,
-         subject: "#{SITE_NAME}: #{@job[:name]}")
+    mail(to: email, subject: "#{SITE_NAME}: #{@job[:name]}")
   end
 
   def output_dir_not_accessible
-    mail(to: MAIL_INFRA, from: MAIL_FROM, subject: "#{SITE_NAME}: Répertoire NAS non monté")
+    mail(to: MAIL_INFRA, subject: "#{SITE_NAME}: Répertoire NAS non monté")
   end
 
   def report_error
     @details = params[:message]
-    mail(to: MAIL_INFRA, from: MAIL_FROM, subject: "#{SITE_NAME}: erreur à l'exécution")
+    mail(to: MAIL_INFRA, subject: "#{SITE_NAME}: erreur à l'exécution")
   end
 
   def send_mail(to, subject, body)
     @body = body
-    mail(to:, from: MAIL_FROM, subject:) do |format|
+    mail(to:, subject:) do |format|
       format.html { render(layout: false) } # no layout is used
       format.text # use the special.text.erb like normal
     end

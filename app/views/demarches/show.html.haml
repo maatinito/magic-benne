@@ -9,9 +9,10 @@
           = link_to 'Traiter les nouveaux dossiers', demarches_export_path, class: 'btn btn-primary'
           = link_to 'Traiter tous les dossiers', demarches_export_all_path, class: 'btn btn-secondary'
           = link_to 'Effacer les checksums', demarches_clear_checksums_path, class: 'btn btn-secondary'
-    .col.text-right
-      - image = @with_discarded ? 'masquer.svg' : 'afficher.svg'
-      = link_to image_tag(image, class: 'discard btn btn-light'), demarches_with_discarded_path(with_discarded: !@with_discarded, demarche: @demarche)
+    - if @demarche.present?
+      .col.text-right
+        - image = @with_discarded ? 'masquer.svg' : 'afficher.svg'
+        = link_to image_tag(image, class: 'discard btn btn-light'), demarches_with_discarded_path(with_discarded: !@with_discarded, demarche: @demarche)
   .row
     %p
   .row
@@ -21,7 +22,7 @@
           - @demarches.each do |demarche, count|
             = tab_item(demarche[1],
                 demarches_path(demarche: demarche[0]),
-                active: demarche[0] == @demarche.id,
+                active: demarche[0] == @demarche&.id,
                 badge: count)
   .row
     .col

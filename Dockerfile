@@ -12,10 +12,7 @@ RUN apk add --update --virtual build-dependencies \
         curl-dev \
         postgresql-dev \
         yarn \
-        python3 \
-        sqlite-dev \
-        sqlite-libs \
-        sqlite
+        python3
 ENV INSTALL_PATH /app
 RUN mkdir -p ${INSTALL_PATH}
 COPY Gemfile Gemfile.lock package.json yarn.lock  ${INSTALL_PATH}/
@@ -33,7 +30,7 @@ RUN bundle config specific_platform x86_64-linux &&\
 FROM base
 ENV APP_PATH /magic-benne
 #----- minimum set of packages including PostgreSQL client, yarn
-RUN apk add --no-cache --update tzdata libcurl postgresql-libs yarn sqlite-libs sqlite openjdk8-jre python3
+RUN apk add --no-cache --update tzdata libcurl postgresql-libs yarn openjdk8-jre python3
 
 WORKDIR ${APP_PATH}
 RUN adduser -Dh ${APP_PATH} userapp

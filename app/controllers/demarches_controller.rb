@@ -81,6 +81,6 @@ class DemarchesController < ApplicationController
   end
 
   def last_processed_demarche
-    TaskExecution.order('task_executions.updated_at desc').joins(:messages).first.job_task.demarche
+    TaskExecution.order('task_executions.updated_at desc').joins(:messages).first&.job_task&.demarche
   end
 end

@@ -429,6 +429,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    sqlite3 (1.4.2)
     strscan (3.0.4)
     sysexits (1.2.0)
     temple (0.8.2)
@@ -523,6 +524,7 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)
+  sqlite3 (~> 1.4)
   testftpd!
   turbolinks (~> 5)
   typhoeus

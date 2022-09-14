@@ -17,7 +17,7 @@ gem 'rails', '~> 6.1.6'
 # to write Excelx
 gem 'caxlsx'
 # Use sqlite3 as the database for Active Record
-# gem 'sqlite3', '~> 1.4'
+gem 'sqlite3', '~> 1.4'
 # Use Puma as the app server
 gem 'puma', '>= 3.12.6'
 # Use SCSS for stylesheets

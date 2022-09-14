@@ -55,6 +55,7 @@ class FileTransfer < DossierTask
     basename = File.basename(pattern)
     to = task['vers'] || '.'
     Rails.logger.debug((move_files ? 'Moving' : 'Downloading') + " #{pattern} to local #{to}")
+    localfile = nil
     begin
       @ftp.chdir(path) if path.present?
       @ftp.nlst(basename).each do |filename|
@@ -64,6 +65,7 @@ class FileTransfer < DossierTask
         delete_remote_file(filename, localfile, pattern) if move_files
       end
     rescue StandardError => e
+      File.delete(localfile) if localfile
       log_error("Error downloading #{pattern} from #{params[:serveur]}", e)
     end
   end
@@ -85,6 +87,7 @@ class FileTransfer < DossierTask
                 "Taille du fichier distant: #{@ftp.size(filename)}"
       Rails.logger.error(message)
       NotificationMailer.with(message:).report_error.deliver_later if @ftp.closed?
+      File.delete(localfile)
     end
   end
 
@@ -93,14 +96,17 @@ class FileTransfer < DossierTask
     pattern = task.first[1]
     to = task['vers']
     Rails.logger.debug((move_files ? 'Moving' : 'Uploading') + " #{pattern} to remote #{to}")
+    remote_filename = nil
     begin
       @ftp.chdir(to) if to.present?
       Dir.glob(pattern).each do |filename|
+        remote_filename = File.basename(filename)
         Rails.logger.debug("Uploading #{filename} to #{to}")
         @ftp.putbinaryfile(filename)
         delete_local_file(filename) if move_files
       end
     rescue StandardError => e
+      @ftp.delete(remote_filename) if remote_filename rescue 'ignore'
       log_error("Error uploading #{pattern} to #{params[:serveur]}", e)
     end
   end
@@ -116,6 +122,7 @@ class FileTransfer < DossierTask
                 "Taille du fichier distant: #{@ftp.size(basename)}"
       Rails.logger.error(message)
       NotificationMailer.with(message:).report_error.deliver_later if @ftp.closed?
+      @ftp.delete(@basename) rescue 'ignore'
     end
   end
 

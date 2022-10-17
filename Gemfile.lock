@@ -4,6 +4,13 @@ GIT
   specs:
     testftpd (0.2.1)
 
+GIT
+  remote: https://github.com/maatinito/transfertpro.git
+  revision: ccb6a6ea8cd3608b6c4a6063d25da6fb71420db6
+  specs:
+    transfertpro (0.1.0)
+      typhoeus (~> 1.4.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -526,6 +533,7 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   sqlite3 (~> 1.4)
   testftpd!
+  transfertpro!
   turbolinks (~> 5)
   typhoeus
   tzinfo-data

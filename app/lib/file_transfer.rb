@@ -6,28 +6,30 @@ class FileTransfer < DossierTask
   include Utils
 
   def version
-    super + 1
+    super + 2
   end
 
   def required_fields
-    super + %i[serveur identifiant mot_de_passe taches]
+    super + %i[api_cle api_secret identifiant mot_de_passe taches]
   end
 
   def authorized_fields
-    super + %i[port]
+    super + %i[tenant]
   end
 
   def run; end
 
   def after_run
-    host = params[:serveur]
-    Rails.logger.tagged(host) do
-      user = params[:identifiant]
-      password = params[:mot_de_passe]
-      port = params[:port] || '21'
-      @ftp = Net::FTP.new(host, port:, username: user, password:, ssl: port == '21')
-      execute_tasks
-    end
+    tenant = params[:tenant]&.to_sym || :default
+    Rails.logger.debug ("Initializing connection to TransfertPro #{tenant} tenant")
+    @tp = FileTransfer::tp_api(params[:api_cle], params[:api_secret], tenant)
+    @tp.connect(params[:identifiant], params[:mot_de_passe])
+
+    execute_tasks
+  end
+
+  def self.tp_api(api_key, api_secret, tenant)
+    Transfertpro::FileSystem.new(api_key, api_secret, tenant)
   end
 
   private
@@ -55,17 +57,10 @@ class FileTransfer < DossierTask
     basename = File.basename(pattern)
     to = task['vers'] || '.'
     Rails.logger.debug((move_files ? 'Moving' : 'Downloading') + " #{pattern} to local #{to}")
-    localfile = nil
     begin
-      @ftp.chdir(path) if path.present?
-      @ftp.nlst(basename).each do |filename|
-        localfile = "#{to}/#{filename}"
-        Rails.logger.debug("Downloading #{filename} to #{localfile}")
-        @ftp.getbinaryfile(filename, localfile)
-        delete_remote_file(filename, localfile, pattern) if move_files
-      end
+      files = @tp.download_shared_files(path, basename, to, move: move_files)
+      Rails.logger.info("Files downloaded from TransfertPro directory #{to}: #{files.join(',')}")
     rescue StandardError => e
-      # File.delete(localfile) if localfile
       log_error("Error downloading #{pattern} from #{params[:serveur]}", e)
     end
   end
@@ -74,21 +69,7 @@ class FileTransfer < DossierTask
     message = "#{message}: #{exception.message}"
     Rails.logger.error(message)
     exception.backtrace.first(15).each { |bt| Rails.logger.error(bt) }
-    NotificationMailer.with(message:).report_error.deliver_later
-  end
-
-  def delete_remote_file(filename, localfile, pattern)
-    if File.new(localfile).size == @ftp.size(filename)
-      Rails.logger.debug("Deleting remote #{filename}")
-      @ftp.delete(filename)
-    else
-      message = "Problème sur le transfert du fichier #{filename} (#{pattern} sur #{params[:serveur]}}. " \
-                "Taille du fichier en local: #{File.new(localfile).size}. " \
-                "Taille du fichier distant: #{@ftp.size(filename)}"
-      Rails.logger.error(message)
-      NotificationMailer.with(message:).report_error.deliver_later if @ftp.closed?
-      # File.delete(localfile)
-    end
+    # NotificationMailer.with(message:).report_error.deliver_later
   end
 
   def upload(task)
@@ -96,45 +77,20 @@ class FileTransfer < DossierTask
     pattern = task.first[1]
     to = task['vers']
     Rails.logger.debug((move_files ? 'Moving' : 'Uploading') + " #{pattern} to remote #{to}")
-    remote_filename = nil
     begin
-      @ftp.chdir(to) if to.present?
-      Dir.glob(pattern).each do |filename|
-        remote_filename = File.basename(filename)
-        Rails.logger.debug("Uploading #{filename} to #{to}")
-        @ftp.putbinaryfile(filename)
-        delete_local_file(filename) if move_files
-      end
+      files = @tp.upload_shared_files(File.dirname(pattern), File.basename(pattern), to, move: move_files)
+      Rails.logger.info("Files uploaded on TransfertPro directory #{to}: #{files.join(',')}")
     rescue StandardError => e
-      # @ftp.delete(remote_filename) if remote_filename rescue 'ignore'
-      log_error("Error uploading #{pattern} to #{params[:serveur]}", e)
-    end
-  end
-
-  def delete_local_file(filename)
-    basename = File.basename(filename)
-    if File.new(filename).size == @ftp.size(basename)
-      Rails.logger.debug("Deleting local #{filename}")
-      File.delete(filename)
-    else
-      message = "Problème sur le transfert du fichier #{filename} (#{params[:serveur]}}. " \
-                "Taille du fichier en local: #{File.new(filename).size}. " \
-                "Taille du fichier distant: #{@ftp.size(basename)}"
-      Rails.logger.error(message)
-      NotificationMailer.with(message:).report_error.deliver_later if @ftp.closed?
-      # @ftp.delete(@basename) rescue 'ignore'
+      log_error("Error uploading #{pattern} to #{@params[:tenant]} TransfertPro using #{@params[:identifiant]}", e)
     end
   end
 
   def delete(task)
     pattern = task.first[1]
     path = File.dirname(pattern)
-    basename = File.basename(pattern)
-    @ftp.chdir(path) if path.present?
+    pattern = File.basename(pattern)
     Rails.logger.debug("Deleting remote pattern #{pattern}")
-    @ftp.nlst(basename).each do |filename|
-      Rails.logger.debug("Deleting remote #{filename}")
-      @ftp.delete(filename)
-    end
+    deleted = @tp.delete_shared_files(path, pattern)
+    Rails.logger.info("Files deleted on TransfertPro directory #{path}: #{deleted.join(',')}")
   end
 end

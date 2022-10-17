@@ -21,8 +21,8 @@ class FileTransfer < DossierTask
 
   def after_run
     tenant = params[:tenant]&.to_sym || :default
-    Rails.logger.debug ("Initializing connection to TransfertPro #{tenant} tenant")
-    @tp = FileTransfer::tp_api(params[:api_cle], params[:api_secret], tenant)
+    Rails.logger.debug("Initializing connection to TransfertPro #{tenant} tenant")
+    @tp = FileTransfer.tp_api(params[:api_cle], params[:api_secret], tenant)
     @tp.connect(params[:identifiant], params[:mot_de_passe])
 
     execute_tasks

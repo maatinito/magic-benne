@@ -69,9 +69,8 @@ gem 'sassc-rails' # Use SCSS for stylesheets
 gem 'sentry-delayed_job'
 gem 'sentry-rails'
 gem 'sentry-ruby'
-gem 'typhoeus'
 gem 'transfertpro', git: 'https://github.com/maatinito/transfertpro.git'
-
+gem 'typhoeus'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

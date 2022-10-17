@@ -16,7 +16,7 @@ describe FileTransfer do
   let(:local_dir) { 'app/lib' }
   let(:tp_api) { double(Transfertpro::FileSystem) }
 
-  subject { FileTransfer.new(job, { api_cle: , api_secret:, identifiant: , mot_de_passe: , taches: tasks }) }
+  subject { FileTransfer.new(job, { api_cle:, api_secret:, identifiant:, mot_de_passe:, taches: tasks }) }
 
   before do
     Demarche.new(id: demarche_id).save
@@ -33,33 +33,33 @@ describe FileTransfer do
   context 'files to download' do
     let(:tasks) { [{ 'telecharger' => 'input/remote*.csv', 'vers' => local_dir }] }
     it 'must be transfered' do
-      expect(tp_api).to receive(:download_shared_files).with('input', 'remote*.csv', local_dir, { move: false}).and_return([])
+      expect(tp_api).to receive(:download_shared_files).with('input', 'remote*.csv', local_dir, { move: false }).and_return([])
     end
   end
 
   context 'files to move from remote' do
     let(:tasks) { [{ 'telecharger' => 'input/remote*.csv', 'vers' => local_dir, 'deplacer' => 'Oui' }] }
     it 'must be transfered and deleted from remote' do
-      expect(tp_api).to receive(:download_shared_files).with('input', 'remote*.csv', local_dir, { move: true}).and_return([])
+      expect(tp_api).to receive(:download_shared_files).with('input', 'remote*.csv', local_dir, { move: true }).and_return([])
     end
   end
 
   context 'files to upload' do
     let(:tasks) { [{ 'televerser' => local_dir / 'local*.csv', 'vers' => remote_dir, 'deplacer' => 'Non' }] }
     it 'must be transfered' do
-      expect(tp_api).to receive(:upload_shared_files).with(local_dir, 'local*.csv', remote_dir, { move: false}).and_return([])
+      expect(tp_api).to receive(:upload_shared_files).with(local_dir, 'local*.csv', remote_dir, { move: false }).and_return([])
     end
   end
 
   context 'files to move to remote' do
     let(:tasks) { [{ 'televerser' => local_dir / 'local*.csv', 'vers' => remote_dir, 'deplacer' => 'Oui' }] }
     it 'must be transfered' do
-      expect(tp_api).to receive(:upload_shared_files).with(local_dir, 'local*.csv', remote_dir, { move: true}).and_return([])
+      expect(tp_api).to receive(:upload_shared_files).with(local_dir, 'local*.csv', remote_dir, { move: true }).and_return([])
     end
   end
 
   context 'files to delete' do
-    let(:tasks) { [{ 'effacer' => remote_dir + '/remote*.csv' }] }
+    let(:tasks) { [{ 'effacer' => "#{remote_dir}/remote*.csv" }] }
     it 'must be deleted' do
       expect(tp_api).to receive(:delete_shared_files).with(remote_dir, 'remote*.csv').and_return([])
     end

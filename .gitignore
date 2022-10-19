@@ -46,3 +46,4 @@ yarn-debug.log*
 /postgres/
 /export/
 /.idea/
+/remote_storage/

@@ -95,7 +95,7 @@ Rails.application.configure do
     port: ENV.fetch('PORT', nil),
     host: ENV.fetch('APP_HOST', nil)
   }
-  config.action_mailer.asset_host = "http://#{ENV.fetch('APP_HOST', nil)}:#{ENV.fetch('PORT', nil)}"
+  config.action_mailer.asset_host = "https://#{ENV.fetch('APP_HOST', nil)}#{config.relative_url_root}"
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

@@ -12,7 +12,7 @@ ruby '3.1.2'
 # gem 'prawn-rails' # PDF Generation
 # gem 'prawn-svg'
 # gem 'prawn-table'
-gem 'rails', '~> 6.1.6'
+gem 'rails', '~> 6.1.6.1'
 
 # to write Excelx
 gem 'caxlsx'

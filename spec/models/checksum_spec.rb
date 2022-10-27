@@ -32,7 +32,7 @@ RSpec.describe Checksum, type: :model do
     Checksum.dedupe(task_execution, filename)
     expect(File).to exist(filename)
   ensure
-    File.delete(filename) if File.exist?(filename)
+    FileUtils.rm_f(filename)
   end
 
   it 'remove file exported for the second time' do
@@ -41,7 +41,7 @@ RSpec.describe Checksum, type: :model do
     Checksum.dedupe(task_execution, filename)
     expect(File).not_to exist(filename)
   ensure
-    File.delete(filename) if File.exist?(filename)
+    FileUtils.rm_f(filename)
   end
 
   it "doesn't remove updated file" do
@@ -51,6 +51,6 @@ RSpec.describe Checksum, type: :model do
     Checksum.dedupe(task_execution, filename)
     expect(File).to exist(filename)
   ensure
-    File.delete(filename) if File.exist?(filename)
+    FileUtils.rm_f(filename)
   end
 end

@@ -108,7 +108,7 @@ module Sante
     end
 
     def person_name(person)
-      name = person[:prenom]&.gsub(/[ ,].*/, '')&.gsub(/\b([a-z])/) { |m| m.upcase } || '' # remove trailing first names & upcase each word (Jean-Marie)
+      name = person[:prenom]&.gsub(/[ ,].*/, '')&.gsub(/\b([a-z])/, &:upcase) || '' # remove trailing first names & upcase each word (Jean-Marie)
       family_name = person[:nom_de_naissance]&.sub(/ ([eéÉ]p\.?|[éeÉ]pouse) .*/i, '')&.upcase || ''
 
       if family_name.present? && name.length + family_name.length + SMS.length - 1 <= 157

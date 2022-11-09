@@ -69,7 +69,7 @@ class DossierTask < Task
 
   def fetch_file(filename, url)
     filepath = cache_file_name(filename)
-    if File.exist?(filepath) && !@task_execution.reprocess
+    if File.exist?(filepath) && File.size(filepath).positive? && !@task_execution.reprocess
       f = File.open(filepath, 'rb')
     else
       begin

@@ -117,6 +117,14 @@ module MesDemarches
       }
       ... on SiretChamp {
           stringValue
+          etablissement {
+            naf
+            libelleNaf
+            entreprise {
+              nom
+              raisonSociale
+            }
+          }
       }
       ... on CiviliteChamp {
           value
@@ -233,6 +241,11 @@ module MesDemarches
             ...DossierInfo
             annotations {
               ...ChampInfo
+              ... on RepetitionChamp {
+                  champs {
+                      ...ChampInfo
+                  }
+              }
             }
             champs {
               ...ChampInfo

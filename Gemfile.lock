@@ -6,9 +6,9 @@ GIT
 
 GIT
   remote: https://github.com/maatinito/transfertpro.git
-  revision: ccb6a6ea8cd3608b6c4a6063d25da6fb71420db6
+  revision: 99d5261f3d283c5b1b660c943ace4934586ca512
   specs:
-    transfertpro (0.1.0)
+    transfertpro (0.2.0)
       typhoeus (~> 1.4.0)
 
 GEM
@@ -142,7 +142,7 @@ GEM
     erubi (1.11.0)
     et-orbi (1.2.7)
       tzinfo
-    ethon (0.15.0)
+    ethon (0.16.0)
       ffi (>= 1.15.0)
     execjs (2.8.1)
     factory_bot (6.2.1)

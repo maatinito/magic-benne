@@ -54,7 +54,7 @@ class FileTransfer < DossierTask
     move_files = %w[true oui].include?(task['deplacer']&.downcase)
     pattern = task.first[1]
     path = File.dirname(pattern)
-    path = ":Share/#{path}" unless path.start_with?(":")
+    path = ":Share/#{path}" unless path.start_with?(':')
     basename = File.basename(pattern)
     to = task['vers'] || '.'
     Rails.logger.debug((move_files ? 'Moving' : 'Downloading') + " #{pattern} to local #{to}")
@@ -78,7 +78,7 @@ class FileTransfer < DossierTask
     pattern = task.first[1]
     to = task['vers']
     Rails.logger.debug((move_files ? 'Moving' : 'Uploading') + " #{pattern} to remote #{to}")
-    to = ":Share/#{to}" unless to.start_with?(":")
+    to = ":Share/#{to}" unless to.start_with?(':')
     begin
       files = @tp.upload_files(File.dirname(pattern), File.basename(pattern), to, move: move_files)
       Rails.logger.info("Files uploaded on TransfertPro directory #{to}: #{files.join(',')}")
@@ -90,7 +90,7 @@ class FileTransfer < DossierTask
   def delete(task)
     pattern = task.first[1]
     path = File.dirname(pattern)
-    path = ":Share/#{path}" unless path.start_with?(":")
+    path = ":Share/#{path}" unless path.start_with?(':')
     pattern = File.basename(pattern)
     Rails.logger.debug("Deleting remote pattern #{pattern}")
     deleted = @tp.delete_files(path, pattern)

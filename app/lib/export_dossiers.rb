@@ -154,7 +154,7 @@ class ExportDossiers < DossierTask
     values = dossier_values(field)
     return values if values.present?
 
-    add_message(Message::WARN, "Impossible de trouver le champ #{field}") unless par_defaut.present?
+    add_message(Message::WARN, "Impossible de trouver le champ #{field}") unless par_defaut
     par_defaut
   end
 

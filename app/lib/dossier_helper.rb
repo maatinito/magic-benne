@@ -89,7 +89,7 @@ module DossierHelper
     if champ.value.present?
       Date.iso8601(champ.value)
     else
-      add_message(Message::WARN, "champ #{champ.label} vide")
+    #   add_message(Message::WARN, "champ #{champ.label} vide")
       ''
     end
   end

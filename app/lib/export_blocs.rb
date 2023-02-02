@@ -31,12 +31,6 @@ class ExportBlocs < ExportDossiers
 
   private
 
-  def repetitions_to_table(repetitions, subfields)
-    repetitions.flat_map do |repetition|
-      repetition_to_table(repetition, subfields) if repetition.__typename == 'RepetitionChamp' && repetition.champs.present?
-    end.compact
-  end
-
   def get_block_fields(block, columns)
     columns.map { |column| get_block_field(block, column) }
   end
@@ -61,6 +55,12 @@ class ExportBlocs < ExportDossiers
       objects.map! { |v| v.is_a?(String) ? Date.iso8601(v) : v } if name.match?(/date/i)
     end
     objects.present? ? objects : default
+  end
+
+  def repetitions_to_table(repetitions, subfields)
+    repetitions.flat_map do |repetition|
+      repetition_to_table(repetition, subfields) if repetition.__typename == 'RepetitionChamp' && repetition.champs.present?
+    end.compact
   end
 
   def repetition_to_table(repetition, subfields)

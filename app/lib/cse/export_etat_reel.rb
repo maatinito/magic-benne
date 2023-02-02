@@ -43,7 +43,7 @@ module Cse
       "#{dir}/#{basename}_Mois_#{index} - #{dossier_nb} - #{@year}-#{@month}.csv"
     end
 
-    def sheet_ok?(sheet_name, employees)
+    def sheet_ok?(sheet_name, rows)
       index = report_index(initial_dossier, @month)
       unless (ok = (1..max_months).include?(index))
         add_message(Message::ERROR, "Il n'est pas possible de déclarer un mois #{index}, le maximum est #{max_months}.")

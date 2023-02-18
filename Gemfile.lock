@@ -154,7 +154,7 @@ GEM
     fugit (1.7.1)
       et-orbi (~> 1, >= 1.2.7)
       raabro (~> 1.4)
-    globalid (1.0.0)
+    globalid (1.0.1)
       activesupport (>= 5.0)
     graphql (1.13.16)
     graphql-client (0.16.0)
@@ -220,7 +220,7 @@ GEM
     mime-types-data (3.2022.0105)
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
-    minitest (5.16.3)
+    minitest (5.17.0)
     mry (0.78.0.0)
       rubocop (>= 0.41.0)
     msgpack (1.6.0)
@@ -461,7 +461,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.6.1)
+    zeitwerk (2.6.6)
 
 PLATFORMS
   ruby

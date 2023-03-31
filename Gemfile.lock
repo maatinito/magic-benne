@@ -109,7 +109,7 @@ GEM
     crass (1.0.6)
     css_parser (1.12.0)
       addressable
-    date (3.2.2)
+    date (3.3.3)
     delayed_cron_job (0.9.0)
       fugit (>= 1.5)
     delayed_job (4.1.11)
@@ -425,7 +425,7 @@ GEM
     temple (0.9.1)
     thor (1.2.1)
     tilt (2.0.11)
-    time (0.2.0)
+    time (0.2.2)
       date
     timeout (0.3.0)
     turbolinks (5.2.1)

@@ -72,7 +72,7 @@ module Cse
     end
 
     def normalized_suspended(suspended)
-      [0, [RES_MAX_DAYS, to_i(suspended)].min].max
+      to_i(suspended).clamp(0, RES_MAX_DAYS)
     end
 
     def load_res_people

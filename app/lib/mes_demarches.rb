@@ -40,7 +40,7 @@ module MesDemarches
 
   # list dossiers
 
-  Queries = Client.parse <<-'GRAPHQL'
+  Queries = Client.parse <<-GRAPHQL
     query Demarche($demarche: Int!) {
       demarche(number: $demarche) {
         number
@@ -281,7 +281,7 @@ module MesDemarches
   #     }
   #   }
 
-  Mutation = Client.parse <<-'GRAPHQL'
+  Mutation = Client.parse <<-GRAPHQL
     mutation EnvoyerMessage($dossierId: ID!, $instructeurId: ID!, $body: String!, $clientMutationId: String) {
         dossierEnvoyerMessage(
             input: {

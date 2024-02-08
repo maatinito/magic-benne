@@ -105,7 +105,7 @@ module DossierHelper
     return champs_to_values(champs) if champs.present?
 
     add_message(Message::WARN, "Impossible de trouver le champ #{field}") unless par_defaut
-    par_defaut
+    [par_defaut]
   end
 
   MD_FIELDS =

@@ -229,7 +229,7 @@ class ExportExcel < DossierTask
     else
       column = definition.to_s
       field = definition.to_s
-      par_defaut = ''
+      par_defaut = "Unknown field #{field}"
     end
     [field, par_defaut, column]
   end

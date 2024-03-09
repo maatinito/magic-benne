@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: https://github.com/maatinito/transfertpro.git
-  revision: 99d5261f3d283c5b1b660c943ace4934586ca512
+  revision: 477a9ba77cb4c019284e0312b0c6aadbe809cddc
   specs:
     transfertpro (0.2.0)
       typhoeus (~> 1.4.0)
@@ -150,7 +150,7 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
-    ffi (1.15.5)
+    ffi (1.16.3)
     fugit (1.8.1)
       et-orbi (~> 1, >= 1.2.7)
       raabro (~> 1.4)
@@ -450,7 +450,7 @@ GEM
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
-    typhoeus (1.4.0)
+    typhoeus (1.4.1)
       ethon (>= 0.9.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)

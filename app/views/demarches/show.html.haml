@@ -21,9 +21,9 @@
         %ul.nav.nav-tabs
           - @demarches.each do |demarche, count|
             = tab_item(demarche[1],
-                demarches_path(demarche: demarche[0]),
-                active: demarche[0] == @demarche&.id,
-                badge: count)
+                       demarches_path(demarche: demarche[0]),
+                       active: demarche[0] == @demarche&.id,
+                       badge: count)
   .row
     .col
       %h3

@@ -5,6 +5,7 @@ require 'active_support/core_ext/date/calculations'
 namespace :dbs do
   desc 'Display dates between start and end'
   task :ships, [:start_date, :path] do |_t, args|
+    args = args.with_indifferent_access
     start_date = (args[:start_date] || 10.days.ago.strftime('%d/%m/%Y')).gsub('/', '%2F')
     output = args[:path] || 'ships.csv'
 

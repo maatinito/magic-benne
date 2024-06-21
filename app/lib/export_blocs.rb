@@ -39,7 +39,7 @@ class ExportBlocs < ExportDossiers
     field, default = definition(column)
     return default unless field
 
-    names = field.split(/\./)
+    names = field.split('.')
     return nil if names.blank?
 
     champs = select_champ(block, names.shift)

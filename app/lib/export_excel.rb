@@ -119,7 +119,7 @@ class ExportExcel < DossierTask
             when Float
               value.to_s.tr('.', ',')
             when String
-              value.strip.gsub(/\s+/, ' ').gsub(/;/, ',')
+              value.strip.gsub(/\s+/, ' ').gsub(';', ',')
             else
               value
             end
@@ -229,7 +229,7 @@ class ExportExcel < DossierTask
     else
       column = definition.to_s
       field = definition.to_s
-      par_defaut = ''
+      par_defaut = "Unknown field #{field}"
     end
     [field, par_defaut, column]
   end

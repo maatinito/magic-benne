@@ -3,7 +3,7 @@
 module DossierHelper
   def object_values(field_source, field, log_empty: true)
     objects = [field_source]
-    field.split(/\./).each do |name|
+    field.split('.').each do |name|
       objects = objects.flat_map do |object|
         object = follow_dossier_link(object)
         r = []
@@ -105,7 +105,7 @@ module DossierHelper
     return champs_to_values(champs) if champs.present?
 
     add_message(Message::WARN, "Impossible de trouver le champ #{field}") unless par_defaut
-    par_defaut
+    [par_defaut]
   end
 
   MD_FIELDS =
@@ -159,7 +159,7 @@ module DossierHelper
     path = MD_FIELDS[field]
     return [] if path.nil?
 
-    r = path.split(/\./).reduce(source) do |o, f|
+    r = path.split('.').reduce(source) do |o, f|
       case o
       when GraphQL::Client::List, Array
         o.map { |elt| elt.send(f) }

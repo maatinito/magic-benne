@@ -15,21 +15,30 @@ class ExportExcel < DossierTask
   end
 
   def required_fields
-    super + %i[champ_etat]
+    super + %i[champ]
   end
 
   def authorized_fields
-    super + %i[empty_lines prefixe_fichier]
+    super + %i[empty_lines prefixe_fichier bloc colonnes_champs champ_etat]
   end
 
   def run
-    report = param_value(:champ_etat)
-    return if report.nil?
-
-    export_report(report)
+    if @params[:bloc]
+      for_each_repetition(:bloc) do
+        export
+      end
+    else
+      export
+    end
   end
 
   private
+
+  def export
+    param = @params.key?(:champ) ? :champ : :champ_etat
+    reports = object_values(@block || @dossier, @params[param])
+    reports.each { |report| export_report(report) }
+  end
 
   def normalize_int(symbol, line)
     line[symbol] = to_i(line[symbol])
@@ -81,18 +90,18 @@ class ExportExcel < DossierTask
   end
 
   def save_sheet(sheet_name, sheet)
-    employees = employees(sheet)
-    save_employees(sheet_name, employees)
+    rows = rows(sheet)
+    save_rows(sheet_name, rows)
   rescue Roo::HeaderRowNotFoundError => e
     columns = e.message.gsub(%r{[/\[\]]}, '')
     add_message(Message::ERROR, "Les colonnes suivantes manquent dans le fichier Excel: #{columns}")
   end
 
-  def save_employees(sheet_name, employees)
-    return unless sheet_ok?(sheet_name, employees)
+  def save_rows(sheet_name, rows)
+    return unless sheet_ok?(sheet_name, rows)
 
-    Rails.logger.info("Saving #{employees.size} lines for #{sheet_name}")
-    headers = employees.flat_map(&:keys).reduce(Set[], :add).to_a
+    Rails.logger.info("Saving #{rows.size} lines for #{sheet_name}")
+    headers = rows.flat_map(&:keys).reduce(Set[], :add).to_a
     path = output_path(sheet_name)
     dedupe(path) do
       CSV.open(path, 'wb',
@@ -101,7 +110,7 @@ class ExportExcel < DossierTask
                col_sep: ';') do |csv|
         empty_lines = params[:empty_lines]
         empty_lines.to_i.times { csv << [] } if empty_lines.present?
-        employees.each do |line|
+        rows.each do |line|
           output_line = headers.map do |column|
             value = line[column]
             case value
@@ -110,7 +119,7 @@ class ExportExcel < DossierTask
             when Float
               value.to_s.tr('.', ',')
             when String
-              value.strip.gsub(/\s+/, ' ').gsub(/;/, ',')
+              value.strip.gsub(/\s+/, ' ').gsub(';', ',')
             else
               value
             end
@@ -121,14 +130,14 @@ class ExportExcel < DossierTask
     end
   end
 
-  def sheet_ok?(sheet_name, employees)
-    unless (ok = employees.present?)
+  def sheet_ok?(sheet_name, rows)
+    unless (ok = rows.present?)
       add_message(Message::ERROR, "L'onglet #{sheet_name} ne contient aucun employe")
     end
     ok
   end
 
-  def employees(sheet)
+  def rows(sheet)
     @title_regexps ||= title_regexps
     rows = sheet.parse(@title_regexps)
     (first_column_title, _value) = rows&.first&.first
@@ -138,6 +147,7 @@ class ExportExcel < DossierTask
         line[key] = normalize_date(value) if key.to_s.match?(/date/i)
       end
       normalize_line(line)
+      field_columns.merge!(line)
     end
   end
 
@@ -186,8 +196,41 @@ class ExportExcel < DossierTask
   end
 
   def normalize_line(line)
-    # line[:aide] = line[:aide].round if line[:aide].is_a?(Float)
-    # line[:aide_maximale] = 0
     line
+  end
+
+  def field_columns
+    @columns ||= params[:colonnes_champs]
+    return {} unless @columns.present?
+
+    @columns.each_with_object({}) do |column_definition, h|
+      field, default, column = definition(column_definition)
+      values = get_field_values(field, default)
+      #---- normalize dates & stores only one global string value for each cell
+      values.map! do |v|
+        case v
+        when DateTime
+          v.iso8601
+        when Date
+          v.strftime('%d/%m/%Y')
+        else
+          v
+        end
+      end
+      h[column] = values.join('|').strip.tr(';', '/')
+    end
+  end
+
+  def definition(definition)
+    if definition.is_a?(Hash)
+      par_defaut = definition['par_defaut'] || ''
+      field = definition['champ']
+      column = definition['colonne']
+    else
+      column = definition.to_s
+      field = definition.to_s
+      par_defaut = "Unknown field #{field}"
+    end
+    [field, par_defaut, column]
   end
 end

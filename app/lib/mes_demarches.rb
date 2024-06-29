@@ -38,6 +38,26 @@ module MesDemarches
 
   Client = GraphQL::Client.new(schema: Schema, execute: HTTP)
 
+  def self.query(definition, variables: {}, context: {})
+    max_retries = 10
+    retry_count = 0
+    success = false
+
+    until success
+      begin
+        result = Client.query(definition, variables:, context:)
+        success = true
+      rescue StandardError => e
+        retry_count += 1
+        raise e if retry_count >= max_retries
+
+        Rails.logger.warn("Attempt #{retry_count} failed querying Mes-Démarches: #{e.message}. Retrying in 1 second...")
+        sleep 1
+      end
+    end
+    result
+  end
+
   # list dossiers
 
   Queries = Client.parse <<-GRAPHQL
@@ -103,11 +123,12 @@ module MesDemarches
           secondaryValue
       }
       ... on PieceJustificativeChamp  {
-          file {
+          files {
               contentType
               byteSize
               filename
               url
+              checksum
           }
           stringValue
       }
@@ -200,6 +221,7 @@ module MesDemarches
       dossier(number: $number) {
           ...DossierInfo
           annotations {
+            id
             ...ChampInfo
             ... on RepetitionChamp {
                 champs {
@@ -245,6 +267,7 @@ module MesDemarches
           nodes {
             ...DossierInfo
             annotations {
+              id
               ...ChampInfo
               ... on RepetitionChamp {
                   champs {

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_06_024038) do
+ActiveRecord::Schema.define(version: 2024_08_03_004253) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,18 @@ ActiveRecord::Schema.define(version: 2022_04_06_024038) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["level"], name: "index_messages_on_level"
     t.index ["task_execution_id"], name: "index_messages_on_task_execution_id"
+  end
+
+  create_table "pass_sport_data", force: :cascade do |t|
+    t.integer "dossier", null: false
+    t.string "siret", null: false
+    t.string "status"
+    t.boolean "eligible"
+    t.string "cps_feedback_checksum"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["dossier"], name: "index_pass_sport_data_on_dossier", unique: true
+    t.index ["siret"], name: "index_pass_sport_data_on_siret"
   end
 
   create_table "syncs", force: :cascade do |t|

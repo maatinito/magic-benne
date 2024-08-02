@@ -47,7 +47,7 @@ module Djs
           new_status = compute_status(data, immatriculation)
           next if data.status == new_status
 
-          SetAnnotationValue.set_value(md_dossier(data), instructeur, @champ_status, new_status)
+          SetAnnotationValue.set_value(refreshed_dossier(data), instructeur, @champ_status, new_status)
           data.status = new_status
           data.save!
         end
@@ -55,25 +55,21 @@ module Djs
     end
 
     def handle_cps_feedback(data)
-      # cps_feedback_path = "#{@params[:rep_retours_cps]}/#{data.dossier}.csv"
-      cps_feedback_path = "#{@params[:rep_retours_cps]}/424862.csv"
+      cps_feedback_path = "#{@params[:rep_retours_cps]}/#{data.dossier}.csv"
+      # cps_feedback_path = "#{@params[:rep_retours_cps]}/424862.csv"
       return unless File.exist?(cps_feedback_path)
 
       checksum = FileUpload.checksum(cps_feedback_path)
       return if data.cps_feedback_checksum == checksum
 
-      SetAnnotationValue.set_piece_justificative(md_dossier(data), instructeur, @champ_cps_feedback, cps_feedback_path)
+      SetAnnotationValue.set_piece_justificative(refreshed_dossier(data), instructeur, @champ_cps_feedback, cps_feedback_path)
       data.cps_feedback_checksum = checksum
       data.save!
     end
 
-    def md_dossier(data)
-      @dossier ||= DossierActions.on_dossier(data.dossier)
-    end
-
     def compute_status(data, immatriculation)
       if immatriculation[:status] == 'OK'
-        SetAnnotationValue.set_value(md_dossier(data), instructeur, @champ_eligible, true) unless data.eligible
+        SetAnnotationValue.set_value(refreshed_dossier(data), instructeur, @champ_eligible, true) unless data.eligible
         if !data.invoices_verified
           'DJS En attente vérification des factures'
         elsif data.cps_feedback_checksum.blank?
@@ -103,9 +99,13 @@ module Djs
 
     private
 
+    def refreshed_dossier(data)
+      @dossier = DossierActions.on_dossier(data.dossier) if @dossier.nil? || @dossier.number != data.dossier
+      @dossier
+    end
+
     def instructeur
       @instructeur ||= DemarcheActions.instructeur_id(@demarche_id, @params[:instructeur])
     end
   end
 end
-

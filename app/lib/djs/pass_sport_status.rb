@@ -62,7 +62,6 @@ module Djs
       checksum = FileUpload.checksum(cps_feedback_path)
       return if data.cps_feedback_checksum == checksum
 
-
       SetAnnotationValue.set_piece_justificative(refreshed_dossier(data), instructeur, @champ_cps_feedback, cps_feedback_path)
       data.cps_feedback_checksum = checksum
       data.save!

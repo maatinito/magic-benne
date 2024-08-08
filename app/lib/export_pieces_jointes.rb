@@ -33,7 +33,9 @@ class ExportPiecesJointes < DossierTask
     champs.each do |champ|
       values = field_values(champ)
       values.each do |value|
-        export_file(champ, value.file)
+        value.files.each do |file|
+          export_file(champ, file)
+        end
       end
     end
   end

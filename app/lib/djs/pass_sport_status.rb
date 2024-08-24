@@ -31,9 +31,20 @@ module Djs
       data = PassSportData.create_or_find_by(dossier: @dossier.number) do |d|
         d.siret = siret
       end
+      if @dossier.state == 'accepte'
+        data.destroy
+        return
+      end
+
       data.siret = siret
       data.status = field_value(@champ_status)&.value
       data.eligible = @dossier.state == 'en_instruction'
+      data.status = if @dossier.state == 'en_construction'
+                      'DJS Attente passage en instruction'
+                    else
+                      field_value(@champ_status)&.value
+                    end
+      SetAnnotationValue.set_value(@dossier, instructeur, @champ_status, data.status)
       data.save!
     end
 

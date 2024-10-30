@@ -46,6 +46,7 @@ module Djs
                     end
       SetAnnotationValue.set_value(@dossier, instructeur, @champ_status, data.status)
       data.save!
+      SetAnnotationValue.set_value(@dossier, instructeur, @champ_status, 'DJS Attente passage en instruction') unless data.eligible
     end
 
     def after_run

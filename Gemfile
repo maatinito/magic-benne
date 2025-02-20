@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.1.2'
+ruby '3.2.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'odf-report'
@@ -12,7 +12,7 @@ ruby '3.1.2'
 # gem 'prawn-rails' # PDF Generation
 # gem 'prawn-svg'
 # gem 'prawn-table'
-gem 'rails', '~> 6.1.7.1'
+gem 'rails', '7.0.4'
 
 # to write Excelx
 gem 'caxlsx'
@@ -77,9 +77,9 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
-  gem 'spring'
+  gem 'spring', '~> 4.0'
   gem 'spring-commands-rspec'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-watcher-listen', '~> 2.0'
   gem 'testftpd', require: false, github: 'christian-schulze/testftpd'
   gem 'vcr', '~> 5.1.0'
   gem 'webmock', '~> 3.8.0'

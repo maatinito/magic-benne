@@ -51,7 +51,7 @@ class CalculsSurEtatPrevisionnel < ExportDossierCalculations
   def computed_columns_from_file(file)
     xlsx = Roo::Spreadsheet.open(file)
     cells = {}
-    xlsx.sheets.filter { |name| name =~ /Mois/ }.each do |name|
+    xlsx.sheets.grep(/Mois/).each do |name|
       cells.merge!(computed_columns_from_sheet(xlsx.sheet(name), name))
     end
     cells

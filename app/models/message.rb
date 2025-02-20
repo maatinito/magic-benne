@@ -9,7 +9,7 @@
 #  message           :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  task_execution_id :integer          not null
+#  task_execution_id :bigint           not null
 #
 # Indexes
 #

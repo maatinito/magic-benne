@@ -8,7 +8,7 @@
 #  name        :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  demarche_id :integer          not null
+#  demarche_id :bigint           not null
 #
 # Indexes
 #

@@ -29,6 +29,10 @@ module Cse
       super
     end
 
+    RES_MAX_DAYS = 28
+    # RES_MONTH = 'Aout'
+    RES_MONTH = 'Septembre'
+
     private
 
     def sheet_regexp
@@ -54,10 +58,6 @@ module Cse
     def max_months
       6
     end
-
-    RES_MAX_DAYS = 28
-    # RES_MONTH = 'Aout'
-    RES_MONTH = 'Septembre'
 
     def normalize_line(line)
       super

@@ -9,18 +9,18 @@ require 'fileutils'
 
 module Cse
   class ExportEtatNominatif < ExportExcel
-    def version
-      super + 4
-    end
-
-    private
-
     TITLE_LABELS = [
       'Nom de famille', 'Nom marital', 'Prénom', 'Date de naissance', 'DN', 'Heures avant ',
       'Brut mensuel moyen', 'Heures à réaliser', 'DMO', "Jours non rémunérés|Jours d'absence",
       "Jours d'indemnités journalières", 'Taux RTT*', 'Aide', 'Cotisations', '% temps présent',
       '% réalisé convention|% convention effectuée', '% perte salaire', '% aide', 'plafond'
     ].freeze
+
+    def version
+      super + 4
+    end
+
+    private
 
     def title_labels
       TITLE_LABELS

@@ -1,6 +1,53 @@
 # frozen_string_literal: true
 
 module DossierHelper
+  MD_FIELDS =
+    {
+      'ID' => 'number',
+      'Email' => 'usager.email',
+      'Archivé' => 'archived',
+      'Civilité' => 'demandeur.civilite',
+      'Nom' => 'demandeur.nom',
+      'Prénom' => 'demandeur.prenom',
+      'État du dossier' => 'state',
+      'Dernière mise à jour le' => 'date_derniere_modification',
+      'Déposé le' => 'date_passage_en_construction',
+      'Passé en instruction le' => 'date_passage_en_instruction',
+      'Traité le' => 'date_traitement',
+      'Motivation de la décision' => 'motivation',
+      'Instructeurs' => 'groupe_instructeur.instructeurs.email',
+      'Établissement Numéro TAHITI' => 'demandeur.siret',
+      'Établissement siège social' => '', # not implemented in Mes-Démarches
+      'Établissement NAF' => 'demandeur.naf',
+      'Établissement libellé NAF' => 'demandeur.libelle_naf',
+      'Établissement Adresse' => 'demandeur.adresse',
+      'Établissement numero voie' => 'demandeur.numero_voie',
+      'Établissement type voie' => 'demandeur.type_voie',
+      'Établissement nom voie' => 'demandeur.nom_voie',
+      'Établissement complément adresse' => 'demandeur.complement_adresse',
+      'Établissement code postal' => 'demandeur.code_postal',
+      'Établissement localité' => 'demandeur.localite',
+      'Établissement code INSEE localité' => '', # not implemented in Mes-Démarches
+      'Entreprise SIREN' => 'demandeur.entreprise.siren',
+      'Entreprise capital social' => 'demandeur.entreprise.capital_social',
+      'Entreprise numero TVA intracommunautaire' => 'demandeur.entreprise.numero_tva_intracommunautaire',
+      'Entreprise forme juridique' => 'demandeur.entreprise.forme_juridique',
+      'Entreprise forme juridique code' => 'demandeur.entreprise.forme_juridique_code',
+      'Entreprise nom commercial' => 'demandeur.entreprise.nom_commercial',
+      'Entreprise raison sociale' => 'demandeur.entreprise.raison_sociale',
+      'Entreprise Numéro TAHITI siège social' => 'demandeur.entreprise.siret_siege_social',
+      'Entreprise code effectif entreprise' => 'demandeur.entreprise.code_effectif_entreprise',
+      'Entreprise date de création' => 'demandeur.entreprise.date_creation',
+      'Entreprise nom' => 'demandeur.entreprise.nom',
+      'Entreprise prénom' => 'demandeur.entreprise.prenom',
+      'Association RNA' => 'demandeur.association.rna',
+      'Association titre' => 'demandeur.association.titre',
+      'Association objet' => 'demandeur.association.objet',
+      'Association date de création' => 'demandeur.association.date_creation',
+      'Association date de déclaration' => 'demandeur.association.date_declaration',
+      'Association date de publication' => 'demandeur.association.date_declaration'
+    }.freeze
+
   def object_values(field_source, field, log_empty: true)
     objects = [field_source]
     field.split('.').each do |name|
@@ -79,7 +126,7 @@ module DossierHelper
 
   def get_dossier(number)
     @dossiers ||= {}
-    (@dossiers[number] ||= DossierActions.on_dossier(number))
+    @dossiers[number] ||= DossierActions.on_dossier(number)
   end
 
   def hash_values(name, object)
@@ -107,53 +154,6 @@ module DossierHelper
     add_message(Message::WARN, "Impossible de trouver le champ #{field}") unless par_defaut
     [par_defaut]
   end
-
-  MD_FIELDS =
-    {
-      'ID' => 'number',
-      'Email' => 'usager.email',
-      'Archivé' => 'archived',
-      'Civilité' => 'demandeur.civilite',
-      'Nom' => 'demandeur.nom',
-      'Prénom' => 'demandeur.prenom',
-      'État du dossier' => 'state',
-      'Dernière mise à jour le' => 'date_derniere_modification',
-      'Déposé le' => 'date_passage_en_construction',
-      'Passé en instruction le' => 'date_passage_en_instruction',
-      'Traité le' => 'date_traitement',
-      'Motivation de la décision' => 'motivation',
-      'Instructeurs' => 'groupe_instructeur.instructeurs.email',
-      'Établissement Numéro TAHITI' => 'demandeur.siret',
-      'Établissement siège social' => '', # not implemented in Mes-Démarches
-      'Établissement NAF' => 'demandeur.naf',
-      'Établissement libellé NAF' => 'demandeur.libelle_naf',
-      'Établissement Adresse' => 'demandeur.adresse',
-      'Établissement numero voie' => 'demandeur.numero_voie',
-      'Établissement type voie' => 'demandeur.type_voie',
-      'Établissement nom voie' => 'demandeur.nom_voie',
-      'Établissement complément adresse' => 'demandeur.complement_adresse',
-      'Établissement code postal' => 'demandeur.code_postal',
-      'Établissement localité' => 'demandeur.localite',
-      'Établissement code INSEE localité' => '', # not implemented in Mes-Démarches
-      'Entreprise SIREN' => 'demandeur.entreprise.siren',
-      'Entreprise capital social' => 'demandeur.entreprise.capital_social',
-      'Entreprise numero TVA intracommunautaire' => 'demandeur.entreprise.numero_tva_intracommunautaire',
-      'Entreprise forme juridique' => 'demandeur.entreprise.forme_juridique',
-      'Entreprise forme juridique code' => 'demandeur.entreprise.forme_juridique_code',
-      'Entreprise nom commercial' => 'demandeur.entreprise.nom_commercial',
-      'Entreprise raison sociale' => 'demandeur.entreprise.raison_sociale',
-      'Entreprise Numéro TAHITI siège social' => 'demandeur.entreprise.siret_siege_social',
-      'Entreprise code effectif entreprise' => 'demandeur.entreprise.code_effectif_entreprise',
-      'Entreprise date de création' => 'demandeur.entreprise.date_creation',
-      'Entreprise nom' => 'demandeur.entreprise.nom',
-      'Entreprise prénom' => 'demandeur.entreprise.prenom',
-      'Association RNA' => 'demandeur.association.rna',
-      'Association titre' => 'demandeur.association.titre',
-      'Association objet' => 'demandeur.association.objet',
-      'Association date de création' => 'demandeur.association.date_creation',
-      'Association date de déclaration' => 'demandeur.association.date_declaration',
-      'Association date de publication' => 'demandeur.association.date_declaration'
-    }.freeze
 
   def simple_attribute(source, field)
     path = MD_FIELDS[field]

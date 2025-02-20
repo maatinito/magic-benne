@@ -2,31 +2,11 @@
 
 module Cis
   class ExportEtatPrevisionnel < ExportExcel
-    def version
-      super + 2
-    end
-
-    private
-
     TITLE_LABELS = [
       'Nom de famille', 'Prénom', 'Date de naissance', 'DN', 'Civilité', "Niveau d'étude",
       'Date de naissance du', 'DN du conjoint', "Nb d'enfants", 'Activité',
       'Code ROME', "Jours d'absences", 'Aide'
     ].freeze
-
-    def title_labels
-      TITLE_LABELS
-    end
-
-    def sheet_regexp
-      /^((?!Menus|Feui).)*$/
-    end
-
-    def output_path(_sheet_name)
-      dir = create_target_dir(dossier)
-      basename = params[:prefixe_fichier] || params[:champ_etat] || 'Etat'
-      "#{dir}/#{basename} - #{dossier.number}.csv"
-    end
 
     CODES_ROMES = {
       'Accueil et d’information' => 'M1601',
@@ -48,6 +28,26 @@ module Cis
       'Propreté urbaine' => 'K2303',
       'Secrétariat et administration' => 'M1602'
     }.freeze
+
+    def version
+      super + 2
+    end
+
+    private
+
+    def title_labels
+      TITLE_LABELS
+    end
+
+    def sheet_regexp
+      /^((?!Menus|Feui).)*$/
+    end
+
+    def output_path(_sheet_name)
+      dir = create_target_dir(dossier)
+      basename = params[:prefixe_fichier] || params[:champ_etat] || 'Etat'
+      "#{dir}/#{basename} - #{dossier.number}.csv"
+    end
 
     def normalize_line(line)
       super

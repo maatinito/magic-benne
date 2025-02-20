@@ -180,7 +180,12 @@ module Sante
     end
 
     def normalize(tel)
-      tel&.to_s&.strip&.gsub(%r{[.-/ ()]}, '')&.gsub(/^(\+?689)/, '')
+      return unless tel
+
+      str = tel.to_s
+      str = str.strip
+      str = str.gsub(%r{[.-/ ()]}, '')
+      str.gsub(/^(\+?689)/, '')
     end
   end
 end

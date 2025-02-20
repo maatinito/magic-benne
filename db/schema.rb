@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -21,7 +23,7 @@ ActiveRecord::Schema.define(version: 2024_08_03_004253) do
     t.string "value"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "demarche_id", null: false
+    t.bigint "demarche_id", null: false
     t.integer "dossier"
     t.index ["demarche_id"], name: "index_attributes_on_demarche_id"
     t.index ["dossier"], name: "index_attributes_on_dossier"
@@ -29,7 +31,7 @@ ActiveRecord::Schema.define(version: 2024_08_03_004253) do
   end
 
   create_table "checksums", force: :cascade do |t|
-    t.integer "task_execution_id", null: false
+    t.bigint "task_execution_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "filename"
@@ -63,13 +65,13 @@ ActiveRecord::Schema.define(version: 2024_08_03_004253) do
   end
 
   create_table "demarches_users", id: false, force: :cascade do |t|
-    t.integer "demarche_id", null: false
-    t.integer "user_id", null: false
+    t.bigint "demarche_id", null: false
+    t.bigint "user_id", null: false
     t.index ["user_id", "demarche_id"], name: "index_demarches_users_on_user_id_and_demarche_id"
   end
 
   create_table "job_tasks", force: :cascade do |t|
-    t.integer "demarche_id", null: false
+    t.bigint "demarche_id", null: false
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -79,7 +81,7 @@ ActiveRecord::Schema.define(version: 2024_08_03_004253) do
   create_table "messages", force: :cascade do |t|
     t.string "message"
     t.integer "level"
-    t.integer "task_execution_id", null: false
+    t.bigint "task_execution_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["level"], name: "index_messages_on_level"
@@ -105,7 +107,7 @@ ActiveRecord::Schema.define(version: 2024_08_03_004253) do
   end
 
   create_table "task_executions", force: :cascade do |t|
-    t.integer "job_task_id", null: false
+    t.bigint "job_task_id", null: false
     t.integer "dossier"
     t.boolean "failed"
     t.datetime "created_at", precision: 6, null: false

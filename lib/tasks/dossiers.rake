@@ -8,7 +8,7 @@ namespace :dossiers do
     demarche = 1155
     close_date = Date.new(2021, 0o6, 23)
     DossierActions.on_dossiers(demarche, since) do |dossier|
-      if dossier.state == 'en_construction' || dossier.state == 'en_instruction'
+      if %w[en_construction en_instruction].include?(dossier.state)
         date = Date.iso8601(dossier_value(dossier, "Date d'arrivée").value)
         if date > close_date
           puts "#{dossier.number} = #{Date.iso8601(dossier_value(dossier, "Date d'arrivée").value)}"

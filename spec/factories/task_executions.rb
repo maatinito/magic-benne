@@ -12,7 +12,7 @@
 #  version      :bigint
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  job_task_id  :integer          not null
+#  job_task_id  :bigint           not null
 #
 # Indexes
 #

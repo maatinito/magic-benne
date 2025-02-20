@@ -78,7 +78,7 @@ class ExportExcel < DossierTask
     xlsx = Roo::Spreadsheet.open(file)
     regexp = sheet_regexp
     if regexp.present?
-      xlsx.sheets.filter { |name| name =~ regexp }.each do |name|
+      xlsx.sheets.grep(regexp).each do |name|
         save_sheet(name, xlsx.sheet(name))
       end
     else

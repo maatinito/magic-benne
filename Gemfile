@@ -12,7 +12,7 @@ ruby '3.1.2'
 # gem 'prawn-rails' # PDF Generation
 # gem 'prawn-svg'
 # gem 'prawn-table'
-gem 'rails', '~> 6.1.7.1'
+gem 'rails', '~> 7.0.4'
 
 # to write Excelx
 gem 'caxlsx'
@@ -77,9 +77,9 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
-  gem 'spring'
+  gem 'spring', '~> 4.0'
   gem 'spring-commands-rspec'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-watcher-listen', '~> 2.0'
   gem 'testftpd', require: false, github: 'christian-schulze/testftpd'
   gem 'vcr', '~> 5.1.0'
   gem 'webmock', '~> 3.8.0'
@@ -88,7 +88,7 @@ end
 group :development do
   gem 'annotate'
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'listen', '~> 3.7'
   gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'haml-lint'
